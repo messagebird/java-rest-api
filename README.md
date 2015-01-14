@@ -40,7 +40,7 @@ jackson-mapper-asl-1.9.13.jar
 jackson-core-asl-1.9.13.jar
 jackson-annotations-2.1.1.jar
 jackson-dataformat-csv-2.1.1.jar
-``
+```
 
 
 Examples
@@ -104,7 +104,7 @@ When everything did build successful you can try out the API like this:
 ```shell
 cd examples/target 
 java -cp examples-1.0.0-jar-with-dependencies.jar ExampleSendMessage test_JHWhczvG29P3GUpywWHmR9H4a 31682053703 "This is a test message"
-``
+```
 
 Please see the other examples for a complete overview of all the available API calls.
 
