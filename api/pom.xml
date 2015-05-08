@@ -4,15 +4,45 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.messagebird</groupId>
-        <artifactId>api_root</artifactId>
-        <version>1.0.0</version>
-    </parent>
-
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>The MessageBird API provides a API to the MessageBird SMS and voicemail services located at https://www.messagebird.com.</description>
+
+    <url>https://www.messagebird.com/</url>
+
+    <licenses>
+        <license>
+            <name>The BSD 2-Clause License</name>
+            <url>http://opensource.org/licenses/BSD-2-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Bob Violier</name>
+            <email>bob@messagebird.com</email>
+            <organization>MessageBird</organization>
+            <organizationUrl>https://www.messagebird.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sam Wierema</name>
+            <email>sam@messagebird.com</email>
+            <organization>MessageBird</organization>
+            <organizationUrl>https://www.messagebird.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:messagebird/java-rest-api.git</connection>
+        <developerConnection>scm:git:git@github.com:messagebird/java-rest-api.git</developerConnection>
+        <url>git@github.com:messagebird/java-rest-api.git</url>
+    </scm>
+
 
     <profiles>
         <profile>
@@ -61,6 +91,19 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

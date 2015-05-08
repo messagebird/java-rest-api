@@ -6,7 +6,7 @@ Requirements
 ------------
 - [Sign up](https://www.messagebird.com/en/signup) for a free MessageBird account
 - Create a new access key in the developers sections
-- An application written in Java 
+- An application written in Java
 - Installed version of maven
 
 Installation
@@ -15,7 +15,7 @@ The easiest way to install the messagebird package is either via github:
 
 ```
 git clone https://github.com/messagebird/java-rest-api
-cd java-rest-api
+cd java-rest-api/api
 mvn install
 ```
 
@@ -25,15 +25,15 @@ If you are using maven simply add the messagebird API to your dependencies like 
 <dependency>
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>1.1.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
-        
+
 In case you are building without maven you still need maven to build the libraries but
 then simply copy the following jar's over to your project
 
 ```
-messagebird-api-1.1.4.jar
+messagebird-api-1.0.0.jar
 jackson-core-2.1.1.jar
 jackson-databind-2.1.1.jar
 jackson-mapper-asl-1.9.13.jar
@@ -76,10 +76,10 @@ Now you can query the API for information or send a request. For example, if we 
         // Get Balance
         System.out.println("Retrieving your balance:");
         final Balance balance = messageBirdClient.getBalance();
-    
+
         // Display balance
         System.out.println(balance.toString());
-    
+
     } catch (UnauthorizedException unauthorized) {
         if (unauthorized.getErrors() != null) {
             System.out.println(unauthorized.getErrors().toString());
@@ -102,8 +102,8 @@ Balance{payment='prepaid', type='credits', amount=97}
 To try out the command line examples follow the above build instructions.
 When everything did build successful you can try out the API like this:
 ```shell
-cd examples/target 
-java -cp examples-1.0.0-jar-with-dependencies.jar ExampleSendMessage test_JHWhczvG29P3GUpywWHmR9H4a 31682053703 "This is a test message"
+cd examples/target
+java -cp examples-1.0.0-jar-with-dependencies.jar ExampleSendMessage test_gshuPaZoeEG6ovbc8M79w0QyM 31612345678 "This is a test message"
 ```
 
 Please see the other examples for a complete overview of all the available API calls.
@@ -114,7 +114,9 @@ Running unit tests requires you to create a developer key. You can create one fo
 or when you have one already you can skip registration and go to https://www.messagebird.com/nl/settings/developers/access
 to create or get your test access key. Once you have such key you can run the unit tests like this:
 
+```shell
 mvn test -Ptest -DmessageBirdAccessKey=[your access key] -DmessageBirdMSISDN=[your phone]
+```
 
 This will run all unit tests and verifies if everything is running as expected.
 
@@ -129,7 +131,7 @@ If you server doesn't have a direct connection to the internet you can setup a p
     final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));
     final MessageBirdService messageBirdService = new MessageBirdServiceImpl("test_gshuPaZoeEG6ovbc8M79w0QyM");
     messageBirdService.setProxy(proxy);
-```     
+```
 
 Documentation
 -------------
