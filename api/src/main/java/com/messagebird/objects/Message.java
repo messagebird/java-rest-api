@@ -27,7 +27,7 @@ public class Message implements MessageBase, Serializable {
     private Integer validity;
     private Integer gateway;
     private Map<String, Object> typeDetails;
-    private DataCodingType datacoding = DataCodingType.unicode;
+    private DataCodingType datacoding = DataCodingType.plain;
     private MClassType mclass;
     private Date scheduledDatetime;
 
