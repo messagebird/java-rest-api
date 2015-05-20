@@ -112,7 +112,7 @@ public class MessageBirdClientTest {
         assertTrue(mr.getId() != null);
         assertTrue(mr.getReference().equals(reference));
         assertTrue(mr.getBody().equals(body));
-        assertTrue(mr.getDatacoding().equals(DataCodingType.unicode));
+        assertTrue(mr.getDatacoding().equals(DataCodingType.plain));
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
