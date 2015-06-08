@@ -40,6 +40,8 @@ public class ExampleSendVoiceMessage {
             final VoiceMessage vm = new VoiceMessage(args[2], phones);
             vm.setIfMachine(IfMachineType.hangup);
             vm.setVoice(VoiceType.male);
+            vm.setLanguage("en-gb");
+
             final VoiceMessageResponse response = messageBirdClient.sendVoiceMessage(vm);
             System.out.println(response.toString());
 
