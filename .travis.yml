@@ -1,0 +1,8 @@
+language: java
+before_script: cd api/
+script: mvn test -Ptest -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk6
+  - openjdk7
