@@ -35,7 +35,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
     private final String accessKey;
     private final String serviceUrl = "https://rest.messagebird.com";
-    private final String clienVersion = "1.0.1";
+    private final String clienVersion = "1.0.2";
     private final String userAgentString = "MessageBird/Java ApiClient/" + clienVersion;
     private Proxy proxy = null;
 
