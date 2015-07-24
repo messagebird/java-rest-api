@@ -14,6 +14,7 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
 
     private String id;
     private String href;
+    private String originator;
     private String body;
     private String reference;
     private String language;
@@ -32,6 +33,7 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
         return "VoiceMessageResponse{" +
                 "id='" + id + '\'' +
                 ", href='" + href + '\'' +
+                ", originator='" + originator +'\'' +
                 ", body='" + body + '\'' +
                 ", reference='" + reference + '\'' +
                 ", language='" + language + '\'' +
@@ -52,6 +54,15 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
     @Override
     public String getHref() {
         return href;
+    }
+
+    /**
+     * The originator (sender) of the message
+     *
+     * @return String
+     */
+    public String getOriginator() {
+        return originator;
     }
 
     @Override
