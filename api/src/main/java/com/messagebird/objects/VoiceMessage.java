@@ -14,6 +14,7 @@ public class VoiceMessage implements MessageBase, Serializable {
 
     private static final long serialVersionUID = 1553564355131214875L;
 
+    private String originator;
     private String body;
     private String recipients;
     private String reference;
@@ -46,6 +47,24 @@ public class VoiceMessage implements MessageBase, Serializable {
     @Override
     public String getBody() {
         return body;
+    }
+
+    /**
+     * The originator (sender) of the message
+     *
+     * @return String
+     */
+    public String getOriginator() {
+        return originator;
+    }
+
+    /**
+     * Set the originator (sender) of the message
+     *
+     * @return void
+     */
+    public void setOriginator(String originator) {
+        this.originator = originator;
     }
 
     /**
