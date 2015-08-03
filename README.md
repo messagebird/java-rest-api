@@ -3,6 +3,7 @@ MessageBird's REST API for Java
 This repository contains the open source Java client for MessageBird's REST API. Documentation can be found at: https://www.messagebird.com/developers/.
 
 [![Build Status](https://travis-ci.org/messagebird/java-rest-api.svg?branch=master)](https://travis-ci.org/messagebird/java-rest-api)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.messagebird/messagebird-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.messagebird/messagebird-api)
 
 Requirements
 ------------
