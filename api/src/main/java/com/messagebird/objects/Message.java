@@ -43,7 +43,7 @@ public class Message implements MessageBase, Serializable {
         }
         this.recipients = recipients.trim();
         this.originator = originator.trim();
-        this.originator = this.originator.substring(0, Math.min(11, this.originator.length()));
+        this.originator = this.originator.substring(0, Math.min(18, this.originator.length()));
 
         this.body = body.trim();
     }
