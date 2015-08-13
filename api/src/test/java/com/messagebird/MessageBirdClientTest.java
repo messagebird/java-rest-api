@@ -172,8 +172,8 @@ public class MessageBirdClientTest {
         // test of the server returns us the same
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final MessageResponse mr = messageBirdClient.sendMessage("12345678901234567890", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        // originator get's truncated to 17 chars, that's ok
-        assertTrue(mr.getOriginator().equals("1234567890123467"));
+        // originator get's truncated to 17 chars and when it's numeric it will be prefixed with +, that's ok
+        assertTrue(mr.getOriginator().equals("+1234567890123467"));
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
