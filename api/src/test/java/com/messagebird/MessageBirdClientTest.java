@@ -167,13 +167,13 @@ public class MessageBirdClientTest {
     public void testSendMessageTestOriginatorLength() throws Exception {
         // test if our local object does truncate correctly
         Message originatorTest = new Message("originator1234567890", "Foo", Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        assertTrue(originatorTest.getOriginator().length() == 11);
+        assertTrue(originatorTest.getOriginator().length() == 18);
 
         // test of the server returns us the same
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final MessageResponse mr = messageBirdClient.sendMessage("originator1234567890", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
         // originator get's truncated to 11 chars, that's ok
-        assertTrue(mr.getOriginator().equals("originator1"));
+        assertTrue(mr.getOriginator().equals("originator12345678"));
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
