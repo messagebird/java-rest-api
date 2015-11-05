@@ -153,7 +153,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection = (HttpURLConnection) restService.openConnection();
         }
         connection.setDoInput(true);
-        connection.setRequestProperty("Accepts:", "application/json");
+        connection.setRequestProperty("Accept", "application/json");
         connection.setUseCaches(false);
         connection.setRequestProperty("charset", "utf-8");
         connection.setRequestProperty("Connection", "close");
