@@ -4,6 +4,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -21,6 +22,8 @@ public interface MessageBirdService {
      * @throws com.messagebird.exceptions.GeneralException
      */
     <R> R requestByID(String request, String id, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
+
+    <R> R requestByID(String request, String id, Map<String, String> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException;
 
     /**
      * Delete a object by ID.
