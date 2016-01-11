@@ -23,7 +23,7 @@ public interface MessageBirdService {
      */
     <R> R requestByID(String request, String id, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
 
-    <R> R requestByID(String request, String id, Map<String, String> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException;
+    <R> R requestByID(String request, String id, Map<String, Object> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
 
     /**
      * Delete a object by ID.

@@ -60,27 +60,16 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     @Override
-    public <R> R requestByID(String request, String id, Map<String, String> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException {
+    public <R> R requestByID(String request, String id, Map<String, Object> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
         String path = "";
         if (id != null) {
             path = "/" + id;
         }
-        // make rest of get request
+        // Make rest of get request
         String queryParams = "";
-        Iterator paramsIterator = params.entrySet().iterator();
-        if (paramsIterator.hasNext()) {
-            queryParams = "?"; // we have query params
+        if (!params.isEmpty()) {
+            queryParams = "?" + getPathVariables(params);
         }
-        while (paramsIterator.hasNext()) {
-            Map.Entry<String, String> param = (Map.Entry<String, String>) paramsIterator.next();
-            queryParams += URLEncoder.encode(param.getKey(), "utf-8");
-            queryParams += "=";
-            queryParams += URLEncoder.encode(param.getValue(), "utf-8");
-            if (paramsIterator.hasNext()) {
-                queryParams += "&";
-            }
-        }
-
         return getJsonData(request + path + queryParams, null, "GET", clazz);
     }
 

@@ -5,9 +5,7 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -347,20 +345,16 @@ public class MessageBirdClient {
      * @throws NotFoundException
      * @throws GeneralException
      * @throws UnauthorizedException
-     * @throws UnsupportedEncodingException
      */
-    public Verify verifyToken(String id, String token) throws NotFoundException, GeneralException, UnauthorizedException, UnsupportedEncodingException {
-
+    public Verify verifyToken(String id, String token) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("ID cannot be empty for verify");
         } else if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("ID cannot be empty for verify");
         }
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("token", token);
-
-        return messageBirdService.requestByID(VERIFYPATH, id, map, Verify.class);
+        final Map<String, Object> params = new LinkedHashMap<String, Object>();
+        params.put("token", token);
+        return messageBirdService.requestByID(VERIFYPATH, id, params, Verify.class);
     }
 
     /**
