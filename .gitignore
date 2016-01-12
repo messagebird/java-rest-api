@@ -14,3 +14,5 @@ hs_err_pid*
 
 # The various target folders
 *target/
+*.iml
+.idea

@@ -6,14 +6,13 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Message bird general client
- * <p/>
+ * <p>
  * <pre>
  * Initialise this class with a MessageBirdService
  *  // First create your service object
@@ -24,7 +23,7 @@ import java.util.Map;
  *  Then read your balance like this:
  *  final Balance balance = messageBirdClient.getBalance();
  * </pre>
- * <p/>
+ * <p>
  * Created by rvt on 1/5/15.
  */
 public class MessageBirdClient {
@@ -32,6 +31,7 @@ public class MessageBirdClient {
     private static final String HLRPATH = "/hlr";
     private static final String MESSAGESPATH = "/messages";
     private static final String VOICEMESSAGESPATH = "/voicemessages";
+    private static final String VERIFYPATH = "/verify";
     private MessageBirdService messageBirdService;
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
@@ -308,4 +308,81 @@ public class MessageBirdClient {
         return messageBirdService.requestList(VOICEMESSAGESPATH, offset, limit, VoiceMessageList.class);
     }
 
+    /**
+     * @param verifyRequest
+     * @return Verify object
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public Verify sendVerifyToken(VerifyRequest verifyRequest) throws UnauthorizedException, GeneralException {
+        if (verifyRequest == null) {
+            throw new IllegalArgumentException("Verify request cannot be null");
+        } else if (verifyRequest.getRecipient() == null || verifyRequest.getRecipient().isEmpty()) {
+            throw new IllegalArgumentException("Recipient cannot be empty for verify");
+        }
+        return messageBirdService.sendPayLoad(VERIFYPATH, verifyRequest, Verify.class);
+    }
+
+    /**
+     * @param recipient
+     * @return Verify object
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public Verify sendVerifyToken(String recipient) throws UnauthorizedException, GeneralException {
+        if (recipient == null || recipient.isEmpty()) {
+            throw new IllegalArgumentException("Recipient cannot be empty for verify");
+        }
+        VerifyRequest verifyRequest = new VerifyRequest(recipient);
+        return this.sendVerifyToken(verifyRequest);
+    }
+
+    /**
+     *
+     * @param id
+     * @param token
+     * @return Verify object
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
+    public Verify verifyToken(String id, String token) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be empty for verify");
+        } else if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be empty for verify");
+        }
+        final Map<String, Object> params = new LinkedHashMap<String, Object>();
+        params.put("token", token);
+        return messageBirdService.requestByID(VERIFYPATH, id, params, Verify.class);
+    }
+
+    /**
+     *
+     * @param id
+     * @return Verify object
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
+    public Verify getVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be empty for verify");
+        }
+        return messageBirdService.requestByID(VERIFYPATH, id, Verify.class);
+    }
+
+    /**
+     *
+     * @param id
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
+    public void deleteVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be empty for verify");
+        }
+        messageBirdService.deleteByID(VERIFYPATH, id);
+    }
 }

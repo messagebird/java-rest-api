@@ -8,11 +8,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -327,4 +329,51 @@ public class MessageBirdClientTest {
         messageBirdClient.deleteVoiceMessage("Foo");
     }
 
+    @Test
+    public void testSendVerifyToken1() throws UnauthorizedException, GeneralException {
+        final String reference = "5551234";
+        VerifyRequest verifyRequest = new VerifyRequest(this.messageBirdMSISDN.toString());
+        verifyRequest.setOriginator("Code");
+        verifyRequest.setReference(reference);
+        verifyRequest.setLanguage(Language.NL_NL);
+        verifyRequest.setType(MsgType.sms);
+        verifyRequest.setTimeout(30);
+        verifyRequest.setTokenLength(6);
+        verifyRequest.setVoice(Gender.FEMALE);
+        Verify verify = messageBirdClient.sendVerifyToken(verifyRequest);
+        assertFalse("href is empty", verify.getHref().isEmpty());
+    }
+
+    @Test
+    public void testSendVerifyTokenAndGetVerifyObject() throws UnauthorizedException, GeneralException, NotFoundException {
+        Verify verify =  messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        assertFalse("href is empty", verify.getHref().isEmpty());
+        assertFalse("id is empty", verify.getId().isEmpty());
+
+        verify = messageBirdClient.getVerifyObject(verify.getId());
+        assertFalse("href is empty", verify.getHref().isEmpty());
+        assertFalse("id is empty", verify.getId().isEmpty());
+    }
+
+    @Test
+    public void testVerifyToken() throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException {
+        Verify verify = messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        assertFalse("href is empty", verify.getHref().isEmpty());
+
+        try {
+            messageBirdClient.verifyToken(verify.getId(), "123456");
+        } catch (GeneralException e) {
+            // we expect only one error about token and nothing else
+            assertEquals("token", e.getErrors().get(0).getParameter());
+            assertTrue(e.getErrors().size() == 1);
+        }
+    }
+
+    @Test
+    public void testDeleteVerifyToken() throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException {
+        Verify verify = messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        assertFalse("href is empty", verify.getHref().isEmpty());
+
+        messageBirdClient.deleteVerifyObject(verify.getId());
+    }
 }

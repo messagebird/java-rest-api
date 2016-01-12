@@ -14,10 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of MessageBirdService
@@ -35,7 +32,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
     private final String accessKey;
     private final String serviceUrl = "https://rest.messagebird.com";
-    private final String clientVersion = "1.0.5";
+    private final String clientVersion = "1.1.0";
     private final String userAgentString = "MessageBird/Java ApiClient/" + clientVersion;
     private Proxy proxy = null;
 
@@ -60,6 +57,20 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             path = "/" + id;
         }
         return getJsonData(request + path, null, "GET", clazz);
+    }
+
+    @Override
+    public <R> R requestByID(String request, String id, Map<String, Object> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
+        String path = "";
+        if (id != null) {
+            path = "/" + id;
+        }
+        // Make rest of get request
+        String queryParams = "";
+        if (!params.isEmpty()) {
+            queryParams = "?" + getPathVariables(params);
+        }
+        return getJsonData(request + path + queryParams, null, "GET", clazz);
     }
 
     @Override
@@ -105,6 +116,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 // If we as new properties, we don't want the system to fail, we rather want to ignore them
                 mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper.readValue(inputStream, clazz);
+            } else if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+               return null; // no content doesn't mean an error
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 final List<ErrorReport> errorReport = getErrorReport(connection.getErrorStream());
                 throw new UnauthorizedException(NOT_AUTHORISED_MSG, errorReport);
@@ -169,10 +182,15 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
             final String json = mapper.writeValueAsString(postData);
             connection.getOutputStream().write(json.getBytes("UTF-8"));
+        } else if ("DELETE".equals(requestType)) {
+            // could have just used rquestType as it is
+            connection.setDoOutput(false);
+            connection.setRequestMethod("DELETE");
+            connection.setRequestProperty("Content-Type", "application/text");
         } else {
             connection.setDoOutput(false);
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type:", "application/text");
+            connection.setRequestProperty("Content-Type", "application/text");
         }
 
         return connection;
