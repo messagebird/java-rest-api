@@ -6,8 +6,6 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.Verify;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Created by faizan on 10/12/15.
  */
@@ -42,8 +40,6 @@ public class ExampleVerifyToken {
             }
             generalException.printStackTrace();
         } catch (NotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
