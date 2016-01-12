@@ -186,11 +186,11 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             // could have just used rquestType as it is
             connection.setDoOutput(false);
             connection.setRequestMethod("DELETE");
-            connection.setRequestProperty("Content-Type:", "application/text");
+            connection.setRequestProperty("Content-Type", "application/text");
         } else {
             connection.setDoOutput(false);
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type:", "application/text");
+            connection.setRequestProperty("Content-Type", "application/text");
         }
 
         return connection;
