@@ -14,9 +14,9 @@ import java.util.Date;
 public class Hlr {
     private String id;
     private String href;
-    private BigInteger msisdn;
+    protected BigInteger msisdn;
     private String network;
-    private String reference;
+    protected String reference;
     private String status;
     private Date createdDatetime;
     private Date statusDatetime;
