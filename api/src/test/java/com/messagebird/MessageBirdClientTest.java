@@ -362,6 +362,9 @@ public class MessageBirdClientTest {
 
         try {
             messageBirdClient.verifyToken(verify.getId(), "123456");
+        } catch (NotFoundException e) {
+            // It is fine if we get not found exception for test as we don't really know the token anyway in test api
+
         } catch (GeneralException e) {
             // we expect only one error about token and nothing else
             assertEquals("token", e.getErrors().get(0).getParameter());
