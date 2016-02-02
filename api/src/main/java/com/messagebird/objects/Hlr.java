@@ -20,6 +20,7 @@ public class Hlr {
     private String status;
     private Date createdDatetime;
     private Date statusDatetime;
+    private HlrDetails details;
 
     public Hlr() {
     }
@@ -32,6 +33,7 @@ public class Hlr {
                 ", msisdn=" + msisdn +
                 ", network='" + network + '\'' +
                 ", reference='" + reference + '\'' +
+                ", details='" + details + '\'' +
                 ", status='" + status + '\'' +
                 ", createdDatetime=" + createdDatetime +
                 ", statusDatetime=" + statusDatetime +
@@ -101,4 +103,9 @@ public class Hlr {
     public Date getStatusDatetime() {
         return statusDatetime;
     }
+
+    public HlrDetails getDetails() {
+        return details;
+    }
 }
+

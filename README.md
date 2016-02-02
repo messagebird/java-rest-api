@@ -106,7 +106,7 @@ To try out the command line examples follow the above build instructions.
 When everything did build successful you can try out the API like this:
 ```shell
 cd examples/target
-java -cp examples-1.0.1-jar-with-dependencies.jar ExampleSendMessage test_gshuPaZoeEG6ovbc8M79w0QyM 31612345678 "This is a test message"
+java -cp examples-2.0.0-jar-with-dependencies.jar ExampleSendMessage test_gshuPaZoeEG6ovbc8M79w0QyM 31612345678 "This is a test message"
 ```
 
 Please see the other examples for a complete overview of all the available API calls.
