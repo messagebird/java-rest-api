@@ -32,6 +32,8 @@ public class MessageBirdClient {
     private static final String MESSAGESPATH = "/messages";
     private static final String VOICEMESSAGESPATH = "/voicemessages";
     private static final String VERIFYPATH = "/verify";
+    private static final String LOOKUPPATH = "/lookup";
+    private static final String LOOKUPHLRPATH = "/lookup/%s/hlr";
     private MessageBirdService messageBirdService;
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
@@ -384,5 +386,125 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("ID cannot be empty for verify");
         }
         messageBirdService.deleteByID(VERIFYPATH, id);
+    }
+
+    /**
+     * Send a Lookup request
+     *
+     * @param Lookup
+     * @return Lookup
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     * @throws NotFoundException
+     */
+    public Lookup viewLookup(final Lookup lookup) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (lookup.getPhoneNumber() == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified.");
+        }
+        final Map<String, Object> params = new LinkedHashMap<String, Object>();
+        if (lookup.getCountryCode() != null) {
+            params.put("countryCode", lookup.getCountryCode());
+        }
+        return messageBirdService.requestByID(LOOKUPPATH, String.valueOf(lookup.getPhoneNumber()), params, Lookup.class);
+    }
+
+    /**
+     * Send a Lookup request
+     *
+     * @param phonenumber
+     * @return Lookup
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public Lookup viewLookup(final BigInteger phonenumber) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (phonenumber == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified.");
+        }
+        final Lookup lookup = new Lookup(phonenumber);
+        return this.viewLookup(lookup);
+    }
+
+    /**
+     * Request a Lookup HLR (lookup)
+     *
+     * @param LookupHlr
+     * @return lookupHlr
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public LookupHlr requestLookupHlr(final LookupHlr lookupHlr) throws UnauthorizedException, GeneralException {
+        if (lookupHlr.getPhoneNumber() == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified.");
+        }
+        if (lookupHlr.getReference() == null) {
+            throw new IllegalArgumentException("Reference must be specified.");
+        }
+        final Map<String, Object> payload = new LinkedHashMap<String, Object>();
+        payload.put("phoneNumber", lookupHlr.getPhoneNumber());
+        payload.put("reference", lookupHlr.getReference());
+        if (lookupHlr.getCountryCode() != null) {
+            payload.put("countryCode", lookupHlr.getCountryCode());
+        }
+        return messageBirdService.sendPayLoad(String.format(LOOKUPHLRPATH, lookupHlr.getPhoneNumber()), payload, LookupHlr.class);
+    }
+
+    /**
+     * Request a Lookup HLR (lookup)
+     *
+     * @param phonenumber
+     * @param reference
+     * @return lookupHlr
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public LookupHlr requestLookupHlr(final BigInteger phonenumber, final String reference) throws UnauthorizedException, GeneralException {
+        if (phonenumber == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified.");
+        }
+        if (reference == null) {
+            throw new IllegalArgumentException("Reference must be specified.");
+        }
+        final LookupHlr lookupHlr = new LookupHlr();
+        lookupHlr.setPhoneNumber(phonenumber);
+        lookupHlr.setReference(reference);
+        return this.requestLookupHlr(lookupHlr);
+    }
+
+    /**
+     * View a Lookup HLR (lookup)
+     *
+     * @param LookupHlr
+     * @return LookupHlr
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     * @throws NotFoundException
+     */
+    public LookupHlr viewLookupHlr(final LookupHlr lookupHlr) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (lookupHlr.getPhoneNumber() == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified");
+        }
+        final Map<String, Object> params = new LinkedHashMap<String, Object>();
+        if (lookupHlr.getCountryCode() != null) {
+            params.put("countryCode", lookupHlr.getCountryCode());
+        }
+        return messageBirdService.requestByID(String.format(LOOKUPHLRPATH, lookupHlr.getPhoneNumber()), "", params, LookupHlr.class);
+    }
+
+    /**
+     * View a Lookup HLR (lookup)
+     *
+     * @param phonenumber
+     * @return LookupHlr
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     * @throws NotFoundException
+     */
+    public LookupHlr viewLookupHlr(final BigInteger phonenumber) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (phonenumber == null) {
+            throw new IllegalArgumentException("Phonenumber must be specified");
+        }
+        final LookupHlr lookupHlr = new LookupHlr();
+        lookupHlr.setPhoneNumber(phonenumber);
+        return this.viewLookupHlr(lookupHlr);
     }
 }

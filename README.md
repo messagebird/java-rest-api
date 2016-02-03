@@ -28,7 +28,7 @@ If you are using maven simply add the messagebird API to your dependencies like 
 <dependency>
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -36,7 +36,7 @@ In case you are building without maven you still need maven to build the librari
 then simply copy the following jar's over to your project
 
 ```
-messagebird-api-1.1.1.jar
+messagebird-api-1.2.0.jar
 jackson-core-2.1.1.jar
 jackson-databind-2.1.1.jar
 jackson-mapper-asl-1.9.13.jar
@@ -106,7 +106,7 @@ To try out the command line examples follow the above build instructions.
 When everything did build successful you can try out the API like this:
 ```shell
 cd examples/target
-java -cp examples-1.0.1-jar-with-dependencies.jar ExampleSendMessage test_gshuPaZoeEG6ovbc8M79w0QyM 31612345678 "This is a test message"
+java -cp examples-1.2.0-jar-with-dependencies.jar ExampleSendMessage test_gshuPaZoeEG6ovbc8M79w0QyM 31612345678 "This is a test message"
 ```
 
 Please see the other examples for a complete overview of all the available API calls.
