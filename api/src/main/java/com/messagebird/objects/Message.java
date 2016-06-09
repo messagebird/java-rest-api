@@ -2,6 +2,7 @@ package com.messagebird.objects;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +31,11 @@ public class Message implements MessageBase, Serializable {
     private DataCodingType datacoding = DataCodingType.plain;
     private MClassType mclass;
     private Date scheduledDatetime;
+    
+    /**
+     * Optional URL for the status report. If not set uses URL from account settings.
+     */
+    private URL reportUrl;
 
     public Message(String originator, String body, String recipients) {
         if (recipients == null || recipients.trim().length() == 0) {
@@ -115,6 +121,7 @@ public class Message implements MessageBase, Serializable {
                 ", reference='" + reference + '\'' +
                 ", validity=" + validity +
                 ", gateway=" + gateway +
+                ", reportUrl=" + reportUrl +
                 ", typeDetails='" + typeDetails + '\'' +
                 ", datacoding=" + datacoding +
                 ", mclass=" + mclass +
@@ -298,5 +305,12 @@ public class Message implements MessageBase, Serializable {
         this.type = MsgType.premium;
     }
 
+	public URL getReportUrl() {
+		return reportUrl;
+	}
+
+	public void setReportUrl(URL reportUrl) {
+		this.reportUrl = reportUrl;
+	}
 
 }
