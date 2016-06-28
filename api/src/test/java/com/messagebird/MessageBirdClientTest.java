@@ -375,10 +375,9 @@ public class MessageBirdClientTest {
         assertFalse("href is empty", verify.getHref().isEmpty());
         try {
             messageBirdClient.deleteVerifyObject(verify.getId());
-        } catch (GeneralException e) {
-            // We can't delete verify object in test but atleast we tested json object parsing
-            // we expect only one error about token and nothing else
-            // assertTrue(e.getErrors().size() == 1);
+        } catch (NotFoundException e) {
+            // We expect it to be "Not found" as a test key doesn't create
+            // an object in the API.
         }
     }
 }
