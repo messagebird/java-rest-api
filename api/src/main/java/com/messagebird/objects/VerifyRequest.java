@@ -11,12 +11,12 @@ public class VerifyRequest implements Serializable {
     private String originator;
     private String reference;
     private MsgType type;
+    private DataCodingType datacoding = DataCodingType.plain;
     private String template;
     private Integer timeout;
     private Integer tokenLength;
     private Gender voice;
     private Language language;
-
 
     public VerifyRequest(String recipient) {
         this.recipient = recipient;
@@ -52,6 +52,24 @@ public class VerifyRequest implements Serializable {
 
     public void setType(MsgType type) {
         this.type = type;
+    }
+
+    /**
+     * The datacoding used by the template.
+     *
+     * @return returns plain or unicode
+     */
+    public DataCodingType getDatacoding() {
+        return datacoding;
+    }
+
+    /**
+     * The datacoding used by the template.
+     *
+     * @param datacoding
+     */
+    public void setDatacoding(DataCodingType datacoding) {
+        this.datacoding = datacoding;
     }
 
     public String getTemplate() {
@@ -93,4 +111,5 @@ public class VerifyRequest implements Serializable {
     public void setLanguage(Language language) {
         this.language = language;
     }
+
 }
