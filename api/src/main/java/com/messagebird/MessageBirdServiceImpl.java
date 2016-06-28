@@ -1,20 +1,26 @@
 package com.messagebird;
 
-import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
-import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.ErrorReport;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.util.*;
+import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.NotFoundException;
+import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.ErrorReport;
 
 /**
  * Implementation of MessageBirdService
@@ -31,7 +37,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST = "Request type must be set to GET, POST or DELETE";
     private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
     private final String accessKey;
-    private final String serviceUrl = "https://rest.messagebird.com";
+    private final String serviceUrl;
     private final String clientVersion = "1.2.2";
     private final String userAgentString = "MessageBird/Java ApiClient/" + clientVersion;
     private Proxy proxy = null;
@@ -44,8 +50,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             throw new IllegalArgumentException(SERVICE_URL_MUST_BE_SPECIFIED);
         }
         this.accessKey = accessKey;
+        this.serviceUrl = serviceUrl;
     }
 
+    /**
+     * Initiate service with default serviceUrl.
+     * @param accessKey
+     */
     public MessageBirdServiceImpl(final String accessKey) {
         this(accessKey, "https://rest.messagebird.com");
     }

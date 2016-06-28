@@ -1,11 +1,10 @@
 package com.messagebird;
 
+import java.util.Map;
+
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 /**
  * Created by rvt on 1/7/15.
