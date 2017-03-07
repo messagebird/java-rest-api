@@ -196,7 +196,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             // Specifically set the date format for POST requests so scheduled
             // messages and other things relying on specific date formats don't
             // fail when sending.
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
             mapper.setDateFormat(df);
 
             final String json = mapper.writeValueAsString(postData);
