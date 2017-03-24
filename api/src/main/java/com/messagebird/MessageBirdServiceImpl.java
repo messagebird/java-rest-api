@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -190,6 +192,12 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection.setRequestProperty("Content-Type", "application/json");
             ObjectMapper mapper = new ObjectMapper();
             mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+
+            // Specifically set the date format for POST requests so scheduled
+            // messages and other things relying on specific date formats don't
+            // fail when sending.
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
+            mapper.setDateFormat(df);
 
             final String json = mapper.writeValueAsString(postData);
             connection.getOutputStream().write(json.getBytes("UTF-8"));
