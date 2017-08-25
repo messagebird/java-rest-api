@@ -14,11 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
@@ -127,7 +126,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 inputStream = connection.getInputStream();
                 final ObjectMapper mapper = new ObjectMapper();
                 // If we as new properties, we don't want the system to fail, we rather want to ignore them
-                mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper.readValue(inputStream, clazz);
             } else if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
                return null; // no content doesn't mean an error
@@ -191,7 +190,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
             ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+            mapper.setSerializationInclusion(Include.NON_NULL);
 
             // Specifically set the date format for POST requests so scheduled
             // messages and other things relying on specific date formats don't
@@ -227,7 +226,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         List<ErrorReport> errorReport = null;
         try {
             node = mapper.readValue(inputStream, JsonNode.class);
-            errorReport = Arrays.asList(mapper.readValue(node.get("errors"), ErrorReport[].class));
+            errorReport = Arrays.asList(mapper.readValue(node.get("errors").toString(), ErrorReport[].class));
         } catch (IOException e) {
             // we will ignore this and simply leave the error report null
         }
