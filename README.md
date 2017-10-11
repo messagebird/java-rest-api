@@ -37,7 +37,7 @@ then simply copy the following jar's over to your project
 
 ```
 messagebird-api-1.3.1.jar
-jackson-core-2.1.1.jar
+jackson-core-2.9.0.jar
 jackson-databind-2.1.1.jar
 jackson-mapper-asl-1.9.13.jar
 jackson-core-asl-1.9.13.jar

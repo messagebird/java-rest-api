@@ -5,5 +5,5 @@ script: mvn test -Ptest -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -D
 jdk:
   - oraclejdk8
   - oraclejdk7
-  - openjdk6
+  - openjdk8
   - openjdk7
