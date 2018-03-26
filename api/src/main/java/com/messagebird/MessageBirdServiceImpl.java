@@ -217,7 +217,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     private DateFormat getDateFormat() {
         double javaVersion = getVersion();
-        if (javaVersion >= 1.6) {
+        if (javaVersion > 1.6) {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         }
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
