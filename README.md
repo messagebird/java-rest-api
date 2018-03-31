@@ -1,6 +1,6 @@
 MessageBird's REST API for Java
 =================================
-This repository contains the open source Java client for MessageBird's REST API. Documentation can be found at: https://www.messagebird.com/developers/.
+This repository contains the open source Java client for MessageBird's REST API. Documentation can be found at: https://developers.messagebird.com.
 
 [![Build Status](https://travis-ci.org/messagebird/java-rest-api.svg?branch=master)](https://travis-ci.org/messagebird/java-rest-api)
 ![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/messagebird/messagebird-api/maven-metadata.xml.svg)
@@ -8,14 +8,14 @@ This repository contains the open source Java client for MessageBird's REST API.
 
 Requirements
 ------------
-- [Sign up](https://www.messagebird.com/en/signup) for a free MessageBird account
+- [Sign up](https://dashboard.messagebird.com/en/sign-up) for a free MessageBird account
 - Create a new access key in the developers sections
 - An application written in Java
 - Installed version of maven
 
 Installation
 ------------
-The easiest way to install the messagebird package is either via github:
+The easiest way to install the MessageBird package is either via github:
 
 ```
 git clone https://github.com/messagebird/java-rest-api
@@ -114,8 +114,8 @@ Please see the other examples for a complete overview of all the available API c
 
 Running with unit tests
 -----------------------
-Running unit tests requires you to create a developer key. You can create one for free on https://www.messagebird.com/nl/signup,
-or when you have one already you can skip registration and go to https://www.messagebird.com/nl/settings/developers/access
+Running unit tests requires you to create a developer key. You can create one for free at https://dashboard.messagebird.com/en/sign-up,
+or when you have one already you can skip registration and go to https://dashboard.messagebird.com/en/settings/developers/access
 to create or get your test access key. Once you have such key you can run the unit tests like this:
 
 ```shell
@@ -140,7 +140,7 @@ If you server doesn't have a direct connection to the internet you can setup a p
 Documentation
 -------------
 Complete documentation, instructions, and examples are available at:
-[https://www.messagebird.com/developers/java](https://www.messagebird.com/developers/java).
+[https://developers.messagebird.com](https://developers.messagebird.com).
 
 License
 -------
