@@ -37,7 +37,12 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String SERVICE_URL_MUST_BE_SPECIFIED = "Service URL must be specified";
     private static final String REQUEST_VALUE_MUST_BE_SPECIFIED = "Request value must be specified";
     private static final String REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST = "Request type must be set to GET, POST or DELETE";
+
     private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
+
+    // Used when the actual version can not be parsed.
+    private static final double DEFAULT_JAVA_VERSION = 0.0;
+
     private final String accessKey;
     private final String serviceUrl;
     private final String clientVersion = "1.3.2";
@@ -216,18 +221,32 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     private DateFormat getDateFormat() {
-        double javaVersion = getVersion();
+        double javaVersion = DEFAULT_JAVA_VERSION;
+        try {
+            javaVersion = getVersion();
+        } catch (GeneralException e) {
+            // Do nothing: leave the version at its default.
+        }
+
         if (javaVersion > 1.6) {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         }
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
     }
-
-    private double getVersion() {
+    
+    private double getVersion() throws GeneralException {
         String version = System.getProperty("java.version");
-        int pos = version.indexOf('.');
-        pos = version.indexOf('.', pos + 1);
-        return Double.parseDouble(version.substring(0, pos));
+
+        try {
+            int pos = version.indexOf('.');
+            pos = version.indexOf('.', pos + 1);
+
+            return Double.parseDouble(version.substring(0, pos));
+        } catch (RuntimeException e) {
+            // Thrown if the index is out of bounds, or when we can't parse a
+            // double for some reason.
+            throw new GeneralException(e);
+        }
     }
 
     /**

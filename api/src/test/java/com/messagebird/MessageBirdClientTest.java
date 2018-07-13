@@ -162,6 +162,23 @@ public class MessageBirdClientTest {
     }
 
     @Test
+    public void testSendMessageWithoutVersion() throws Exception {
+        // Some runtimes, like Android, do not set the java.version system property.
+        // This test asserts we can still send a message without it.
+        
+        String javaVersionBeforeTest = System.getProperty("java.version");
+        System.setProperty("java.version", "");
+
+        final String body = "Body test message Über € " + messageBirdMSISDN;
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
+
+        assertTrue(mr.getId() != null);
+
+        // Restore the java.version for other tests.
+        System.setProperty("java.version", javaVersionBeforeTest);
+    }
+
+    @Test
     public void testSendMessageTestOriginatorLength() throws Exception {
         // test if our local object does truncate correctly
         Message originatorTest = new Message("originator1234567890", "Foo", Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
