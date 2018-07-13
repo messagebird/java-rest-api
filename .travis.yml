@@ -1,7 +1,7 @@
 language: java
 dist: precise
 before_script: cd api/
-script: mvn test -Ptest -Dhttps.protocols=TLSv1 -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678
+script: if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then mvn test -Ptest -Dhttps.protocols=TLSv1 -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678; else; mvn test -Ptest -Dhttps.protocols=TLSv1.2 -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678; fi
 jdk:
   - oraclejdk8
   - oraclejdk7
