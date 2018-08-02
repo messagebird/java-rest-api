@@ -13,9 +13,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by rvt on 1/8/15.
@@ -47,16 +45,16 @@ public class MessageBirdClientTest {
     @Test
     public void testGetBalance() throws Exception {
         final Balance balance = messageBirdClient.getBalance();
-        assertTrue(balance.getType() != null);
-        assertTrue(balance.getPayment() != null);
+        assertNotNull(balance.getType());
+        assertNotNull(balance.getPayment());
     }
 
     @Test
     public void testGetHlr() throws Exception {
         final Hlr hlr = messageBirdClient.getRequestHlr(messageBirdMSISDN, "Test Reference " + messageBirdMSISDN);
-        assertTrue(hlr.getReference().equals("Test Reference " + messageBirdMSISDN));
+        assertEquals(hlr.getReference(), "Test Reference " + messageBirdMSISDN);
         final String id = hlr.getId();
-        assertTrue(id != null);
+        assertNotNull(id);
 
         /* During test we cannot re-fetch a HLR
         final Hlr hlr2 = messageBirdClient.getViewHlr(id);
@@ -79,10 +77,10 @@ public class MessageBirdClientTest {
     @Test
     public void testListMessages() throws Exception {
         final MessageList list = messageBirdClient.listMessages(null, null);
-        assertTrue(list.getOffset() != null);
-        assertTrue(list.getLinks() != null);
-        assertTrue(list.getTotalCount() != null);
-        assertTrue(list.getLinks() != null);
+        assertNotNull(list.getOffset());
+        assertNotNull(list.getLinks());
+        assertNotNull(list.getTotalCount());
+        assertNotNull(list.getLinks());
     }
 
     @Test
@@ -93,7 +91,7 @@ public class MessageBirdClientTest {
     @Test
     public void testListMessagesOffset45() throws Exception {
         final MessageList list = messageBirdClient.listMessages(45, null);
-        assertTrue(list.getOffset() == 45);
+        assertEquals(45, (int) list.getOffset());
     }
 
     @Test(expected = NotFoundException.class)
@@ -111,10 +109,10 @@ public class MessageBirdClientTest {
         Message message = new Message("originator", body, messageBirdMSISDN.toString());
         message.setReference(reference);
         final MessageResponse mr = messageBirdClient.sendMessage(message);
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getReference().equals(reference));
-        assertTrue(mr.getBody().equals(body));
-        assertTrue(mr.getDatacoding().equals(DataCodingType.plain));
+        assertNotNull(mr.getId());
+        assertEquals(mr.getReference(), reference);
+        assertEquals(mr.getBody(), body);
+        assertEquals(mr.getDatacoding(), DataCodingType.plain);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -153,8 +151,8 @@ public class MessageBirdClientTest {
     @Test
     public void testSendDeleteMessage1() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        assertTrue(mr.getId() != null);
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN));
+        assertNotNull(mr.getId());
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -170,9 +168,9 @@ public class MessageBirdClientTest {
         System.setProperty("java.version", "");
 
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN));
 
-        assertTrue(mr.getId() != null);
+        assertNotNull(mr.getId());
 
         // Restore the java.version for other tests.
         System.setProperty("java.version", javaVersionBeforeTest);
@@ -181,14 +179,14 @@ public class MessageBirdClientTest {
     @Test
     public void testSendMessageTestOriginatorLength() throws Exception {
         // test if our local object does truncate correctly
-        Message originatorTest = new Message("originator1234567890", "Foo", Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        assertTrue(originatorTest.getOriginator().length() == 17);
+        Message originatorTest = new Message("originator1234567890", "Foo", Arrays.asList(messageBirdMSISDN));
+        assertEquals(17, originatorTest.getOriginator().length());
 
         // test of the server returns us the same
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("12345678901234567890", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
+        final MessageResponse mr = messageBirdClient.sendMessage("12345678901234567890", body, Arrays.asList(messageBirdMSISDN));
         // originator get's truncated to 17 chars and when it's numeric it will be prefixed with +, that's ok
-        assertTrue(mr.getOriginator().equals("+12345678901234567"));
+        assertEquals("+12345678901234567", mr.getOriginator());
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -199,9 +197,9 @@ public class MessageBirdClientTest {
     public void testSendDeleteMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Reference Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}), reference);
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getReference().equals(reference));
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN), reference);
+        assertNotNull(mr.getId());
+        assertEquals(mr.getReference(), reference);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -211,10 +209,10 @@ public class MessageBirdClientTest {
     @Test
     public void testSendDeleteFlashMessage() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getType() == MsgType.flash);
-        assertTrue(mr.getMclass() == MClassType.flash);
+        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(messageBirdMSISDN));
+        assertNotNull(mr.getId());
+        assertSame(mr.getType(), MsgType.flash);
+        assertSame(mr.getMclass(), MClassType.flash);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -225,9 +223,9 @@ public class MessageBirdClientTest {
     public void testSendDeleteFlashMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Reference Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}), reference);
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getReference().equals(reference));
+        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(messageBirdMSISDN), reference);
+        assertNotNull(mr.getId());
+        assertEquals(mr.getReference(), reference);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -253,11 +251,11 @@ public class MessageBirdClientTest {
     @Test
     public void testVoiceListMessages() throws Exception {
         final VoiceMessageList list = messageBirdClient.listVoiceMessages(null, null);
-        assertTrue(list.getOffset() != null);
-        assertTrue(list.getLinks() != null);
-        assertTrue(list.getTotalCount() != null);
+        assertNotNull(list.getOffset());
+        assertNotNull(list.getLinks());
+        assertNotNull(list.getTotalCount());
         // We cannot test actual retrieval of messages because the account may be empty
-        assertTrue(list.getLinks() != null);
+        assertNotNull(list.getLinks());
     }
 
     @Test
@@ -268,7 +266,7 @@ public class MessageBirdClientTest {
     @Test
     public void testVoiceListMessagesOffset45() throws Exception {
         final VoiceMessageList list = messageBirdClient.listVoiceMessages(45, null);
-        assertTrue(list.getOffset() == 45);
+        assertEquals(45, (int) list.getOffset());
     }
 
     /****************************************************************************/
@@ -283,10 +281,10 @@ public class MessageBirdClientTest {
         vm.setIfMachine(IfMachineType.hangup);
         vm.setVoice(VoiceType.male);
         final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(vm);
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getBody().equals(body));
-        assertTrue(mr.getIfMachine() == IfMachineType.hangup);
-        assertTrue(mr.getVoice() == VoiceType.male);
+        assertNotNull(mr.getId());
+        assertEquals(mr.getBody(), body);
+        assertSame(mr.getIfMachine(), IfMachineType.hangup);
+        assertSame(mr.getVoice(), VoiceType.male);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -296,9 +294,9 @@ public class MessageBirdClientTest {
     @Test
     public void testSendVoiceMessage1() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getBody().equals(body));
+        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(messageBirdMSISDN));
+        assertNotNull(mr.getId());
+        assertEquals(mr.getBody(), body);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -309,10 +307,10 @@ public class MessageBirdClientTest {
     public void testSendVoiceMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Voice Reference Über " + messageBirdMSISDN;
-        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}), reference);
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getBody().equals(body));
-        assertTrue(mr.getReference().equals(reference));
+        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(messageBirdMSISDN), reference);
+        assertNotNull(mr.getId());
+        assertEquals(mr.getBody(), body);
+        assertEquals(mr.getReference(), reference);
 
         Thread.sleep(500);
         // Viewing of a message is not yet supported in test mode
@@ -345,7 +343,7 @@ public class MessageBirdClientTest {
     @Test
     public void testSendVerifyToken1() throws UnauthorizedException, GeneralException {
         final String reference = "5551234";
-        VerifyRequest verifyRequest = new VerifyRequest(this.messageBirdMSISDN.toString());
+        VerifyRequest verifyRequest = new VerifyRequest(messageBirdMSISDN.toString());
         verifyRequest.setOriginator("Code");
         verifyRequest.setReference(reference);
         verifyRequest.setLanguage(Language.NL_NL);
@@ -359,7 +357,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testSendVerifyTokenAndGetVerifyObject() throws UnauthorizedException, GeneralException, NotFoundException {
-        Verify verify =  messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        Verify verify =  messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
         assertFalse("id is empty", verify.getId().isEmpty());
         try {
@@ -373,7 +371,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testVerifyToken() throws UnauthorizedException, GeneralException, UnsupportedEncodingException {
-        Verify verify = messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
 
         try {
@@ -386,9 +384,10 @@ public class MessageBirdClientTest {
             assertTrue(e.getErrors().size() == 1);
         }
     }
+
     @Test
     public void testDeleteVerifyToken() throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException {
-        Verify verify = messageBirdClient.sendVerifyToken(this.messageBirdMSISDN.toString());
+        Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
         try {
             messageBirdClient.deleteVerifyObject(verify.getId());
