@@ -1,5 +1,8 @@
 package com.messagebird.objects;
 
+/**
+ * Custom fields of this contact.
+ */
 public class CustomDetails {
 
     private String custom1;

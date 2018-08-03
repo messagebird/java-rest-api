@@ -2,6 +2,9 @@ package com.messagebird.objects;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+/**
+ * Contains writable values for Contact objects.
+ */
 public class ContactRequest {
 
     private String msisdn;
@@ -34,6 +37,9 @@ public class ContactRequest {
         //
     }
 
+    /**
+     * The phone number of contact.
+     */
     public String getMsisdn() {
         return msisdn;
     }
@@ -50,6 +56,9 @@ public class ContactRequest {
         return customDetails;
     }
 
+    /**
+     * The phone number of contact.
+     */
     public void setMsisdn(String msisdn) {
         this.msisdn = msisdn;
     }

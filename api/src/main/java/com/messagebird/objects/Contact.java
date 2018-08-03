@@ -2,6 +2,9 @@ package com.messagebird.objects;
 
 import java.util.Date;
 
+/**
+ * Complete Contact object. To create and update contacts, use ContactRequest.
+ */
 public class Contact {
 
     private String id;

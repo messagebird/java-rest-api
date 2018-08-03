@@ -514,12 +514,6 @@ public class MessageBirdClient {
     /**
      * Deletes an existing contact. You only need to supply the unique id that
      * was returned upon creation.
-     *
-     * @param id
-     *
-     * @throws NotFoundException
-     * @throws GeneralException
-     * @throws UnauthorizedException
      */
     public void deleteContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
@@ -539,8 +533,6 @@ public class MessageBirdClient {
 
     /**
      * Gets a contact listing with default pagination options.
-     *
-     * @return Listing of Contact objects.
      */
     public ContactList listContacts() throws UnauthorizedException, GeneralException {
         final int limit = 20;
@@ -552,12 +544,6 @@ public class MessageBirdClient {
     /**
      * Creates a new contact object. MessageBird returns the created contact
      * object with each request.
-     *
-     * @param contactRequest
-     *
-     * @return
-     * @throws UnauthorizedException
-     * @throws GeneralException
      */
     public Contact sendContact(final ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
         return messageBirdService.sendPayLoad(CONTACTPATH, contactRequest, Contact.class);
@@ -566,13 +552,6 @@ public class MessageBirdClient {
     /**
      * Updates an existing contact. You only need to supply the unique id that
      * was returned upon creation.
-     *
-     * @param id
-     * @param contactRequest
-     *
-     * @return
-     * @throws UnauthorizedException
-     * @throws GeneralException
      */
     public Contact updateContact(final String id, ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
         if (id == null) {
@@ -585,13 +564,6 @@ public class MessageBirdClient {
     /**
      * Retrieves the information of an existing contact. You only need to supply
      * the unique contact ID that was returned upon creation or receiving.
-     *
-     * @param id
-     *
-     * @return
-     * @throws NotFoundException
-     * @throws GeneralException
-     * @throws UnauthorizedException
      */
     public Contact viewContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
