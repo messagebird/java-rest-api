@@ -1,8 +1,6 @@
 package com.messagebird;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
@@ -35,9 +33,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String ACCESS_KEY_MUST_BE_SPECIFIED = "Access key must be specified";
     private static final String SERVICE_URL_MUST_BE_SPECIFIED = "Service URL must be specified";
     private static final String REQUEST_VALUE_MUST_BE_SPECIFIED = "Request value must be specified";
-    private static final String REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST = "Request type must be set to GET, POST or DELETE";
+    private static final String REQUEST_METHOD_NOT_ALLOWED = "Request method %s is not allowed.";
 
-    private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
+    private static final List<String> REQUEST_METHODS = Arrays.asList("GET", "PATCH", "POST", "DELETE");
+    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList("PATCH", "POST");
 
     // Used when the actual version can not be parsed.
     private static final double DEFAULT_JAVA_VERSION = 0.0;
@@ -108,9 +107,18 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     @Override
-    public <R, P> R sendPayLoad(String request, P payLoad, Class<R> clazz) throws UnauthorizedException, GeneralException {
+    public <R, P> R sendPayLoad(String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        return this.sendPayLoad("POST", request, payload, clazz);
+    }
+
+    @Override
+    public <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        if (!REQUEST_METHODS_WITH_PAYLOAD.contains(method)) {
+            throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, method));
+        }
+
         try {
-            return getJsonData(request, payLoad, "POST", clazz);
+            return getJsonData(request, payload, method, clazz);
         } catch (NotFoundException e) {
             throw new GeneralException(e);
         }
@@ -167,8 +175,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @throws IOException
      */
     public <P> HttpURLConnection getConnection(final String serviceUrl, final P postData, final String requestType) throws IOException {
-        if (requestType == null || !REQUESTMETHODS.contains(requestType)) {
-            throw new IllegalArgumentException(REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST);
+        if (requestType == null || !REQUEST_METHODS.contains(requestType)) {
+            throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, requestType));
         }
 
         if (postData == null && "POST".equals(requestType)) {
@@ -190,7 +198,14 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         connection.setRequestProperty("Authorization", "AccessKey " + accessKey);
         connection.setRequestProperty("User-agent", userAgentString);
 
-        if ("POST".equals(requestType)) {
+        if ("POST".equals(requestType) || "PATCH".equals(requestType)) {
+            if ("PATCH".equals(requestType)) {
+                // HttpURLConnection does not support PATCH so we'll send a
+                // POST, but instruct the server to interpret it as a PATCH.
+                // See: https://stackoverflow.com/a/32503192/3521243
+                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            }
+
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
