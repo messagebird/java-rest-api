@@ -7,12 +7,14 @@ addons:
     packages:
       - openjdk-6-jdk
 jdk:
-  - oraclejdk7
   - oraclejdk8
   - oraclejdk9
   - openjdk6
   - openjdk7
   - openjdk8
 matrix:
+  include:
+    - jdk: oraclejdk7
+      dist: precise
   allow_failures:
     - jdk: openjdk6
