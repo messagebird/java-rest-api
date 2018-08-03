@@ -7,45 +7,20 @@ import java.util.List;
  *
  * Created by rvt on 1/8/15.
  */
-public class MessageListBase<T> {
-    private Integer offset;
-    private Integer limit;
-    private Integer totalCount;
-    private Links links;
+public class MessageListBase<T> extends ListBase<T> {
 
-    public MessageListBase() {
-    }
+    // Only here to maintain backwards compatibility, for those relying on
+    // MessageListBase. If you're looking to create a new list type, you'll
+    // probably want to go with ListBase instead.
 
     @Override
     public String toString() {
         return "MessageListBase{" +
-                "offset=" + offset +
-                ", limit=" + limit +
-                ", totalCount=" + totalCount +
-                ", links=" + links +
-                ", items=" + items +
+                "offset=" + getOffset() +
+                ", limit=" + getLimit() +
+                ", totalCount=" + getTotalCount() +
+                ", links=" + getLinks() +
+                ", items=" + getItems() +
                 '}';
-    }
-
-    private List<T> items;
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public Integer getTotalCount() {
-        return totalCount;
-    }
-
-    public Links getLinks() {
-        return links;
-    }
-
-    public List<T> getItems() {
-        return items;
     }
 }
