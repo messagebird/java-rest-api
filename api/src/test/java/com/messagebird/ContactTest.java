@@ -8,15 +8,6 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-/**
- * Contacts are a bit different when it comes to testing from other
- * resources/endpoints: the other tests always operate on the same MSISDN, but
- * that would cause problems here as we can not have multiple contacts with
- * equal MSISDNs. We therefore generate a random MSIDSN before running the
- * tests here, and clean up by deleting it afterwards.
- * We can't simply delete the contact first if it exists, because we do not
- * know its ID.
- */
 public class ContactTest {
 
     private static MessageBirdServiceImpl messageBirdService;
@@ -47,6 +38,15 @@ public class ContactTest {
         contact = messageBirdClient.sendContact(contactRequest);
     }
 
+    /**
+     * Contacts are a bit different when it comes to testing from other
+     * resources/endpoints: the other tests always operate on the same MSISDN, but
+     * that would cause problems here as we can not have multiple contacts with
+     * equal MSISDNs. We therefore generate a random MSIDSN before running the
+     * tests here, and clean up by deleting it afterwards.
+     * We can't simply delete the contact first if it exists, because we do not
+     * know its ID.
+     */
     private static String generateMsisdn() {
         final long lower = 31600000000L, upper = 31699999999L;
 
