@@ -8,3 +8,7 @@ jdk:
   - oraclejdk9
   - openjdk7
   - openjdk8
+matrix:
+  include:
+    - jdk: oraclejdk7
+      dist: precise
