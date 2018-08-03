@@ -14,11 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
@@ -37,10 +36,15 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String SERVICE_URL_MUST_BE_SPECIFIED = "Service URL must be specified";
     private static final String REQUEST_VALUE_MUST_BE_SPECIFIED = "Request value must be specified";
     private static final String REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST = "Request type must be set to GET, POST or DELETE";
+
     private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
+
+    // Used when the actual version can not be parsed.
+    private static final double DEFAULT_JAVA_VERSION = 0.0;
+
     private final String accessKey;
     private final String serviceUrl;
-    private final String clientVersion = "1.3.2";
+    private final String clientVersion = "2.0.0";
     private final String userAgentString = "MessageBird/Java ApiClient/" + clientVersion;
     private Proxy proxy = null;
 
@@ -127,7 +131,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 inputStream = connection.getInputStream();
                 final ObjectMapper mapper = new ObjectMapper();
                 // If we as new properties, we don't want the system to fail, we rather want to ignore them
-                mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper.readValue(inputStream, clazz);
             } else if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
                return null; // no content doesn't mean an error
@@ -191,7 +195,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
             ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+            mapper.setSerializationInclusion(Include.NON_NULL);
 
             // Specifically set the date format for POST requests so scheduled
             // messages and other things relying on specific date formats don't
@@ -216,18 +220,32 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     private DateFormat getDateFormat() {
-        double javaVersion = getVersion();
+        double javaVersion = DEFAULT_JAVA_VERSION;
+        try {
+            javaVersion = getVersion();
+        } catch (GeneralException e) {
+            // Do nothing: leave the version at its default.
+        }
+
         if (javaVersion > 1.6) {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         }
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
     }
-
-    private double getVersion() {
+    
+    private double getVersion() throws GeneralException {
         String version = System.getProperty("java.version");
-        int pos = version.indexOf('.');
-        pos = version.indexOf('.', pos + 1);
-        return Double.parseDouble(version.substring(0, pos));
+
+        try {
+            int pos = version.indexOf('.');
+            pos = version.indexOf('.', pos + 1);
+
+            return Double.parseDouble(version.substring(0, pos));
+        } catch (RuntimeException e) {
+            // Thrown if the index is out of bounds, or when we can't parse a
+            // double for some reason.
+            throw new GeneralException(e);
+        }
     }
 
     /**
@@ -242,7 +260,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         List<ErrorReport> errorReport = null;
         try {
             node = mapper.readValue(inputStream, JsonNode.class);
-            errorReport = Arrays.asList(mapper.readValue(node.get("errors"), ErrorReport[].class));
+            errorReport = Arrays.asList(mapper.readValue(node.get("errors").toString(), ErrorReport[].class));
         } catch (IOException e) {
             // we will ignore this and simply leave the error report null
         }
