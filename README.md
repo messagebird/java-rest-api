@@ -37,8 +37,7 @@ In case you are building without maven you still need maven to build the librari
 then simply copy the following jar's over to your project
 
 ```
-<<<<<<< HEAD
-messagebird-api-1.3.2.jar
+messagebird-api-1.3.3.jar
 jackson-core-2.9.0.jar
 jackson-databind-2.1.1.jar
 jackson-mapper-asl-1.9.13.jar
