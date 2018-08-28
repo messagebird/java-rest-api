@@ -30,6 +30,7 @@ public class MessageBirdClient {
 
     private static final String BALANCEPATH = "/balance";
     private static final String CONTACTPATH = "/contacts";
+    private static final String GROUPPATH = "/groups";
     private static final String HLRPATH = "/hlr";
     private static final String LOOKUPHLRPATH = "/lookup/%s/hlr";
     private static final String LOOKUPPATH = "/lookup";
@@ -570,5 +571,110 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Contact ID must be specified.");
         }
         return messageBirdService.requestByID(CONTACTPATH, id, Contact.class);
+    }
+
+    /**
+     * Deletes an existing group. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public void deleteGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        messageBirdService.deleteByID(GROUPPATH, id);
+    }
+
+    /**
+     * Removes a contact from group. You need to supply the IDs of the group
+     * and contact. Does not delete the contact.
+     */
+    public void deleteGroupContact(final String groupId, final String contactId) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (groupId == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        if (contactId == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+
+        String id = String.format("%s%s/%s", groupId, CONTACTPATH, contactId);
+        messageBirdService.deleteByID(GROUPPATH, id);
+    }
+
+    /**
+     * Gets a contact listing with specified pagination options.
+     */
+    public GroupList listGroups(final int offset, final int limit) throws UnauthorizedException, GeneralException {
+        return messageBirdService.requestList(GROUPPATH, offset, limit, GroupList.class);
+    }
+
+    /**
+     * Gets a contact listing with default pagination options.
+     */
+    public GroupList listGroups() throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 20;
+
+        return listGroups(offset, limit);
+    }
+
+    /**
+     * Creates a new group object. MessageBird returns the created group object
+     * with each request.
+     */
+    public Group sendGroup(final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+        return messageBirdService.sendPayLoad(GROUPPATH, groupRequest, Group.class);
+    }
+
+    /**
+     * Adds contact to group. You need to supply the IDs of the group and
+     * contact.
+     */
+    public void sendGroupContact(final String groupId, final String[] contactIds) throws NotFoundException, GeneralException, UnauthorizedException {
+        // reuestByID appends the "ID" to the base path, so this workaround
+        // lets us add a query string.
+        String path = String.format("%s%s?%s", groupId, CONTACTPATH, getQueryString(contactIds));
+        messageBirdService.requestByID(GROUPPATH, path, null);
+    }
+
+    /**
+     * Builds a query string to add contacts to a group. We're using the
+     * alternative "/foo?_method=PUT&ids[]=foo&ids[]=bar" format to send the
+     * contact IDs as GET params. Sending these in the request body would
+     * require a painful workaround, as sendPayload sends request bodies as
+     * JSON by default. See also:
+     * https://developers.messagebird.com/docs/alternatives.
+     */
+    private String getQueryString(final String[] contactIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("_method=PUT");
+
+        for (String groupId : contactIds) {
+            stringBuilder.append("&ids[]=").append(groupId);
+        }
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Updates an existing group. You only need to supply the unique ID that
+     * was returned upon creation.
+     */
+    public Group updateGroup(final String id, final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        String path = String.format("%s/%s", GROUPPATH, id);
+        return messageBirdService.sendPayLoad("PATCH", path, groupRequest, Group.class);
+    }
+
+    /**
+     * Retrieves the information of an existing group. You only need to supply
+     * the unique group ID that was returned upon creation or receiving.
+     */
+    public Group viewGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        return messageBirdService.requestByID(GROUPPATH, id, Group.class);
     }
 }
