@@ -27,13 +27,16 @@ import java.util.Map;
  * Created by rvt on 1/5/15.
  */
 public class MessageBirdClient {
+
     private static final String BALANCEPATH = "/balance";
+    private static final String CONTACTPATH = "/contacts";
     private static final String HLRPATH = "/hlr";
-    private static final String MESSAGESPATH = "/messages";
-    private static final String VOICEMESSAGESPATH = "/voicemessages";
-    private static final String VERIFYPATH = "/verify";
-    private static final String LOOKUPPATH = "/lookup";
     private static final String LOOKUPHLRPATH = "/lookup/%s/hlr";
+    private static final String LOOKUPPATH = "/lookup";
+    private static final String MESSAGESPATH = "/messages";
+    private static final String VERIFYPATH = "/verify";
+    private static final String VOICEMESSAGESPATH = "/voicemessages";
+
     private MessageBirdService messageBirdService;
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
@@ -506,5 +509,66 @@ public class MessageBirdClient {
         final LookupHlr lookupHlr = new LookupHlr();
         lookupHlr.setPhoneNumber(phonenumber);
         return this.viewLookupHlr(lookupHlr);
+    }
+
+    /**
+     * Deletes an existing contact. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public void deleteContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        messageBirdService.deleteByID(CONTACTPATH, id);
+    }
+
+    /**
+     * Gets a contact listing with specified pagination options.
+     *
+     * @return Listing of Contact objects.
+     */
+    public ContactList listContacts(int offset, int limit) throws UnauthorizedException, GeneralException {
+        return messageBirdService.requestList(CONTACTPATH, offset, limit, ContactList.class);
+    }
+
+    /**
+     * Gets a contact listing with default pagination options.
+     */
+    public ContactList listContacts() throws UnauthorizedException, GeneralException {
+        final int limit = 20;
+        final int offset = 0;
+
+        return listContacts(offset, limit);
+    }
+
+    /**
+     * Creates a new contact object. MessageBird returns the created contact
+     * object with each request.
+     */
+    public Contact sendContact(final ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+        return messageBirdService.sendPayLoad(CONTACTPATH, contactRequest, Contact.class);
+    }
+
+    /**
+     * Updates an existing contact. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public Contact updateContact(final String id, ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        String request = CONTACTPATH + "/" + id;
+        return messageBirdService.sendPayLoad("PATCH", request, contactRequest, Contact.class);
+    }
+
+    /**
+     * Retrieves the information of an existing contact. You only need to supply
+     * the unique contact ID that was returned upon creation or receiving.
+     */
+    public Contact viewContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        return messageBirdService.requestByID(CONTACTPATH, id, Contact.class);
     }
 }
