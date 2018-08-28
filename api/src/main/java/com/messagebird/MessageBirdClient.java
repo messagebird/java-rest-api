@@ -677,4 +677,15 @@ public class MessageBirdClient {
         }
         return messageBirdService.requestByID(GROUPPATH, id, Group.class);
     }
+
+    public Conversation viewConversation(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must be specified");
+        }
+        return messageBirdService.requestByID("https://conversations.messagebird.com/v1/conversations", id, Conversation.class);
+    }
+
+    public Conversation updateConversation(final String id, final ConversationStatus status) {
+        return null;
+    }
 }
