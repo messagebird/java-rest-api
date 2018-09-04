@@ -133,8 +133,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             url = serviceUrl + url;
         }
 
-        System.out.printf("doRequest(%s, %s, %s);\n\n", requestType, url, payload);
-
         final APIResponse apiResponse = doRequest(requestType, url, payload);
 
         final String body = apiResponse.getBody();
