@@ -22,6 +22,8 @@ import static org.mockito.Mockito.spy;
  */
 class SpyService<P> {
 
+    private static final String REST_API_BASE_URL = "https://rest.messagebird.com";
+
     private String method;
     private String url;
     private P payload;
@@ -97,6 +99,17 @@ class SpyService<P> {
         this.baseURL = baseURL;
 
         return this;
+    }
+
+    /**
+     * Prefixes all URLs provided to expects() with the REST API's base URL
+     * when building the spy.
+     *
+     * @return Intermediate SpyService that can be finalized through
+     * andReturns().
+     */
+    public SpyService withRestAPIBaseURL() {
+        return withBaseURL(REST_API_BASE_URL);
     }
 
     /**
