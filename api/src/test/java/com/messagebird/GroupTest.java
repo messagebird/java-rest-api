@@ -4,85 +4,101 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.junit.Assert.*;
 
 public class GroupTest {
 
-    private static MessageBirdServiceImpl messageBirdService;
-    private static MessageBirdClient messageBirdClient;
+    private static final String JSON_GROUP_LIST = "{\"offset\": 0,\"limit\": 10,\"count\": 2,\"totalCount\": 2,\"links\": {\"first\": \"https://rest.messagebird.com/groups?offset=0&limit=10\",\"previous\": null,\"next\": null,\"last\": \"https://rest.messagebird.com/groups?offset=0&limit=10\"},\"items\": [{\"id\": \"first-id\",\"href\": \"https://rest.messagebird.com/groups/first-id\",\"name\": \"First\",\"contacts\": {\"totalCount\": 3,\"href\": \"https://rest.messagebird.com/groups/first-id/contacts\"},\"createdDatetime\": \"2018-07-25T11:47:42+00:00\",\"updatedDatetime\": \"2018-07-25T14:03:09+00:00\"},{\"id\": \"second-id\",\"href\": \"https://rest.messagebird.com/groups/second-id\",\"name\": \"Second\",\"contacts\": {\"totalCount\": 4,\"href\": \"https://rest.messagebird.com/groups/second-id/contacts\"},\"createdDatetime\": \"2018-07-25T11:47:39+00:00\",\"updatedDatetime\": \"2018-07-25T14:03:09+00:00\"}]}";
+    private static final String JSON_GROUP = "{\"id\": \"group-id\",\"href\": \"https://rest.messagebird.com/groups/group-id\",\"name\": \"Friends\",\"contacts\": {\"totalCount\": 3,\"href\": \"https://rest.messagebird.com/groups/group-id\"},\"createdDatetime\": \"2018-07-25T12:16:10+00:00\",\"updatedDatetime\": \"2018-07-25T12:16:23+00:00\"}";
 
-    private static Group group;
+    @Test
+    public void testDeleteGroup() throws GeneralException, NotFoundException, UnauthorizedException {
+        MessageBirdService messageBirdService = SpyService
+                .expects("DELETE", "groups/group-id")
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse("", HTTP_NO_CONTENT));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-    @BeforeClass
-    public static void setUpClass() throws UnauthorizedException, GeneralException {
-        String accessKey = System.getProperty("messageBirdAccessKey");
-
-        messageBirdService = new MessageBirdServiceImpl(accessKey);
-        messageBirdClient = new MessageBirdClient(messageBirdService);
-
-        group = messageBirdClient.sendGroup(new GroupRequest("MBTESTGROUP"));
-    }
-
-    @AfterClass
-    public static void tearDown() throws UnauthorizedException, GeneralException, NotFoundException {
-        messageBirdClient.deleteGroup(group.getId());
+        messageBirdClient.deleteGroup("group-id");
     }
 
     @Test
     public void testDeleteGroupContact() throws UnauthorizedException, GeneralException, NotFoundException {
-        ContactList contactList = messageBirdClient.listContacts();
-        if (contactList.getItems().isEmpty()) {
-            // Skip test if we don't have any contacts...
-            return;
-        }
+        MessageBirdService messageBirdService = SpyService
+                .expects("DELETE", "groups/group-id/contacts/contact-id")
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse("", HTTP_NO_CONTENT));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-        Contact contact = contactList.getItems().get(0);
-        messageBirdClient.sendGroupContact(group.getId(), new String[]{contact.getId()});
-
-        messageBirdClient.deleteGroupContact(group.getId(), contact.getId());
+        messageBirdClient.deleteGroupContact("group-id", "contact-id");
     }
 
     @Test
     public void testListGroups() throws UnauthorizedException, GeneralException {
-        GroupList groupList = messageBirdClient.listGroups();
+        MessageBirdService messageBirdService = SpyService
+                .expects("GET", "groups?offset=0&limit=10")
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse(JSON_GROUP_LIST));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-        assertSame(20, groupList.getLimit());
-        assertSame(0, groupList.getOffset());
-        assertNotSame(0, groupList.getTotalCount());
-        assertNotNull(groupList.getItems().get(0).getId());
+        GroupList groupList = messageBirdClient.listGroups(0, 10);
+
+        assertEquals(Integer.valueOf(2), groupList.getTotalCount());
+        assertEquals("https://rest.messagebird.com/groups?offset=0&limit=10", groupList.getLinks().getLast());
+        assertEquals("Second", groupList.getItems().get(1).getName());
+    }
+
+    @Test
+    public void testSendGroup() throws GeneralException, UnauthorizedException {
+        GroupRequest groupRequest = new GroupRequest("Foo Group");
+
+        MessageBirdService messageBirdService = SpyService
+                .expects("POST", "groups", groupRequest)
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse(JSON_GROUP));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+
+        messageBirdClient.sendGroup(groupRequest);
     }
 
     @Test
     public void testSendGroupContacts() throws UnauthorizedException, GeneralException, NotFoundException {
-        ContactList contactList = messageBirdClient.listContacts();
+        MessageBirdService messageBirdService = SpyService
+                .expects("GET", "groups/group-id/contacts?_method=PUT&ids[]=foo&ids[]=bar")
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse("", HTTP_NO_CONTENT));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-        assertSame(0, group.getContacts().getTotalCount());
-
-        messageBirdClient.sendGroupContact(group.getId(), new String[]{contactList.getItems().get(0).getId()});
-
-        group = messageBirdClient.viewGroup(group.getId());
-        assertSame(1, group.getContacts().getTotalCount());
+        messageBirdClient.sendGroupContact("group-id", new String[]{"foo", "bar"});
     }
 
     @Test
-    public void testUpdateGroup() throws UnauthorizedException, GeneralException, NotFoundException {
-        assertNotEquals("another name", group.getName());
+    public void testUpdateGroup() throws UnauthorizedException, GeneralException {
+        GroupRequest  groupRequest = new GroupRequest("A different name");
 
-        messageBirdClient.updateGroup(group.getId(), new GroupRequest("another name"));
+        MessageBirdService messageBirdService = SpyService
+                .expects("PATCH", "groups/group-id", groupRequest)
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse("", HTTP_NO_CONTENT));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-        group = messageBirdClient.viewGroup(group.getId());
-
-        assertEquals("another name", group.getName());
+        messageBirdClient.updateGroup("group-id", groupRequest);
     }
 
     @Test
     public void testViewGroup() throws UnauthorizedException, GeneralException, NotFoundException {
-        group = messageBirdClient.viewGroup(group.getId());
+        MessageBirdService messageBirdService = SpyService
+                .expects("GET", "groups/group-id")
+                .withRestAPIBaseURL()
+                .andReturns(new APIResponse(JSON_GROUP));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
-        assertNotNull(group.getContacts());
+        Group group = messageBirdClient.viewGroup("group-id");
+
+        assertEquals("group-id", group.getId());
+        assertEquals(3, group.getContacts().getTotalCount());
     }
 }
