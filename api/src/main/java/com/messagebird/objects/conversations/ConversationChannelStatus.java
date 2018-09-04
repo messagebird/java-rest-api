@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum ConversationChannelStatus {
 
+    ACTIVATING("activating"),
+    ACTIVATION_CODE_REQUIRED("activation_code_required"),
+    ACTIVATION_REQUIRED("activation_required"),
     ACTIVE("active"),
     DELETED("deleted"),
     INACTIVE("inactive"),
-    PENDING("pending"),
-    ACTIVATION_REQUIRED("activation_required"),
-    ACTIVATION_CODE_REQUIRED("activation_code_required"),
-    ACTIVATING("activating");
+    PENDING("pending");
 
     private final String status;
 
