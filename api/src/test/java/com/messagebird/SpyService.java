@@ -108,7 +108,7 @@ class SpyService<P> {
      * @return Intermediate SpyService that can be finalized through
      * andReturns().
      */
-    public SpyService withRestAPIBaseURL() {
+    SpyService withRestAPIBaseURL() {
         return withBaseURL(REST_API_BASE_URL);
     }
 
