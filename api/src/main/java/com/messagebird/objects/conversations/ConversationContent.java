@@ -72,7 +72,6 @@ public class ConversationContent {
 
     @Override
     public String toString() {
-        // @todo Only include non-null objects.
         return "ConversationContent{" +
                 "audio=" + audio +
                 ", file=" + file +
