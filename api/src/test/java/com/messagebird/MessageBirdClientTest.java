@@ -122,35 +122,6 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testSendDeletePremiumMessage()  throws UnauthorizedException {
-        /* Premium is still under development */
-        final String body = "Body test message Über € " + messageBirdMSISDN;
-        final String reference = "My Reference Über € " + messageBirdMSISDN;
-        Message message = new Message("originator", body, messageBirdMSISDN.toString());
-        message.setPremiumSMS(1008, "new keyword", 10.23, 2);
-        message.setReference(reference);
-        final MessageResponse mr;
-        try {
-            mr = messageBirdClient.sendMessage(message);
-        } catch (GeneralException e) {
-            final List<ErrorReport> result = e.getErrors();
-            // Exception is expected but we continue to test if the result is correct
-            boolean hasKeywordError=false;
-            boolean hasShortcodeError=false;
-            for (final ErrorReport error : e.getErrors()) {
-                if ("typeDetails.keyword".equals(error.getParameter())) {
-                    hasKeywordError=true;
-                }
-            }
-            assertTrue("Error report doesn't contain error about keyword", hasKeywordError);
-        }
-
-        // Deleting of a message is not yet supported in test mode
-        // Thread.sleep(1000);
-        // Gives 404 messageBirdClient.deleteMessage(mr.getId());
-    }
-
-    @Test
     public void testSendDeleteMessage1() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(new BigInteger[]{messageBirdMSISDN}));
