@@ -22,16 +22,6 @@ public class ConversationStartRequest {
         this.channelId = channelId;
     }
 
-    public ConversationStartRequest(
-            final String to,
-            final ConversationContentType type,
-            final ConversationContent content
-    ) {
-        this.to = to;
-        this.type = type;
-        this.content = content;
-    }
-
     public ConversationStartRequest() {
         //
     }
