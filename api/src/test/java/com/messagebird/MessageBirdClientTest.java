@@ -109,10 +109,11 @@ public class MessageBirdClientTest {
         Message message = new Message("originator", body, messageBirdMSISDN.toString());
         message.setReference(reference);
         final MessageResponse mr = messageBirdClient.sendMessage(message);
-        assertNotNull(mr.getId());
-        assertEquals(mr.getReference(), reference);
-        assertEquals(mr.getBody(), body);
-        assertEquals(mr.getDatacoding(), DataCodingType.plain);
+        
+        assertTrue(mr.getId() != null);
+        assertTrue(mr.getReference().equals(reference));
+        assertTrue(mr.getBody().equals(body));
+        assertTrue(mr.getDatacoding().equals(DataCodingType.plain));
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
