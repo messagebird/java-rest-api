@@ -34,10 +34,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     private static final List<String> REQUEST_METHODS = Arrays.asList("GET", "PATCH", "POST", "DELETE");
     private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList("PATCH", "POST");
-<<<<<<< HEAD
-=======
-
->>>>>>> add-groups
     private static final List<String> PROTOCOLS = Arrays.asList(new String[]{"http://", "https://"});
 
     // Used when the actual version can not be parsed.
