@@ -109,7 +109,7 @@ public class MessageBirdClientTest {
         Message message = new Message("originator", body, messageBirdMSISDN.toString());
         message.setReference(reference);
         final MessageResponse mr = messageBirdClient.sendMessage(message);
-        
+
         assertTrue(mr.getId() != null);
         assertTrue(mr.getReference().equals(reference));
         assertTrue(mr.getBody().equals(body));

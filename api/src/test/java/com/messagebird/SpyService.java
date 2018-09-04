@@ -125,6 +125,8 @@ class SpyService<P> {
             url = String.format("%s/%s", baseURL, url);
         }
 
+        System.out.printf("expecting doRequest(%s, %s, %s);\n\n", method, url, payload);
+
         MessageBirdServiceImpl messageBirdService = spy(new MessageBirdServiceImpl(getAccessKey()));
         doReturn(apiResponse).when(messageBirdService).doRequest(method, url, payload);
 
