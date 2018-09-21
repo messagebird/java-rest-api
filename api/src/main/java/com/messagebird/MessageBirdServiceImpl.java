@@ -42,7 +42,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private final String accessKey;
     private final String serviceUrl;
     private final String clientVersion = "2.0.0";
-    private final String userAgentString = "MessageBird/Java ApiClient/" + clientVersion;
+    private final String userAgentString;
     private Proxy proxy = null;
 
     public MessageBirdServiceImpl(final String accessKey, final String serviceUrl) {
@@ -54,6 +54,18 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         }
         this.accessKey = accessKey;
         this.serviceUrl = serviceUrl;
+        this.userAgentString = determineUserAgentString();
+    }
+
+    private String determineUserAgentString() {
+        double javaVersion = DEFAULT_JAVA_VERSION;
+        try {
+            javaVersion = getVersion();
+        } catch (GeneralException e) {
+            // Do nothing: leave the version at its default.
+        }
+
+        return String.format("MessageBird Java/%s ApiClient/%s", javaVersion, clientVersion);
     }
 
     /**
