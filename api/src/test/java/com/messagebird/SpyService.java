@@ -22,6 +22,9 @@ import static org.mockito.Mockito.spy;
  */
 class SpyService<P> {
 
+    private static final String CONVERSATIONS_API_BASE_URL = "https://conversations.messagebird.com/v1";
+    private static final String REST_API_BASE_URL = "https://rest.messagebird.com";
+
     private String method;
     private String url;
     private P payload;
@@ -97,6 +100,27 @@ class SpyService<P> {
         this.baseURL = baseURL;
 
         return this;
+    }
+
+    /**
+     * Sets the base URL to match the Conversations API's.
+     *
+     * @return Intermediate SpyService that can be finalized through
+     * andReturns().
+     */
+    SpyService withConversationsAPIBaseURL() {
+        return withBaseURL(CONVERSATIONS_API_BASE_URL);
+    }
+
+    /**
+     * Prefixes all URLs provided to expects() with the REST API's base URL
+     * when building the spy.
+     *
+     * @return Intermediate SpyService that can be finalized through
+     * andReturns().
+     */
+    SpyService withRestAPIBaseURL() {
+        return withBaseURL(REST_API_BASE_URL);
     }
 
     /**
