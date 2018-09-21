@@ -1,18 +1,13 @@
 package com.messagebird;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -35,9 +30,11 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String ACCESS_KEY_MUST_BE_SPECIFIED = "Access key must be specified";
     private static final String SERVICE_URL_MUST_BE_SPECIFIED = "Service URL must be specified";
     private static final String REQUEST_VALUE_MUST_BE_SPECIFIED = "Request value must be specified";
-    private static final String REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST = "Request type must be set to GET, POST or DELETE";
+    private static final String REQUEST_METHOD_NOT_ALLOWED = "Request method %s is not allowed.";
 
-    private static final List<String> REQUESTMETHODS = Arrays.asList(new String[]{"GET", "POST", "DELETE"});
+    private static final List<String> REQUEST_METHODS = Arrays.asList("GET", "PATCH", "POST", "DELETE");
+    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList("PATCH", "POST");
+    private static final List<String> PROTOCOLS = Arrays.asList(new String[]{"http://", "https://"});
 
     // Used when the actual version can not be parsed.
     private static final double DEFAULT_JAVA_VERSION = 0.0;
@@ -108,9 +105,18 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     @Override
-    public <R, P> R sendPayLoad(String request, P payLoad, Class<R> clazz) throws UnauthorizedException, GeneralException {
+    public <R, P> R sendPayLoad(String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        return this.sendPayLoad("POST", request, payload, clazz);
+    }
+
+    @Override
+    public <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        if (!REQUEST_METHODS_WITH_PAYLOAD.contains(method)) {
+            throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, method));
+        }
+
         try {
-            return getJsonData(request, payLoad, "POST", clazz);
+            return getJsonData(request, payload, method, clazz);
         } catch (NotFoundException e) {
             throw new GeneralException(e);
         }
@@ -121,40 +127,108 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         if (request == null) {
             throw new IllegalArgumentException(REQUEST_VALUE_MUST_BE_SPECIFIED);
         }
-        InputStream inputStream = null;
-        HttpURLConnection connection = null;
-        int responseCode = -1;
-        try {
-            connection = getConnection(serviceUrl + request, payload, requestType);
-            responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
-                inputStream = connection.getInputStream();
-                final ObjectMapper mapper = new ObjectMapper();
-                // If we as new properties, we don't want the system to fail, we rather want to ignore them
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                return mapper.readValue(inputStream, clazz);
-            } else if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-               return null; // no content doesn't mean an error
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                final List<ErrorReport> errorReport = getErrorReport(connection.getErrorStream());
-                throw new UnauthorizedException(NOT_AUTHORISED_MSG, errorReport);
-            } else if (responseCode >= 400 && responseCode < 500) { // Any code in the 400 range will have a list of error codes attached
-                final List<ErrorReport> errorReport = getErrorReport(connection.getErrorStream());
-                if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                    throw new NotFoundException(errorReport);
-                }
-                throw new GeneralException(FAILED_DATA_RESPONSE_CODE + responseCode, responseCode, errorReport);
-            } else {
-                throw new GeneralException(FAILED_DATA_RESPONSE_CODE + responseCode, responseCode);
+
+        String url = request;
+        if (!isURLAbsolute(url)) {
+            url = serviceUrl + url;
+        }
+
+        final APIResponse apiResponse = doRequest(requestType, url, payload);
+
+        final String body = apiResponse.getBody();
+        final int status = apiResponse.getStatus();
+
+        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED) {
+            final ObjectMapper mapper = new ObjectMapper();
+
+            // If we as new properties, we don't want the system to fail, we rather want to ignore them
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            try {
+                return mapper.readValue(body, clazz);
+            } catch (IOException ioe) {
+                throw new GeneralException(ioe);
             }
-        } catch (IOException e) {
-            throw new GeneralException(e);
+        } else if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+            return null; // no content doesn't mean an error
+        } else if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            final List<ErrorReport> errorReport = getErrorReportOrNull(body);
+            throw new UnauthorizedException(NOT_AUTHORISED_MSG, errorReport);
+        } else if (status >= 400 && status < 500) { // Any code in the 400 range will have a list of error codes attached
+            final List<ErrorReport> errorReport = getErrorReportOrNull(body);
+            if (status == HttpURLConnection.HTTP_NOT_FOUND) {
+                throw new NotFoundException(errorReport);
+            }
+            throw new GeneralException(FAILED_DATA_RESPONSE_CODE + status, status, errorReport);
+        } else {
+            throw new GeneralException(FAILED_DATA_RESPONSE_CODE + status, status);
+        }
+    }
+
+    /**
+     * Actually sends a HTTP request and returns its body and HTTP status code.
+     *
+     * @param method HTTP method.
+     * @param url Absolute URL.
+     * @param payload Payload to JSON encode for the request body. May be null.
+     * @param <P> Type of the payload.
+     *
+     * @return APIResponse containing the response's body and status.
+     */
+    protected <P> APIResponse doRequest(final String method, final String url, final P payload) throws GeneralException {
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
+
+        try {
+            connection = getConnection(url, payload, method);
+            int status = connection.getResponseCode();
+
+            if (APIResponse.isSuccessStatus(status)) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+            }
+
+            return new APIResponse(readToEnd(inputStream), status);
+        } catch (IOException ioe) {
+            throw new GeneralException(ioe);
         } finally {
             saveClose(inputStream);
+
             if (connection != null) {
                 connection.disconnect();
             }
         }
+    }
+
+    /**
+     * Reads the stream until it has no more bytes and returns a UTF-8 encoded
+     * string representation.
+     *
+     * @param inputStream Stream to read from.
+     *
+     * @return UTF-8 encoded string representation of stream's contents.
+     */
+    private String readToEnd(InputStream inputStream) {
+        Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
+
+        return scanner.hasNext() ? scanner.next() : "";
+    }
+
+    /**
+     * Attempts determining whether the provided URL is an absolute one, based on the scheme.
+     *
+     * @param url
+     * @return
+     */
+    private boolean isURLAbsolute(String url) {
+        for (String protocol : PROTOCOLS) {
+            if (url.startsWith(protocol)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -167,8 +241,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @throws IOException
      */
     public <P> HttpURLConnection getConnection(final String serviceUrl, final P postData, final String requestType) throws IOException {
-        if (requestType == null || !REQUESTMETHODS.contains(requestType)) {
-            throw new IllegalArgumentException(REQUEST_TYPE_MUST_BE_SET_TO_GET_OR_POST);
+        if (requestType == null || !REQUEST_METHODS.contains(requestType)) {
+            throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, requestType));
         }
 
         if (postData == null && "POST".equals(requestType)) {
@@ -190,7 +264,14 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         connection.setRequestProperty("Authorization", "AccessKey " + accessKey);
         connection.setRequestProperty("User-agent", userAgentString);
 
-        if ("POST".equals(requestType)) {
+        if ("POST".equals(requestType) || "PATCH".equals(requestType)) {
+            if ("PATCH".equals(requestType)) {
+                // HttpURLConnection does not support PATCH so we'll send a
+                // POST, but instruct the server to interpret it as a PATCH.
+                // See: https://stackoverflow.com/a/32503192/3521243
+                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            }
+
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
@@ -232,7 +313,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         }
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
     }
-    
+
     private double getVersion() throws GeneralException {
         String version = System.getProperty("java.version");
 
@@ -249,26 +330,28 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     /**
-     * Get the MessageBird error report data
+     * Get the MessageBird error report data.
      *
-     * @param inputStream, this would usually be the errorStream from the connection
-     * @return will be null when no data was found or there was a error receicing the dataset
+     * @param body Raw request body.
+     * @return Error report, or null if the body can not be deserialized.
      */
-    private List<ErrorReport> getErrorReport(final InputStream inputStream) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = null;
-        List<ErrorReport> errorReport = null;
+    private List<ErrorReport> getErrorReportOrNull(final String body) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         try {
-            node = mapper.readValue(inputStream, JsonNode.class);
-            errorReport = Arrays.asList(mapper.readValue(node.get("errors").toString(), ErrorReport[].class));
+            JsonNode jsonNode = objectMapper.readValue(body, JsonNode.class);
+            ErrorReport[] errors = objectMapper.readValue(jsonNode.get("errors").toString(), ErrorReport[].class);
+
+            List<ErrorReport> result = Arrays.asList(errors);
+
+            if (result != null && result.isEmpty()) {
+                return null;
+            }
+
+            return result;
         } catch (IOException e) {
-            // we will ignore this and simply leave the error report null
+            return null;
         }
-        // In some conditions you might get a 404 but with a valid response
-        if (errorReport != null && errorReport.size() == 0) {
-            errorReport = null;
-        }
-        return errorReport;
     }
 
     /**

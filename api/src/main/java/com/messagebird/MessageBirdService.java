@@ -51,7 +51,7 @@ public interface MessageBirdService {
     <R> R requestList(String request, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException;
 
     /**
-     * Send a payload and receive a payload object
+     * Send a payload with the POST method and receive a payload object.
      *
      * @param request path to the request, for example "/messages"
      * @param payload payload to send to the server
@@ -62,4 +62,17 @@ public interface MessageBirdService {
      */
     <R, P> R sendPayLoad(String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException;
 
+
+    /**
+     * Send a payload with the provided method and receive a payload object.
+     *
+     * @param method HTTP method to use for the request
+     * @param request path to the request, for example "/messages"
+     * @param payload payload to send to the server
+     * @param clazz object type to return
+     * @return
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException;
 }
