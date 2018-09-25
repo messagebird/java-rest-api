@@ -319,7 +319,7 @@ public class MessageBirdClientTest {
         verifyRequest.setOriginator("Code");
         verifyRequest.setReference(reference);
         verifyRequest.setLanguage(Language.NL_NL);
-        verifyRequest.setType(MsgType.sms);
+        verifyRequest.setType(VerifyType.SMS);
         verifyRequest.setTimeout(30);
         verifyRequest.setTokenLength(6);
         verifyRequest.setVoice(Gender.FEMALE);
