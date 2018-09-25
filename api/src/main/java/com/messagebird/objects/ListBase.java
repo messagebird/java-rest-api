@@ -3,22 +3,23 @@ package com.messagebird.objects;
 import java.util.List;
 
 /**
- * Base class for retrieval of message lists
+ * Provides an object to deserialize to for endpoints returning listings.
  *
- * Created by rvt on 1/8/15.
+ * @param <T> Type of the items, e.g. Contact or Message.
  */
-public class MessageListBase<T> {
+public class ListBase<T> {
+
     private Integer offset;
     private Integer limit;
     private Integer totalCount;
     private Links links;
 
-    public MessageListBase() {
+    public ListBase() {
     }
 
     @Override
     public String toString() {
-        return "MessageListBase{" +
+        return "ListBase{" +
                 "offset=" + offset +
                 ", limit=" + limit +
                 ", totalCount=" + totalCount +

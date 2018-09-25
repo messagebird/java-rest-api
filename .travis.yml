@@ -1,9 +1,13 @@
 language: java
-dist: precise
+dist: trusty
 before_script: cd api/
-script: mvn test -Ptest -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678
+script: mvn test -Ptest -DskipTests=false -Dhttps.protocols=TLSv1.2 -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk6
+  - oraclejdk9
   - openjdk7
+  - openjdk8
+matrix:
+  include:
+    - jdk: oraclejdk7
+      dist: precise

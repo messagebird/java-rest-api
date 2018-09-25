@@ -4,6 +4,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
+import com.messagebird.objects.conversations.*;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -27,13 +28,28 @@ import java.util.Map;
  * Created by rvt on 1/5/15.
  */
 public class MessageBirdClient {
+
+    /**
+     * The Conversations API has a different URL scheme from the other
+     * APIs/endpoints. By default, the service prefixes paths with that URL. We
+     * can, however, override this behaviour by providing absolute URLs
+     * ourselves.
+     */
+    private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
+
     private static final String BALANCEPATH = "/balance";
+    private static final String CONTACTPATH = "/contacts";
+    private static final String GROUPPATH = "/groups";
     private static final String HLRPATH = "/hlr";
-    private static final String MESSAGESPATH = "/messages";
-    private static final String VOICEMESSAGESPATH = "/voicemessages";
-    private static final String VERIFYPATH = "/verify";
-    private static final String LOOKUPPATH = "/lookup";
     private static final String LOOKUPHLRPATH = "/lookup/%s/hlr";
+    private static final String LOOKUPPATH = "/lookup";
+    private static final String MESSAGESPATH = "/messages";
+    private static final String VERIFYPATH = "/verify";
+    private static final String VOICEMESSAGESPATH = "/voicemessages";
+    private static final String CONVERSATION_PATH = "/conversations";
+    private static final String CONVERSATION_MESSAGE_PATH = "/messages";
+    private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
+
     private MessageBirdService messageBirdService;
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
@@ -506,5 +522,366 @@ public class MessageBirdClient {
         final LookupHlr lookupHlr = new LookupHlr();
         lookupHlr.setPhoneNumber(phonenumber);
         return this.viewLookupHlr(lookupHlr);
+    }
+
+    /**
+     * Deletes an existing contact. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public void deleteContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        messageBirdService.deleteByID(CONTACTPATH, id);
+    }
+
+    /**
+     * Gets a contact listing with specified pagination options.
+     *
+     * @return Listing of Contact objects.
+     */
+    public ContactList listContacts(int offset, int limit) throws UnauthorizedException, GeneralException {
+        return messageBirdService.requestList(CONTACTPATH, offset, limit, ContactList.class);
+    }
+
+    /**
+     * Gets a contact listing with default pagination options.
+     */
+    public ContactList listContacts() throws UnauthorizedException, GeneralException {
+        final int limit = 20;
+        final int offset = 0;
+
+        return listContacts(offset, limit);
+    }
+
+    /**
+     * Creates a new contact object. MessageBird returns the created contact
+     * object with each request.
+     */
+    public Contact sendContact(final ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+        return messageBirdService.sendPayLoad(CONTACTPATH, contactRequest, Contact.class);
+    }
+
+    /**
+     * Updates an existing contact. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public Contact updateContact(final String id, ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        String request = CONTACTPATH + "/" + id;
+        return messageBirdService.sendPayLoad("PATCH", request, contactRequest, Contact.class);
+    }
+
+    /**
+     * Retrieves the information of an existing contact. You only need to supply
+     * the unique contact ID that was returned upon creation or receiving.
+     */
+    public Contact viewContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+        return messageBirdService.requestByID(CONTACTPATH, id, Contact.class);
+    }
+
+    /**
+     * Deletes an existing group. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public void deleteGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        messageBirdService.deleteByID(GROUPPATH, id);
+    }
+
+    /**
+     * Removes a contact from group. You need to supply the IDs of the group
+     * and contact. Does not delete the contact.
+     */
+    public void deleteGroupContact(final String groupId, final String contactId) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (groupId == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        if (contactId == null) {
+            throw new IllegalArgumentException("Contact ID must be specified.");
+        }
+
+        String id = String.format("%s%s/%s", groupId, CONTACTPATH, contactId);
+        messageBirdService.deleteByID(GROUPPATH, id);
+    }
+
+    /**
+     * Gets a contact listing with specified pagination options.
+     */
+    public GroupList listGroups(final int offset, final int limit) throws UnauthorizedException, GeneralException {
+        return messageBirdService.requestList(GROUPPATH, offset, limit, GroupList.class);
+    }
+
+    /**
+     * Gets a contact listing with default pagination options.
+     */
+    public GroupList listGroups() throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 20;
+
+        return listGroups(offset, limit);
+    }
+
+    /**
+     * Creates a new group object. MessageBird returns the created group object
+     * with each request.
+     */
+    public Group sendGroup(final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+        return messageBirdService.sendPayLoad(GROUPPATH, groupRequest, Group.class);
+    }
+
+    /**
+     * Adds contact to group. You need to supply the IDs of the group and
+     * contact.
+     */
+    public void sendGroupContact(final String groupId, final String[] contactIds) throws NotFoundException, GeneralException, UnauthorizedException {
+        // reuestByID appends the "ID" to the base path, so this workaround
+        // lets us add a query string.
+        String path = String.format("%s%s?%s", groupId, CONTACTPATH, getQueryString(contactIds));
+        messageBirdService.requestByID(GROUPPATH, path, null);
+    }
+
+    /**
+     * Builds a query string to add contacts to a group. We're using the
+     * alternative "/foo?_method=PUT&ids[]=foo&ids[]=bar" format to send the
+     * contact IDs as GET params. Sending these in the request body would
+     * require a painful workaround, as sendPayload sends request bodies as
+     * JSON by default. See also:
+     * https://developers.messagebird.com/docs/alternatives.
+     */
+    private String getQueryString(final String[] contactIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("_method=PUT");
+
+        for (String groupId : contactIds) {
+            stringBuilder.append("&ids[]=").append(groupId);
+        }
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Updates an existing group. You only need to supply the unique ID that
+     * was returned upon creation.
+     */
+    public Group updateGroup(final String id, final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        String path = String.format("%s/%s", GROUPPATH, id);
+        return messageBirdService.sendPayLoad("PATCH", path, groupRequest, Group.class);
+    }
+
+    /**
+     * Retrieves the information of an existing group. You only need to supply
+     * the unique group ID that was returned upon creation or receiving.
+     */
+    public Group viewGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Group ID must be specified.");
+        }
+        return messageBirdService.requestByID(GROUPPATH, id, Group.class);
+    }
+
+    /**
+     * Gets a single conversation.
+     *
+     * @param id Conversation to retrieved.
+     * @return The retrieved conversation.
+     */
+    public Conversation viewConversation(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must be specified");
+        }
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_PATH;
+        return messageBirdService.requestByID(url, id, Conversation.class);
+    }
+
+    /**
+     * Updates a conversation.
+     *
+     * @param id Conversation to update.
+     * @param status New status for the conversation.
+     * @return The updated Conversation.
+     */
+    public Conversation updateConversation(final String id, final ConversationStatus status)
+            throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must be specified.");
+        }
+        String url = String.format("%s%s/%s",CONVERSATIONS_BASE_URL, CONVERSATION_PATH, id);
+        return messageBirdService.sendPayLoad("PATCH", url, status, Conversation.class);
+    }
+
+    /**
+     * Gets a Conversation listing with specified pagination options.
+     *
+     * @param offset Number of objects to skip.
+     * @param limit Number of objects to take.
+     * @return List of conversations.
+     */
+    public ConversationList listConversations(final int offset, final int limit)
+            throws UnauthorizedException, GeneralException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_PATH;
+        return messageBirdService.requestList(url, offset, limit, ConversationList.class);
+    }
+
+    /**
+     * Gets a contact listing with default pagination options.
+     *
+     * @return List of conversations.
+     */
+    public ConversationList listConversations() throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 10;
+
+        return listConversations(offset, limit);
+    }
+
+    /**
+     * Starts a conversation by sending an initial message.
+     *
+     * @param request Data for this request.
+     * @return The created Conversation.
+     */
+    public Conversation startConversation(ConversationStartRequest request)
+            throws UnauthorizedException, GeneralException {
+        String url = String.format("%s%s/start", CONVERSATIONS_BASE_URL, CONVERSATION_PATH);
+        return messageBirdService.sendPayLoad(url, request, Conversation.class);
+    }
+
+    /**
+     * Gets a ConversationMessage listing with specified pagination options.
+     *
+     * @param conversationId Conversation to get messages for.
+     * @param offset Number of objects to skip.
+     * @param limit Number of objects to take.
+     * @return List of messages.
+     */
+    public ConversationMessageList listConversationMessages(
+            final String conversationId,
+            final int offset,
+            final int limit
+    ) throws UnauthorizedException, GeneralException {
+        String url = String.format(
+                "%s%s/%s%s",
+                CONVERSATIONS_BASE_URL,
+                CONVERSATION_PATH,
+                conversationId,
+                CONVERSATION_MESSAGE_PATH
+        );
+        return messageBirdService.requestList(url, offset, limit, ConversationMessageList.class);
+    }
+
+    /**
+     * Gets a ConversationMessage listing with default pagination options.
+     *
+     * @param conversationId Conversation to get messages for.
+     * @return List of messages.
+     */
+    public ConversationMessageList listConversationMessages(
+            final String conversationId
+    ) throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 10;
+
+        return listConversationMessages(conversationId, offset, limit);
+    }
+
+    /**
+     * Gets a single message.
+     *
+     * @param messageId Message to retrieve.
+     * @return The retrieved message.
+     */
+    public ConversationMessage viewConversationMessage(final String messageId)
+            throws NotFoundException, GeneralException, UnauthorizedException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_MESSAGE_PATH;
+        return messageBirdService.requestByID(url, messageId, ConversationMessage.class);
+    }
+
+    /**
+     * Sends a message to an existing Conversation.
+     *
+     * @param conversationId Conversation to send message to.
+     * @param request Message to send.
+     * @return The newly created message.
+     */
+    public ConversationMessage sendConversationMessage(
+            final String conversationId,
+            final ConversationMessageRequest request
+    ) throws UnauthorizedException, GeneralException {
+        String url = String.format(
+                "%s%s/%s%s",
+                CONVERSATIONS_BASE_URL,
+                CONVERSATION_PATH,
+                conversationId,
+                CONVERSATION_MESSAGE_PATH
+        );
+        return messageBirdService.sendPayLoad(url, request, ConversationMessage.class);
+    }
+
+    /**
+     * Deletes a webhook.
+     *
+     * @param webhookId Webhook to delete.
+     */
+    public void deleteConversationWebhook(final String webhookId)
+            throws NotFoundException, GeneralException, UnauthorizedException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        messageBirdService.deleteByID(url, webhookId);
+    }
+
+    /**
+     * Creates a new webhook.
+     *
+     * @param request Webhook to create.
+     * @return Newly created webhook.
+     */
+    public ConversationWebhook sendConversationWebhook(final ConversationWebhookRequest request)
+            throws UnauthorizedException, GeneralException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        return messageBirdService.sendPayLoad(url, request, ConversationWebhook.class);
+    }
+
+    /**
+     * Gets a single webhook.
+     *
+     * @param webhookId Webhook to retrieve.
+     * @return The retrieved webhook.
+     */
+    public ConversationWebhook viewConversationWebhook(final String webhookId) throws NotFoundException, GeneralException, UnauthorizedException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        return messageBirdService.requestByID(url, webhookId, ConversationWebhook.class);
+    }
+
+    /**
+     * Gets a ConversationWebhook listing with the specified pagination options.
+     * @param offset Number of objects to skip.
+     * @param limit Number of objects to skip.
+     * @return List of webhooks.
+     */
+    public ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
+            throws UnauthorizedException, GeneralException {
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        return messageBirdService.requestList(url, offset, limit, ConversationWebhookList.class);
+    }
+
+    /**
+     * Gets a ConversationWebhook listing with default pagination options.
+     * @return List of webhooks.
+     */
+    public ConversationWebhookList listConversationWebhooks() throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 10;
+
+        return listConversationWebhooks(offset, limit);
     }
 }

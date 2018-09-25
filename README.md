@@ -29,7 +29,7 @@ If you are using maven simply add the messagebird API to your dependencies like 
 <dependency>
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>1.3.2</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -37,13 +37,11 @@ In case you are building without maven you still need maven to build the librari
 then simply copy the following jar's over to your project
 
 ```
-messagebird-api-1.3.2.jar
-jackson-core-2.1.1.jar
-jackson-databind-2.1.1.jar
-jackson-mapper-asl-1.9.13.jar
-jackson-core-asl-1.9.13.jar
+messagebird-api-2.0.0.jar
+jackson-core-2.9.0.jar
+jackson-databind-2.9.0.jar
+jackson-dataformat-csv-2.9.0.jar
 jackson-annotations-2.1.1.jar
-jackson-dataformat-csv-2.1.1.jar
 ```
 
 
