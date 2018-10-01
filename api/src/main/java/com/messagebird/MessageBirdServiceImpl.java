@@ -1,6 +1,8 @@
 package com.messagebird;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
@@ -25,19 +27,30 @@ import com.messagebird.objects.ErrorReport;
  * Created by rvt on 1/5/15.
  */
 public class MessageBirdServiceImpl implements MessageBirdService {
+
     private static final String NOT_AUTHORISED_MSG = "You are not authorised for the MessageBird service, please check your access key.";
     private static final String FAILED_DATA_RESPONSE_CODE = "Failed to retrieve data from MessageBird service with response code ";
     private static final String ACCESS_KEY_MUST_BE_SPECIFIED = "Access key must be specified";
     private static final String SERVICE_URL_MUST_BE_SPECIFIED = "Service URL must be specified";
     private static final String REQUEST_VALUE_MUST_BE_SPECIFIED = "Request value must be specified";
     private static final String REQUEST_METHOD_NOT_ALLOWED = "Request method %s is not allowed.";
+    private static final String CAN_NOT_ALLOW_PATCH = "Can not set HttpURLConnection.methods field to allow PATCH.";
 
-    private static final List<String> REQUEST_METHODS = Arrays.asList("GET", "PATCH", "POST", "DELETE");
-    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList("PATCH", "POST");
+    private static final String METHOD_DELETE = "DELETE";
+    private static final String METHOD_GET = "GET";
+    private static final String METHOD_PATCH = "PATCH";
+    private static final String METHOD_POST = "POST";
+
+    private static final List<String> REQUEST_METHODS = Arrays.asList(METHOD_DELETE, METHOD_GET, METHOD_PATCH, METHOD_POST);
+    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList(METHOD_PATCH, METHOD_POST);
     private static final List<String> PROTOCOLS = Arrays.asList(new String[]{"http://", "https://"});
 
     // Used when the actual version can not be parsed.
     private static final double DEFAULT_JAVA_VERSION = 0.0;
+
+    // Indicates whether we've overridden HttpURLConnection's behaviour to
+    // allow PATCH requests yet. Also see docs on allowPatchRequestsIfNeeded().
+    private static boolean isPatchRequestAllowed = false;
 
     private final String accessKey;
     private final String serviceUrl;
@@ -191,6 +204,16 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
+        if (METHOD_PATCH.equalsIgnoreCase(method)) {
+            // It'd perhaps be cleaner to call this in the constructor, but
+            // we'd then need to throw GeneralExceptions from there. This means
+            // it wouldn't be possible to declare AND initialize _instance_
+            // fields of MessageBirdServiceImpl at the same time. This method
+            // already throws this exception, so now we don't have to pollute
+            // our public API further.
+            allowPatchRequestsIfNeeded();
+        }
+
         try {
             connection = getConnection(url, payload, method);
             int status = connection.getResponseCode();
@@ -211,6 +234,60 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 connection.disconnect();
             }
         }
+    }
+
+    /**
+     * By default, HttpURLConnection does not support PATCH requests. We can
+     * however work around this with reflection. Many thanks to okutane on
+     * StackOverflow: https://stackoverflow.com/a/46323891/3521243.
+     */
+    private synchronized static void allowPatchRequestsIfNeeded() throws GeneralException {
+        if (isPatchRequestAllowed) {
+            // Don't do anything if we've run this method before. We're in a
+            // synchronized block, so return ASAP.
+            return;
+        }
+
+        try {
+            // Ensure we can access the fields we need to set.
+            Field methodsField = HttpURLConnection.class.getDeclaredField("methods");
+            methodsField.setAccessible(true);
+
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
+
+            Object noInstanceBecauseStaticField = null;
+
+            // Determine what methods should be allowed.
+            String[] existingMethods = (String[]) methodsField.get(noInstanceBecauseStaticField);
+            String[] allowedMethods = getAllowedMethods(existingMethods);
+
+            // Override the actual field to allow PATCH.
+            methodsField.set(noInstanceBecauseStaticField, allowedMethods);
+
+            // Set flag so we only have to run this once.
+            isPatchRequestAllowed = true;
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new GeneralException(CAN_NOT_ALLOW_PATCH);
+        }
+    }
+
+    /**
+     * Appends PATCH to the provided array.
+     *
+     * @param existingMethods Methods that are, and must be, allowed.
+     * @return New array also containing PATCH.
+     */
+    private static String[] getAllowedMethods(String[] existingMethods) {
+        int listCapacity = existingMethods.length + 1;
+
+        List<String> allowedMethods = new ArrayList<>(listCapacity);
+
+        allowedMethods.addAll(Arrays.asList(existingMethods));
+        allowedMethods.add(METHOD_PATCH);
+
+        return allowedMethods.toArray(new String[0]);
     }
 
     /**
@@ -277,14 +354,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         connection.setRequestProperty("User-agent", userAgentString);
 
         if ("POST".equals(requestType) || "PATCH".equals(requestType)) {
-            if ("PATCH".equals(requestType)) {
-                // HttpURLConnection does not support PATCH so we'll send a
-                // POST, but instruct the server to interpret it as a PATCH.
-                // See: https://stackoverflow.com/a/32503192/3521243
-                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-            }
-
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(requestType);
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
             ObjectMapper mapper = new ObjectMapper();
@@ -448,6 +518,4 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         }
         return bpath.toString();
     }
-
-
 }
