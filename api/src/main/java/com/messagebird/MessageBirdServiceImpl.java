@@ -204,7 +204,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
-        if (METHOD_PATCH.equals(method)) {
+        if (METHOD_PATCH.equalsIgnoreCase(method)) {
             // It'd perhaps be cleaner to call this in the constructor, but
             // we'd then need to throw GeneralExceptions from there. This means
             // it wouldn't be possible to declare AND initialize _instance_
