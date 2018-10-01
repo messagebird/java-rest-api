@@ -10,7 +10,7 @@ public class VerifyRequest implements Serializable {
     private String recipient;
     private String originator;
     private String reference;
-    private MsgType type;
+    private VerifyType type;
     private DataCodingType datacoding = DataCodingType.plain;
     private String template;
     private Integer timeout;
@@ -46,11 +46,11 @@ public class VerifyRequest implements Serializable {
         this.reference = reference;
     }
 
-    public MsgType getType() {
+    public VerifyType getType() {
         return type;
     }
 
-    public void setType(MsgType type) {
+    public void setType(VerifyType type) {
         this.type = type;
     }
 
