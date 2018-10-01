@@ -257,11 +257,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             modifiersField.setAccessible(true);
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
 
+            Object noInstanceBecauseStaticField = null;
+
             // Determine what methods should be allowed.
-            String[] allowedMethods = getAllowedMethods((String[]) methodsField.get(null));
+            String[] existingMethods = (String[]) methodsField.get(noInstanceBecauseStaticField);
+            String[] allowedMethods = getAllowedMethods(existingMethods);
 
             // Override the actual field to allow PATCH.
-            Object noInstanceBecauseStaticField = null;
             methodsField.set(noInstanceBecauseStaticField, allowedMethods);
 
             // Set flag so we only have to run this once.
