@@ -4,12 +4,13 @@ import com.messagebird.exceptions.RequestSigningException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.Arrays;
 
 /**
  * RequestSigner is used to verify HTTP requests and is an implementation of:
@@ -37,8 +38,7 @@ public class RequestSigner {
 
     /**
      * Computes the signature for the provided request and determines whether
-     * it matches the expected signature (from the MessageBird-Signature
-     * header).
+     * it matches the expected signature (from the raw MessageBird-Signature header).
      *
      * @param expectedSignature Signature from the MessageBird-Signature
      *                          header in its original base64 encoded state.
@@ -46,9 +46,24 @@ public class RequestSigner {
      * @return True if the computed signature matches the expected signature.
      */
     public boolean isMatch(String expectedSignature, Request request) {
-        byte[] actualSignature = computeSignature(request);
+        try {
+            return isMatch(Base64.decode(expectedSignature), request);
+        } catch (IOException e) {
+            throw new RequestSigningException(e);
+        }
+    }
 
-        return encodeToBase64(actualSignature).equals(expectedSignature);
+    /**
+     * Computes the signature for the provided request and determines whether
+     * it matches the expected signature
+     *
+     * @param expectedSignature Decoded (with base64) signature
+     *                          from the MessageBird-Signature header
+     * @param request Request containing the values from the incoming webhook.
+     * @return True if the computed signature matches the expected signature.
+     */
+    public boolean isMatch(byte[] expectedSignature, Request request) {
+        return Arrays.equals(computeSignature(request), expectedSignature);
     }
 
     /**
@@ -59,7 +74,7 @@ public class RequestSigner {
      */
     private byte[] computeSignature(Request request) {
         String timestampAndQuery = request.getTimestamp() + '\n' +
-                request.getQueryParameters() + '\n';
+                request.getSortedQueryParameters() + '\n';
 
         byte[] timestampAndQueryBytes = timestampAndQuery.getBytes(CHARSET_UTF8);
         byte[] bodyHashBytes = getSha256Hash(request.getData());
@@ -99,10 +114,5 @@ public class RequestSigner {
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RequestSigningException(e);
         }
-    }
-
-    private String encodeToBase64(byte[] bytes) {
-        // @todo Requires Java8. Find a Java7+ compatible encoder.
-        return Base64.getEncoder().encodeToString(bytes);
     }
 }
