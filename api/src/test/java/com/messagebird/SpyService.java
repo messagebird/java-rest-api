@@ -7,7 +7,7 @@ import static org.mockito.Mockito.spy;
 
 /**
  * Builder for effortlessly constructing spy services of MessageBirdServiceImpl.
- *
+ * <p>
  * The following example configures a mock to return an OK response with a
  * response of your choice whenever doRequest() is called:
  *
@@ -24,6 +24,7 @@ class SpyService<P> {
 
     private static final String CONVERSATIONS_API_BASE_URL = "https://conversations.messagebird.com/v1";
     private static final String REST_API_BASE_URL = "https://rest.messagebird.com";
+    private static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
 
     private String method;
     private String url;
@@ -38,7 +39,7 @@ class SpyService<P> {
     /**
      * Gets the access key for the MessageBirdService. Can be overridden, but
      * if a use case requires this, the mock is likely not used properly.
-     *
+     * <p>
      * It is strongly advisable to NOT make this a valid access key for several
      * reasons, but also because Mockito uses loose mocks. This means that if a
      * mocked method is invoked without any matching expectations (for example,
@@ -55,11 +56,10 @@ class SpyService<P> {
     /**
      * Sets up a spy and configures its expectations for doRequest().
      *
-     * @param method Method that doRequest() expects.
-     * @param url URL that doRequest() expects.
+     * @param method  Method that doRequest() expects.
+     * @param url     URL that doRequest() expects.
      * @param payload Payload that doRequest() expects.
-     * @param <P> Type of the payload.
-     *
+     * @param <P>     Type of the payload.
      * @return Intermediate SpyService that can be finalized through
      * andReturns().
      */
@@ -78,8 +78,7 @@ class SpyService<P> {
      * GETs and DELETEs. To provide an expected payload, use the overload.
      *
      * @param method Method that doRequest() expects.
-     * @param url URL that doRequest() expects.
-     *
+     * @param url    URL that doRequest() expects.
      * @return Intermediate SpyService that can be finalized through
      * andReturns().
      */
@@ -92,7 +91,6 @@ class SpyService<P> {
      * building the spy.
      *
      * @param baseURL String to prefix the URL with when building the spy.
-     *
      * @return Intermediate SpyService that can be finalized through
      * andReturns().
      */
@@ -122,6 +120,17 @@ class SpyService<P> {
     SpyService withRestAPIBaseURL() {
         return withBaseURL(REST_API_BASE_URL);
     }
+
+    /**
+     * Sets the base URL to match the Voice Call API's.
+     *
+     * @return Intermediate SpyService that can be finalized through
+     * andReturns().
+     */
+    SpyService withVoiceCallAPIBaseURL() {
+        return withBaseURL(VOICE_CALLS_BASE_URL);
+    }
+
 
     /**
      * Finalizes the SpyService by configuring its return value for

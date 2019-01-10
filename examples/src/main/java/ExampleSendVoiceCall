@@ -1,0 +1,60 @@
+
+public class ExampleSendVoiceCall{
+
+    public static void main(String[] args) {
+        if (args.length < 3) {
+            System.out.println("Please specify your access key, one phone number and a message body example " +
+                    ": java -jar <this jar file> test_accesskey 31612345678,3161112233 \"My voice call to be send\"");
+            return;
+        }
+
+        // First create your service object
+        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
+
+        // Add the service to the client
+        final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
+
+        try {
+            // Get Hlr using msgId and msisdn
+            System.out.println("Sending voice call:");
+            final List<BigInteger> phones = new ArrayList<BigInteger>();
+            for (final String phoneNumber : args[1].split(",")) {
+                phones.add(new BigInteger(phoneNumber));
+            }
+
+            final VoiceCall voiceCall = new VoiceCall();
+            voiceCall.setSource("31644556677");
+            voiceCall.setDestination(args[2]);
+
+            final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
+            voiceCallFlow.setTitle("Test title");
+            VoiceStep voiceStep = new VoiceStep();
+            voiceStep.setAction("say");
+
+            final VoiceStepOption voiceStepOption = new VoiceStepOption();
+            voiceStepOption.setPayload("This is a journey into sound. Good bye!");
+            voiceStepOption.setVoice(VoiceType.male.getValue());
+            voiceStepOption.setLanguage("en-US");
+            voiceStep.setOptions(voiceStepOption);
+
+            voiceCallFlow.setSteps(Collections.singletonList(voiceStep));
+            voiceCall.setCallFlow(voiceCallFlow);
+
+            final VoiceMessageResponse response = messageBirdClient.sendVoiceCall(voiceCall);
+            System.out.println(response.toString());
+
+        } catch (UnauthorizedException unauthorized) {
+            if (unauthorized.getErrors() != null) {
+                System.out.println(unauthorized.getErrors().toString());
+            }
+            unauthorized.printStackTrace();
+        } catch (GeneralException generalException) {
+            if (generalException.getErrors() != null) {
+                System.out.println(generalException.getErrors().toString());
+            }
+            generalException.printStackTrace();
+        }
+    }
+
+
+}

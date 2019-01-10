@@ -36,6 +36,7 @@ public class MessageBirdClient {
      * ourselves.
      */
     private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
+    public static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
 
     private static final String BALANCEPATH = "/balance";
     private static final String CONTACTPATH = "/contacts";
@@ -49,6 +50,7 @@ public class MessageBirdClient {
     private static final String CONVERSATION_PATH = "/conversations";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
+    public static final String VOICECALLSPATH = "/calls";
 
     private MessageBirdService messageBirdService;
 
@@ -884,4 +886,91 @@ public class MessageBirdClient {
 
         return listConversationWebhooks(offset, limit);
     }
+
+    /****************************************************************************************************/
+    /** Voice Calling                                                                                **/
+    /****************************************************************************************************/
+
+    /**
+     * Function for voice call to a number
+     *
+     * @param voiceCall Voice call object
+     * @return
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public VoiceCallResponse sendVoiceCall(final VoiceCall voiceCall) throws UnauthorizedException, GeneralException {
+        if (voiceCall.getSource() == null) {
+            throw new IllegalArgumentException("Source of voice call must be specified.");
+        }
+        if (voiceCall.getDestination() == null) {
+            throw new IllegalArgumentException("Destination of voice call must be specified.");
+        }
+        if (voiceCall.getCallFlow() == null) {
+            throw new IllegalArgumentException("Call flow of voice call must be specified.");
+        }
+
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+        return messageBirdService.sendPayLoad(url, voiceCall, VoiceCallResponse.class);
+    }
+
+    /**
+     * Function to list all voice calls
+     *
+     * @return VoiceCallResponseList
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+     public VoiceCallResponseList listAllVoiceCalls() throws GeneralException, UnauthorizedException {
+         final int offset = 0;
+         final int limit = 20;
+         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+         return messageBirdService.requestList(url, offset, limit, VoiceCallResponseList.class);
+
+     }
+
+    /**
+     * Function to view voice call by id
+     *
+     * @param id Voice call ID
+     * @return VoiceCallResponse
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+     public VoiceCallResponse viewVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+         if (id == null) {
+             throw new IllegalArgumentException("Voice Message ID must be specified.");
+            }
+
+         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+         return messageBirdService.requestByID(url, id, VoiceCallResponse.class);
+
+      }
+
+    /**
+     * Function to delete voice call by id
+     *
+     * @param id Voice call ID
+     * @return
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+   public void deleteVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException{
+       if (id == null) {
+           throw new IllegalArgumentException("Voice Message ID must be specified.");
+       }
+
+       String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+       messageBirdService.deleteByID(url, id);
+
+   }
+
+   public void viewCallLegsByCallId(){
+
+   }
+
+   public void viewCallLegByCallIdAndLegId(){
+
+   }
+
 }

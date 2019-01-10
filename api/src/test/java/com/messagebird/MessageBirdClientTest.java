@@ -11,9 +11,12 @@ import org.junit.Test;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
+import static com.messagebird.MessageBirdClient.VOICECALLSPATH;
+import static com.messagebird.MessageBirdClient.VOICE_CALLS_BASE_URL;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by rvt on 1/8/15.
@@ -135,7 +138,7 @@ public class MessageBirdClientTest {
     public void testSendMessageWithoutVersion() throws Exception {
         // Some runtimes, like Android, do not set the java.version system property.
         // This test asserts we can still send a message without it.
-        
+
         String javaVersionBeforeTest = System.getProperty("java.version");
         System.setProperty("java.version", "");
 
@@ -329,7 +332,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testSendVerifyTokenAndGetVerifyObject() throws UnauthorizedException, GeneralException, NotFoundException {
-        Verify verify =  messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
+        Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
         assertFalse("id is empty", verify.getId().isEmpty());
         try {
@@ -367,5 +370,130 @@ public class MessageBirdClientTest {
             // We expect it to be "Not found" as a test key doesn't create
             // an object in the API.
         }
+    }
+
+    /**
+     * Test Voice Calling system
+     */
+    @Test
+    public void testSendVoiceCalls() throws Exception {
+
+        final VoiceCall voiceCall = TestUtil.createVoiceCall(messageBirdMSISDN.toString());
+
+        final VoiceCallResponse voiceCallResponse = messageBirdClient.sendVoiceCall(voiceCall);
+        assertNotNull(voiceCallResponse);
+        assertEquals(voiceCallResponse.getData().get(0).getDestination(), "31633612867");
+        assertEquals(voiceCallResponse.getData().get(0).getSource(), "31644556677");
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenSourceOfVoiceCallIsMissing() throws UnauthorizedException,
+            GeneralException {
+        final VoiceCall voiceCall = new VoiceCall();
+        voiceCall.setDestination("31633612867");
+
+        final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
+        voiceCallFlow.setTitle("Test title");
+        VoiceStep voiceStep = new VoiceStep();
+        voiceStep.setAction("say");
+
+        final VoiceStepOption voiceStepOption = new VoiceStepOption();
+        voiceStepOption.setPayload("This is a journey into sound. Good bye!");
+        voiceStepOption.setVoice(VoiceType.male.getValue());
+        voiceStepOption.setLanguage("en-US");
+        voiceStep.setOptions(voiceStepOption);
+
+        voiceCallFlow.setSteps(Collections.singletonList(voiceStep));
+        voiceCall.setCallFlow(voiceCallFlow);
+        messageBirdClient.sendVoiceCall(voiceCall);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenDestinationOfVoiceCallIsMissing() throws UnauthorizedException,
+            GeneralException {
+        final VoiceCall voiceCall = new VoiceCall();
+        voiceCall.setSource("31644556677");
+
+        final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
+        voiceCallFlow.setTitle("Test title");
+        VoiceStep voiceStep = new VoiceStep();
+        voiceStep.setAction("say");
+
+        final VoiceStepOption voiceStepOption = new VoiceStepOption();
+        voiceStepOption.setPayload("This is a journey into sound. Good bye!");
+        voiceStepOption.setVoice(VoiceType.male.getValue());
+        voiceStepOption.setLanguage("en-US");
+        voiceStep.setOptions(voiceStepOption);
+
+        voiceCallFlow.setSteps(Collections.singletonList(voiceStep));
+        voiceCall.setCallFlow(voiceCallFlow);
+        messageBirdClient.sendVoiceCall(voiceCall);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenCallFlowOfVoiceCallIsMissing() throws UnauthorizedException,
+            GeneralException {
+        final VoiceCall voiceCall = new VoiceCall();
+        voiceCall.setSource("31644556677");
+        voiceCall.setDestination("31633612867");
+
+        messageBirdClient.sendVoiceCall(voiceCall);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void shouldThrowNotFoundExceptionWhenViewVoiceCall() throws Exception {
+        messageBirdClient.viewVoiceCall("Foo");
+    }
+
+    @Test
+    public void testViewVoiceCall() throws UnauthorizedException, GeneralException, NotFoundException {
+        final VoiceCallResponse voiceCallResponse = TestUtil.createVoiceCallResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_ID",
+                VoiceCallResponse.class)).thenReturn(voiceCallResponse);
+
+        final VoiceCallResponse responseFromViewVoiceCall = messageBirdClientInjectMock.viewVoiceCall("ANY_ID");
+
+        assertNotNull(responseFromViewVoiceCall);
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getDestination(), "31633612867");
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getSource(), "31644556677");
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getStatus(), VoiceCallStatus.ended);
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getId(), voiceCallResponse.getData().get(0).getId());
+
+    }
+
+    @Test
+    public void testDeleteVoiceCall() throws UnauthorizedException,
+            GeneralException, NotFoundException {
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        doNothing().when(messageBirdServiceMock).deleteByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_ID");
+        messageBirdClientInjectMock.deleteVoiceCall("ANY_ID");
+
+    }
+
+    @Test
+    public void testListAllVoiceCalls() throws UnauthorizedException, GeneralException {
+
+        final VoiceCallResponseList voiceCallResponseList = TestUtil.createVoiceCallResponseList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class))
+                .thenReturn(voiceCallResponseList);
+
+        VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls();
+        assertEquals(response.getItems().get(0).getData().get(0).getDestination(), voiceCallResponseList.getItems().get(0).getData().get(0).getDestination());
+        assertEquals(response.getItems().get(0).getData().get(0).getSource(), voiceCallResponseList.getItems().get(0).getData().get(0).getSource());
+        assertEquals(response.getItems().get(0).getData().get(0).getStatus(), voiceCallResponseList.getItems().get(0).getData().get(0).getStatus());
+        assertEquals(response.getItems().get(0).getData().get(0).getId(), voiceCallResponseList.getItems().get(0).getData().get(0).getId());
+
     }
 }
