@@ -379,11 +379,18 @@ public class MessageBirdClientTest {
     public void testSendVoiceCalls() throws Exception {
 
         final VoiceCall voiceCall = TestUtil.createVoiceCall(messageBirdMSISDN.toString());
+        final VoiceCallResponse voiceCallResponse = TestUtil.createVoiceCallResponse();
 
-        final VoiceCallResponse voiceCallResponse = messageBirdClient.sendVoiceCall(voiceCall);
-        assertNotNull(voiceCallResponse);
-        assertEquals(voiceCallResponse.getData().get(0).getDestination(), "31633612867");
-        assertEquals(voiceCallResponse.getData().get(0).getSource(), "31644556677");
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.sendPayLoad(VOICE_CALLS_BASE_URL + VOICECALLSPATH, voiceCall, VoiceCallResponse.class))
+                .thenReturn(voiceCallResponse);
+
+        final VoiceCallResponse response = messageBirdClientInjectMock.sendVoiceCall(voiceCall);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getDestination(), voiceCallResponse.getData().get(0).getDestination());
+        assertEquals(response.getData().get(0).getSource(), voiceCallResponse.getData().get(0).getSource());
 
     }
 
@@ -459,9 +466,9 @@ public class MessageBirdClientTest {
         final VoiceCallResponse responseFromViewVoiceCall = messageBirdClientInjectMock.viewVoiceCall("ANY_ID");
 
         assertNotNull(responseFromViewVoiceCall);
-        assertEquals(responseFromViewVoiceCall.getData().get(0).getDestination(), "31633612867");
-        assertEquals(responseFromViewVoiceCall.getData().get(0).getSource(), "31644556677");
-        assertEquals(responseFromViewVoiceCall.getData().get(0).getStatus(), VoiceCallStatus.ended);
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getDestination(), voiceCallResponse.getData().get(0).getDestination());
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getSource(), voiceCallResponse.getData().get(0).getSource());
+        assertEquals(responseFromViewVoiceCall.getData().get(0).getStatus(), voiceCallResponse.getData().get(0).getStatus());
         assertEquals(responseFromViewVoiceCall.getData().get(0).getId(), voiceCallResponse.getData().get(0).getId());
 
     }
