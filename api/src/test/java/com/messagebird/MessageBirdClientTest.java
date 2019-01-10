@@ -398,7 +398,7 @@ public class MessageBirdClientTest {
     public void shouldThrowIllegalArgumentExceptionWhenSourceOfVoiceCallIsMissing() throws UnauthorizedException,
             GeneralException {
         final VoiceCall voiceCall = new VoiceCall();
-        voiceCall.setDestination("31633612867");
+        voiceCall.setDestination("ANY_DESTINATION");
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
         voiceCallFlow.setTitle("Test title");
@@ -420,7 +420,7 @@ public class MessageBirdClientTest {
     public void shouldThrowIllegalArgumentExceptionWhenDestinationOfVoiceCallIsMissing() throws UnauthorizedException,
             GeneralException {
         final VoiceCall voiceCall = new VoiceCall();
-        voiceCall.setSource("31644556677");
+        voiceCall.setSource("ANY_SOURCE");
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
         voiceCallFlow.setTitle("Test title");
@@ -442,8 +442,8 @@ public class MessageBirdClientTest {
     public void shouldThrowIllegalArgumentExceptionWhenCallFlowOfVoiceCallIsMissing() throws UnauthorizedException,
             GeneralException {
         final VoiceCall voiceCall = new VoiceCall();
-        voiceCall.setSource("31644556677");
-        voiceCall.setDestination("31633612867");
+        voiceCall.setSource("ANY_SOURCE");
+        voiceCall.setDestination("ANY_DESTINATION");
 
         messageBirdClient.sendVoiceCall(voiceCall);
     }

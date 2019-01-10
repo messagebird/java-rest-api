@@ -10,7 +10,7 @@ class TestUtil {
 
     static VoiceCall createVoiceCall(String destination) {
         final VoiceCall voiceCall = new VoiceCall();
-        voiceCall.setSource("31644556677");
+        voiceCall.setSource("ANY_SOURCE");
         voiceCall.setDestination(destination);
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
@@ -34,8 +34,8 @@ class TestUtil {
         VoiceCallData voiceCallData = new VoiceCallData();
         voiceCallData.setId("ANY_ID");
         voiceCallData.setStatus(VoiceCallStatus.ended);
-        voiceCallData.setDestination("31633612867");
-        voiceCallData.setSource("31644556677");
+        voiceCallData.setDestination("ANY_DESTINATION");
+        voiceCallData.setSource("ANY_SOURCE");
         voiceCallResponse.setData(Collections.singletonList(voiceCallData));
         return voiceCallResponse;
     }

@@ -11,7 +11,7 @@ public class VoiceCallingTest {
 
     @Test
     public void testSendVoiceCall() throws GeneralException, UnauthorizedException {
-        VoiceCall voiceCallRequest = TestUtil.createVoiceCall("00000000000");
+        VoiceCall voiceCallRequest = TestUtil.createVoiceCall("ANY_DESTINATION");
 
         MessageBirdService messageBirdService = SpyService
                 .expects("POST", "calls", voiceCallRequest)
