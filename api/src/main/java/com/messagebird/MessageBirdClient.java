@@ -5,9 +5,14 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
+import com.messagebird.objects.voice.VoiceCallLeg;
+import com.messagebird.objects.voice.VoiceCallLegResponse;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +56,7 @@ public class MessageBirdClient {
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
     public static final String VOICECALLSPATH = "/calls";
+    private static final String VOICELEGS_SUFFIX_PATH = "/legs";
 
     private MessageBirdService messageBirdService;
 
@@ -965,12 +971,28 @@ public class MessageBirdClient {
 
    }
 
-   public void viewCallLegsByCallId(){
 
-   }
+    public VoiceCallLegResponse viewCallLegsByCallId(String callId, int offset, int limit) throws UnsupportedEncodingException, UnauthorizedException, GeneralException {
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH + '/' + urlEncode(callId) + VOICELEGS_SUFFIX_PATH;
 
-   public void viewCallLegByCallIdAndLegId(){
+        return messageBirdService.requestList(url, null, null, VoiceCallLegResponse.class);
+    }
 
-   }
+    public VoiceCallLeg viewCallLegByCallIdAndLegId(final String callId, String legId) throws UnsupportedEncodingException, NotFoundException, GeneralException, UnauthorizedException {
+        String url = VOICE_CALLS_BASE_URL +
+                VOICECALLSPATH + "/" + urlEncode(callId) +
+                VOICELEGS_SUFFIX_PATH;
 
+        VoiceCallLegResponse response =  messageBirdService.requestByID(url, legId, VoiceCallLegResponse.class);
+
+        if (response.getData().size() == 1) {
+            return response.getData().get(0);
+        } else {
+            throw new NotFoundException("dwdwd", new LinkedList<ErrorReport>());
+        }
+    }
+
+    private String urlEncode(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8");
+    }
 }
