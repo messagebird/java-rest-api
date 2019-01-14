@@ -1,8 +1,7 @@
-package com.messagebird.objects.voice;
+package com.messagebird.objects.voicecalls;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.messagebird.objects.VoiceCallData;
 
 import java.util.List;
 

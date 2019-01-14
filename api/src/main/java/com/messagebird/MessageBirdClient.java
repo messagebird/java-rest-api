@@ -5,8 +5,8 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
-import com.messagebird.objects.voice.VoiceCallLeg;
-import com.messagebird.objects.voice.VoiceCallLegResponse;
+import com.messagebird.objects.voicecalls.VoiceCallLeg;
+import com.messagebird.objects.voicecalls.VoiceCallLegResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -972,12 +972,35 @@ public class MessageBirdClient {
    }
 
 
-    public VoiceCallLegResponse viewCallLegsByCallId(String callId, int offset, int limit) throws UnsupportedEncodingException, UnauthorizedException, GeneralException {
+    /**
+     * Retrieves a listing of all legs.
+     *
+     * @param callId Voice call ID
+     * @param page page to fetch (can be null - will return first page), number of first page is 1
+     * @param pageSize page size
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public VoiceCallLegResponse viewCallLegsByCallId(String callId, Integer page, Integer pageSize) throws UnsupportedEncodingException, UnauthorizedException, GeneralException {
         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH + '/' + urlEncode(callId) + VOICELEGS_SUFFIX_PATH;
 
-        return messageBirdService.requestList(url, null, null, VoiceCallLegResponse.class);
+        return messageBirdService.requestList(url, new Paging.PagedPaging(page, pageSize), VoiceCallLegResponse.class);
     }
 
+    /**
+     * Retrieves a leg resource.
+     * The parameters are the unique ID of the call and of the leg that were returned upon their respective creation.
+     *
+     * @param callId Voice call ID
+     * @param legId ID of leg of specified call {callId}
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
     public VoiceCallLeg viewCallLegByCallIdAndLegId(final String callId, String legId) throws UnsupportedEncodingException, NotFoundException, GeneralException, UnauthorizedException {
         String url = VOICE_CALLS_BASE_URL +
                 VOICECALLSPATH + "/" + urlEncode(callId) +
@@ -988,7 +1011,7 @@ public class MessageBirdClient {
         if (response.getData().size() == 1) {
             return response.getData().get(0);
         } else {
-            throw new NotFoundException("dwdwd", new LinkedList<ErrorReport>());
+            throw new NotFoundException("No such leg", new LinkedList<ErrorReport>());
         }
     }
 

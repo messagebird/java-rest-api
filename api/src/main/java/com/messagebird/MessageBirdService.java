@@ -37,7 +37,7 @@ public interface MessageBirdService {
 
     /**
      * Request a List 'of' object.
-     * Allow to request a listMessage or listViewMessges objects.
+     * Allow to request a listMessage or listViewMessages objects.
      * @see com.messagebird.objects.MessageListBase
      *
      * @param request
@@ -49,6 +49,20 @@ public interface MessageBirdService {
      * @throws GeneralException
      */
     <R> R requestList(String request, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException;
+
+    /**
+     * Request a List 'of' object.
+     * Allow to request a listMessage or listViewMessages objects.
+     * @see com.messagebird.objects.MessageListBase
+     *
+     * @param request
+     * @param paging Slice of requested data to return
+     * @param clazz object type to return
+     * @return
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    <R> R requestList(String request, Paging paging, Class<R> clazz) throws UnauthorizedException, GeneralException;
 
     /**
      * Send a payload with the POST method and receive a payload object.

@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -119,9 +120,25 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     @Override
     public <R> R requestList(String request, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        return requestList(request, new Paging.SlicedPaging(offset, limit), clazz);
+    }
+
+    @Override
+    public <R> R requestList(String request, Paging paging, Class<R> clazz) throws UnauthorizedException, GeneralException {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
-        if (offset!=null) map.put("offset", String.valueOf(offset));
-        if (limit!=null) map.put("limit", String.valueOf(limit));
+        if (paging != null) {
+            if (paging instanceof Paging.PagedPaging) {
+                Paging.PagedPaging p = (Paging.PagedPaging) paging;
+                if (p.page != null) map.put("page", p.page);
+                if (p.pageSize != null) map.put("perPage", p.pageSize);
+            } else if (paging instanceof Paging.SlicedPaging) {
+                Paging.SlicedPaging p = (Paging.SlicedPaging) paging;
+                if (p.offset != null) map.put("offset", p.offset);
+                if (p.limit != null) map.put("limit", p.limit);
+            } else {
+                throw new GeneralException(new IllegalArgumentException("Unknown paging type of " + paging));
+            }
+        }
         try {
             return getJsonData(request+"?"+getPathVariables(map), null, "GET", clazz);
         } catch (NotFoundException e) {

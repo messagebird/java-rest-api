@@ -1,63 +1,34 @@
-package com.messagebird.objects.voice;
+package com.messagebird.objects.voicecalls;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Objects;
 
+/**
+ * A leg describes a leg object (inbound or outbound) that belongs to a call.
+ * At least one leg exists per call.
+ * Inbound legs are being created when an incoming call to a Number is being initiated.
+ * Outgoing legs are created when a call is transferred or when a call is being originated from the API.
+ */
 public class VoiceCallLeg {
 
     public final String id;
     public final String callID;
     public final String source;
     public final String destination;
-    public final LegStatus status;
-    public final LegDirection direction;
+    public final VoiceLegStatus status;
+    public final VoiceLegDirection direction;
     public final BigDecimal cost;
     public final String currency;
     public final int duration;
-    public final String createdAt;
-    public final String updatedAt;
-    public final String answeredAt;
-    public final String endedAt;
+    public final Date createdAt;
+    public final Date updatedAt;
+    public final Date answeredAt;
+    public final Date endedAt;
 
-    public enum LegStatus {
-        Starting,
-        Ringing,
-        Ongoing,
-        Busy,
-        NoAnswer,
-        Failed,
-        Hangup;
-
-        @JsonCreator
-        public static LegStatus fromString(String value) {
-            switch (value) {
-                case "starting": return Starting;
-                case "ringing": return Ringing;
-                case "ongoing": return Ongoing;
-                case "busy": return Busy;
-                case "no_answer": return NoAnswer;
-                case "failed": return Failed;
-                case "hangup": return Hangup;
-                default: throw new IllegalArgumentException("Unknown leg status: " + value);
-            }
-        }
-    }
-
-    public enum LegDirection {
-        Incoming, Outgoing;
-
-        @JsonCreator
-        public static LegDirection fromString(String value) {
-            switch (value) {
-                case "incoming": return Incoming;
-                case "outgoing": return Outgoing;
-                default: throw new IllegalArgumentException("Unknown leg direction: " + value);
-            }
-        }
-    }
 
     @JsonCreator
     public VoiceCallLeg(
@@ -65,15 +36,15 @@ public class VoiceCallLeg {
         @JsonProperty("callId") String callID,
         @JsonProperty("source") String source,
         @JsonProperty("destination") String destination,
-        @JsonProperty("status") LegStatus status,
-        @JsonProperty("direction") LegDirection direction,
+        @JsonProperty("status") VoiceLegStatus status,
+        @JsonProperty("direction") VoiceLegDirection direction,
         @JsonProperty("cost") BigDecimal cost,
         @JsonProperty("currency") String currency,
         @JsonProperty("duration") int duration,
-        @JsonProperty("createdAt") String createdAt,
-        @JsonProperty("updatedAt") String updatedAt,
-        @JsonProperty("answeredAt") String answeredAt,
-        @JsonProperty("endedAt") String endedAt
+        @JsonProperty("createdAt") Date createdAt,
+        @JsonProperty("updatedAt") Date updatedAt,
+        @JsonProperty("answeredAt") Date answeredAt,
+        @JsonProperty("endedAt") Date endedAt
     ) {
         this.id = id;
         this.callID = callID;
