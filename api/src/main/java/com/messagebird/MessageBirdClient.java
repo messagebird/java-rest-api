@@ -5,9 +5,17 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
+import com.messagebird.objects.voicecalls.VoiceCallLeg;
+import com.messagebird.objects.voicecalls.VoiceCallLegResponse;
 import com.messagebird.objects.voicecalls.*;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.*;
 
 /**
@@ -49,7 +57,8 @@ public class MessageBirdClient {
     private static final String CONVERSATION_PATH = "/conversations";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
-    static final String VOICECALLSPATH = "/calls";
+    public static final String VOICECALLSPATH = "/calls";
+    private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String LEGSPATH = "/legs";
     static final String RECORDINGPATH = "/recordings";
     static final String TRANSCRIPTIONPATH = "/transcriptions";
@@ -361,6 +370,7 @@ public class MessageBirdClient {
     }
 
     /**
+     *
      * @param id
      * @param token
      * @return Verify object
@@ -380,6 +390,7 @@ public class MessageBirdClient {
     }
 
     /**
+     *
      * @param id
      * @return Verify object
      * @throws NotFoundException
@@ -394,6 +405,7 @@ public class MessageBirdClient {
     }
 
     /**
+     *
      * @param id
      * @throws NotFoundException
      * @throws GeneralException
@@ -709,7 +721,7 @@ public class MessageBirdClient {
     /**
      * Updates a conversation.
      *
-     * @param id     Conversation to update.
+     * @param id Conversation to update.
      * @param status New status for the conversation.
      * @return The updated Conversation.
      */
@@ -763,8 +775,8 @@ public class MessageBirdClient {
      * Gets a ConversationMessage listing with specified pagination options.
      *
      * @param conversationId Conversation to get messages for.
-     * @param offset         Number of objects to skip.
-     * @param limit          Number of objects to take.
+     * @param offset Number of objects to skip.
+     * @param limit Number of objects to take.
      * @return List of messages.
      */
     public ConversationMessageList listConversationMessages(
@@ -813,7 +825,7 @@ public class MessageBirdClient {
      * Sends a message to an existing Conversation.
      *
      * @param conversationId Conversation to send message to.
-     * @param request        Message to send.
+     * @param request Message to send.
      * @return The newly created message.
      */
     public ConversationMessage sendConversationMessage(
@@ -866,9 +878,8 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with the specified pagination options.
-     *
      * @param offset Number of objects to skip.
-     * @param limit  Number of objects to skip.
+     * @param limit Number of objects to skip.
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
@@ -879,7 +890,6 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with default pagination options.
-     *
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks() throws UnauthorizedException, GeneralException {
@@ -966,12 +976,52 @@ public class MessageBirdClient {
 
     }
 
-    public void viewCallLegsByCallId() {
 
+    /**
+     * Retrieves a listing of all legs.
+     *
+     * @param callId Voice call ID
+     * @param page page to fetch (can be null - will return first page), number of first page is 1
+     * @param pageSize page size
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public VoiceCallLegResponse viewCallLegsByCallId(String callId, Integer page, Integer pageSize) throws UnsupportedEncodingException, UnauthorizedException, GeneralException {
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH + '/' + urlEncode(callId) + VOICELEGS_SUFFIX_PATH;
+
+        return messageBirdService.requestList(url, new Paging.PagedPaging(page, pageSize), VoiceCallLegResponse.class);
     }
 
-    public void viewCallLegByCallIdAndLegId() {
+    /**
+     * Retrieves a leg resource.
+     * The parameters are the unique ID of the call and of the leg that were returned upon their respective creation.
+     *
+     * @param callId Voice call ID
+     * @param legId ID of leg of specified call {callId}
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
+    public VoiceCallLeg viewCallLegByCallIdAndLegId(final String callId, String legId) throws UnsupportedEncodingException, NotFoundException, GeneralException, UnauthorizedException {
+        String url = VOICE_CALLS_BASE_URL +
+                VOICECALLSPATH + "/" + urlEncode(callId) +
+                VOICELEGS_SUFFIX_PATH;
 
+        VoiceCallLegResponse response =  messageBirdService.requestByID(url, legId, VoiceCallLegResponse.class);
+
+        if (response.getData().size() == 1) {
+            return response.getData().get(0);
+        } else {
+            throw new NotFoundException("No such leg", new LinkedList<ErrorReport>());
+        }
+    }
+
+    private String urlEncode(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8");
     }
 
     /**
