@@ -7,31 +7,6 @@ package com.messagebird;
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
  * 
- * <p>Example:</p>
- * 
- * <code>String encoded = Base64.encode( myByteArray );</code>
- * <br>
- * <code>byte[] myByteArray = Base64.decode( encoded );</code>
- *
- * <p>The <tt>options</tt> parameter, which appears in a few places, is used to pass 
- * several pieces of information to the encoder. In the "higher level" methods such as 
- * encodeBytes( bytes, options ) the options parameter can be used to indicate such 
- * things as first gzipping the bytes before encoding them, not inserting linefeeds,
- * and encoding using the URL-safe and Ordered dialects.</p>
- *
- * <p>Note, according to <a href="http://www.faqs.org/rfcs/rfc3548.html">RFC3548</a>,
- * Section 2.1, implementations should not add line feeds unless explicitly told
- * to do so. I've got Base64 set to this behavior now, although earlier versions
- * broke lines by default.</p>
- *
- * <p>The constants defined in Base64 can be OR-ed together to combine options, so you 
- * might make a call like this:</p>
- *
- * <code>String encoded = Base64.encodeBytes( mybytes, Base64.GZIP | Base64.DO_BREAK_LINES );</code>
- * <p>to compress the data before encoding it and then making the output have newline characters.</p>
- * <p>Also...</p>
- * <code>String encoded = Base64.encodeBytes( crazyString.getBytes() );</code>
- *
  * <p>
  * I am placing this code in the Public Domain. Do with it as you will.
  * This software comes with no guarantees or warranties but with
