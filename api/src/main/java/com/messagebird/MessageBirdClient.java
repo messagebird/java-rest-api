@@ -933,11 +933,9 @@ public class MessageBirdClient {
      * @throws UnauthorizedException
      * @throws GeneralException
      */
-    public VoiceCallResponseList listAllVoiceCalls() throws GeneralException, UnauthorizedException {
-        final int offset = 0;
-        final int limit = 20;
+    public VoiceCallResponseList listAllVoiceCalls(Integer page, Integer pageSize) throws GeneralException, UnauthorizedException {
         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
-        return messageBirdService.requestList(url, offset, limit, VoiceCallResponseList.class);
+        return messageBirdService.requestList(url, new Paging.PagedPaging(page, pageSize), VoiceCallResponseList.class);
     }
 
     /**
@@ -1117,7 +1115,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException
      * @throws GeneralException
      */
-    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId) throws UnauthorizedException, GeneralException {
+    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId, Integer page, Integer pageSize) throws UnauthorizedException, GeneralException {
         if (callID == null) {
             throw new IllegalArgumentException("Voice call ID must be specified.");
         }
@@ -1130,8 +1128,6 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Recording ID must be specified.");
         }
 
-        final int offset = 0;
-        final int limit = 20;
         String url = String.format(
                 "%s%s/%s%s/%s%s/%s",
                 VOICE_CALLS_BASE_URL,
@@ -1142,7 +1138,7 @@ public class MessageBirdClient {
                 RECORDINGPATH,
                 recordingId);
 
-        return messageBirdService.requestList(url, offset, limit, TranscriptionResponse.class);
+        return messageBirdService.requestList(url, new Paging.PagedPaging(page, pageSize), TranscriptionResponse.class);
     }
 
     /**

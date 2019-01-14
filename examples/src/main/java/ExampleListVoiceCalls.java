@@ -9,8 +9,8 @@ public class ExampleListVoiceCalls {
 
     public static void main(String[] args) {
 
-        if (args.length == 0) {
-            System.out.println("Please specify your access key example : java -jar <this jar file> test_accesskey");
+        if (args.length < 3) {
+            System.out.println("Please specify your access key example, page, page size : java -jar <this jar file> test_accesskey 1 2");
             return;
         }
 
@@ -22,7 +22,7 @@ public class ExampleListVoiceCalls {
 
         try {
             System.out.println("Retrieving voice call list");
-            final VoiceCallResponseList voiceCallResponseList = messageBirdClient.listAllVoiceCalls();
+            final VoiceCallResponseList voiceCallResponseList = messageBirdClient.listAllVoiceCalls(Integer.valueOf(args[1]), Integer.valueOf(args[2]));
             System.out.println(voiceCallResponseList.toString());
 
         } catch (GeneralException | UnauthorizedException e) {

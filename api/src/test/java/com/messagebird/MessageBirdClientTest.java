@@ -493,10 +493,10 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
-        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class))
+        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, new Paging.PagedPaging(1,2), VoiceCallResponseList.class))
                 .thenReturn(voiceCallResponseList);
 
-        final VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls();
+        final VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls(1, 2);
         verify(messageBirdServiceMock, times(1)).requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class);
         assertEquals(response.getData().get(0).getDestination(), voiceCallResponseList.getData().get(0).getDestination());
         assertEquals(response.getData().get(0).getSource(), voiceCallResponseList.getData().get(0).getSource());
@@ -588,9 +588,9 @@ public class MessageBirdClientTest {
                 RECORDINGPATH,
                 "ANY_ID");
 
-        when(messageBirdServiceMock.requestList(url, 0, 20, TranscriptionResponse.class)).thenReturn(transcriptionResponse);
+        when(messageBirdServiceMock.requestList(url, new Paging.PagedPaging(1,2), TranscriptionResponse.class)).thenReturn(transcriptionResponse);
 
-        final TranscriptionResponse response = messageBirdClientInjectMock.viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID");
+        final TranscriptionResponse response = messageBirdClientInjectMock.viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", 1, 2);
         verify(messageBirdServiceMock, times(1)).requestList(url, 0, 20, TranscriptionResponse.class);
         assertNotNull(response);
         assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());

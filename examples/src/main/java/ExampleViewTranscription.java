@@ -8,8 +8,8 @@ import com.messagebird.objects.voicecalls.TranscriptionResponse;
 public class ExampleViewTranscription {
 
     public static void main(String[] args) {
-        if (args.length < 4) {
-            System.out.println("Please specify your access key, call ID, leg ID, recording ID :" +
+        if (args.length < 6) {
+            System.out.println("Please specify your access key, call ID, leg ID, recording ID, page, page size :" +
                     " java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938");
             return;
         }
@@ -22,7 +22,7 @@ public class ExampleViewTranscription {
 
         try {
             System.out.println("Getting transcription list");
-            final TranscriptionResponse responseList = messageBirdClient.viewTranscription(args[1], args[2], args[3]);
+            final TranscriptionResponse responseList = messageBirdClient.viewTranscription(args[1], args[2], args[3], Integer.valueOf(args[4]), Integer.valueOf(args[5]));
             System.out.println(responseList.toString());
 
         } catch (GeneralException | UnauthorizedException exceptions) {
