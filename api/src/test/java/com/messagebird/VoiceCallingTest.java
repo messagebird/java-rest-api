@@ -2,7 +2,7 @@ package com.messagebird;
 
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.VoiceCall;
+import com.messagebird.objects.voicecalls.VoiceCall;
 import org.junit.Test;
 
 public class VoiceCallingTest {

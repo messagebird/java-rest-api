@@ -3,7 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.VoiceCallResponseList;
+import com.messagebird.objects.voicecalls.VoiceCallResponseList;
 
 public class ExampleListVoiceCalls {
 

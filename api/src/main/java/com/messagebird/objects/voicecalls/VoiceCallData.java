@@ -1,7 +1,8 @@
-package com.messagebird.objects;
+package com.messagebird.objects.voicecalls;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 public class VoiceCallData implements Serializable {
 
@@ -14,6 +15,7 @@ public class VoiceCallData implements Serializable {
     private Date createdAt;
     private Date updatedAt;
     private Date endedAt;
+    private Map<String,String> _links;
 
     public String getId() {
         return id;
@@ -71,6 +73,14 @@ public class VoiceCallData implements Serializable {
         this.endedAt = endedAt;
     }
 
+    public Map<String, String> get_links() {
+        return _links;
+    }
+
+    public void set_links(Map<String, String> _links) {
+        this._links = _links;
+    }
+
     @Override
     public String toString() {
         return "VoiceCallData{" +
@@ -81,6 +91,7 @@ public class VoiceCallData implements Serializable {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", endedAt=" + endedAt +
+                ", _links=" + _links +
                 '}';
     }
 }

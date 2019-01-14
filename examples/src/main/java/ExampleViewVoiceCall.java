@@ -4,7 +4,7 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.VoiceCallResponse;
+import com.messagebird.objects.voicecalls.VoiceCallResponse;
 
 public class ExampleViewVoiceCall {
 

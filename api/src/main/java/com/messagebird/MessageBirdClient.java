@@ -5,11 +5,10 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
+import com.messagebird.objects.voicecalls.*;
 
 import java.math.BigInteger;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Message bird general client
@@ -50,7 +49,11 @@ public class MessageBirdClient {
     private static final String CONVERSATION_PATH = "/conversations";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
-    public static final String VOICECALLSPATH = "/calls";
+    static final String VOICECALLSPATH = "/calls";
+    static final String LEGSPATH = "/legs";
+    static final String RECORDINGPATH = "/recordings";
+    static final String TRANSCRIPTIONPATH = "/transcriptions";
+    static final String WEBHOOKS = "/webhooks";
 
     private MessageBirdService messageBirdService;
 
@@ -358,7 +361,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @param token
      * @return Verify object
@@ -378,7 +380,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @return Verify object
      * @throws NotFoundException
@@ -393,7 +394,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @throws NotFoundException
      * @throws GeneralException
@@ -409,7 +409,7 @@ public class MessageBirdClient {
     /**
      * Send a Lookup request
      *
-     * @param Lookup
+     * @param lookup
      * @return Lookup
      * @throws UnauthorizedException
      * @throws GeneralException
@@ -445,7 +445,7 @@ public class MessageBirdClient {
     /**
      * Request a Lookup HLR (lookup)
      *
-     * @param LookupHlr
+     * @param lookupHlr
      * @return lookupHlr
      * @throws UnauthorizedException
      * @throws GeneralException
@@ -491,7 +491,7 @@ public class MessageBirdClient {
     /**
      * View a Lookup HLR (lookup)
      *
-     * @param LookupHlr
+     * @param lookupHlr
      * @return LookupHlr
      * @throws UnauthorizedException
      * @throws GeneralException
@@ -709,7 +709,7 @@ public class MessageBirdClient {
     /**
      * Updates a conversation.
      *
-     * @param id Conversation to update.
+     * @param id     Conversation to update.
      * @param status New status for the conversation.
      * @return The updated Conversation.
      */
@@ -718,7 +718,7 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified.");
         }
-        String url = String.format("%s%s/%s",CONVERSATIONS_BASE_URL, CONVERSATION_PATH, id);
+        String url = String.format("%s%s/%s", CONVERSATIONS_BASE_URL, CONVERSATION_PATH, id);
         return messageBirdService.sendPayLoad("PATCH", url, status, Conversation.class);
     }
 
@@ -726,7 +726,7 @@ public class MessageBirdClient {
      * Gets a Conversation listing with specified pagination options.
      *
      * @param offset Number of objects to skip.
-     * @param limit Number of objects to take.
+     * @param limit  Number of objects to take.
      * @return List of conversations.
      */
     public ConversationList listConversations(final int offset, final int limit)
@@ -763,8 +763,8 @@ public class MessageBirdClient {
      * Gets a ConversationMessage listing with specified pagination options.
      *
      * @param conversationId Conversation to get messages for.
-     * @param offset Number of objects to skip.
-     * @param limit Number of objects to take.
+     * @param offset         Number of objects to skip.
+     * @param limit          Number of objects to take.
      * @return List of messages.
      */
     public ConversationMessageList listConversationMessages(
@@ -813,7 +813,7 @@ public class MessageBirdClient {
      * Sends a message to an existing Conversation.
      *
      * @param conversationId Conversation to send message to.
-     * @param request Message to send.
+     * @param request        Message to send.
      * @return The newly created message.
      */
     public ConversationMessage sendConversationMessage(
@@ -866,8 +866,9 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with the specified pagination options.
+     *
      * @param offset Number of objects to skip.
-     * @param limit Number of objects to skip.
+     * @param limit  Number of objects to skip.
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
@@ -878,6 +879,7 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with default pagination options.
+     *
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks() throws UnauthorizedException, GeneralException {
@@ -921,13 +923,12 @@ public class MessageBirdClient {
      * @throws UnauthorizedException
      * @throws GeneralException
      */
-     public VoiceCallResponseList listAllVoiceCalls() throws GeneralException, UnauthorizedException {
-         final int offset = 0;
-         final int limit = 20;
-         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
-         return messageBirdService.requestList(url, offset, limit, VoiceCallResponseList.class);
-
-     }
+    public VoiceCallResponseList listAllVoiceCalls() throws GeneralException, UnauthorizedException {
+        final int offset = 0;
+        final int limit = 20;
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+        return messageBirdService.requestList(url, offset, limit, VoiceCallResponseList.class);
+    }
 
     /**
      * Function to view voice call by id
@@ -937,15 +938,15 @@ public class MessageBirdClient {
      * @throws UnauthorizedException
      * @throws GeneralException
      */
-     public VoiceCallResponse viewVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
-         if (id == null) {
-             throw new IllegalArgumentException("Voice Message ID must be specified.");
-            }
+    public VoiceCallResponse viewVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Voice Message ID must be specified.");
+        }
 
-         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
-         return messageBirdService.requestByID(url, id, VoiceCallResponse.class);
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+        return messageBirdService.requestByID(url, id, VoiceCallResponse.class);
 
-      }
+    }
 
     /**
      * Function to delete voice call by id
@@ -955,22 +956,162 @@ public class MessageBirdClient {
      * @throws UnauthorizedException
      * @throws GeneralException
      */
-   public void deleteVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException{
-       if (id == null) {
-           throw new IllegalArgumentException("Voice Message ID must be specified.");
-       }
+    public void deleteVoiceCall(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Voice Message ID must be specified.");
+        }
 
-       String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
-       messageBirdService.deleteByID(url, id);
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+        messageBirdService.deleteByID(url, id);
 
-   }
+    }
 
-   public void viewCallLegsByCallId(){
+    public void viewCallLegsByCallId() {
 
-   }
+    }
 
-   public void viewCallLegByCallIdAndLegId(){
+    public void viewCallLegByCallIdAndLegId() {
 
-   }
+    }
 
+    /**
+     * Function to view recording by call id , leg id and recording id
+     *
+     * @param callID      Voice call ID
+     * @param legId       Leg ID
+     * @param recordingId Recording ID
+     * @return Recording
+     * @throws UnauthorizedException
+     * @throws NotFoundException
+     * @throws GeneralException
+     */
+    public RecordingResponse viewRecording(String callID, String legId, String recordingId) throws NotFoundException, GeneralException, UnauthorizedException {
+
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("legs", legId);
+        params.put("recordings", recordingId);
+
+        return messageBirdService.requestByID(url, callID, params, RecordingResponse.class);
+
+    }
+
+    /**
+     * Function to view recording by call id , leg id and recording id
+     *
+     * @param callID      Voice call ID
+     * @param legId       Leg ID
+     * @param recordingId Recording ID
+     * @param language    Language
+     * @return TranscriptionResponseList
+     * @throws UnauthorizedException
+     * @throws NotFoundException
+     * @throws GeneralException
+     */
+    public TranscriptionResponse createTranscription(String callID, String legId, String recordingId, String language) throws UnauthorizedException, GeneralException {
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        if (language == null) {
+            throw new IllegalArgumentException("Language must be specified.");
+        }
+
+        String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
+
+        if (!Arrays.asList(supportedLanguages).contains(language)) {
+            throw new IllegalArgumentException("Your language is not allowed.");
+        }
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH,
+                recordingId,
+                TRANSCRIPTIONPATH);
+
+        return messageBirdService.sendPayLoad(url, language, TranscriptionResponse.class);
+    }
+
+    /**
+     * Function to view recording by call id , leg id and recording id
+     *
+     * @param callID      Voice call ID
+     * @param legId       Leg ID
+     * @param recordingId Recording ID
+     * @return TranscriptionResponseList
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId) throws UnauthorizedException, GeneralException {
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        final int offset = 0;
+        final int limit = 20;
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH,
+                recordingId);
+
+        return messageBirdService.requestList(url, offset, limit, TranscriptionResponse.class);
+    }
+
+    /**
+     * Function to view recording by call id , leg id and recording id
+     *
+     * @param webhook title, url and token of webhook
+     * @return WebhookResponseData
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public WebhookResponseData createWebhook(Webhook webhook) throws UnauthorizedException, GeneralException {
+        if (webhook.getTitle() == null) {
+            throw new IllegalArgumentException("Title of webhook must be specified.");
+        }
+
+        if (webhook.getUrl() == null) {
+            throw new IllegalArgumentException("URL of webhook must be specified.");
+        }
+
+        return messageBirdService.sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class);
+    }
 }

@@ -1,4 +1,6 @@
-package com.messagebird.objects;
+package com.messagebird.objects.voicecalls;
+
+import com.messagebird.objects.MessageBase;
 
 import java.io.Serializable;
 import java.util.Date;

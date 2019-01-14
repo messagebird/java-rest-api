@@ -1,4 +1,4 @@
-package com.messagebird.objects;
+package com.messagebird.objects.voicecalls;
 
 public enum VoiceCallStatus {
 

@@ -4,6 +4,9 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
+import com.messagebird.objects.voicecalls.VoiceCall;
+import com.messagebird.objects.voicecalls.VoiceCallFlow;
+import com.messagebird.objects.voicecalls.VoiceCallResponse;
 
 import java.util.Collections;
 

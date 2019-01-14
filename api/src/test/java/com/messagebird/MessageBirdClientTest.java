@@ -4,17 +4,18 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
+import com.messagebird.objects.voicecalls.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import static com.messagebird.MessageBirdClient.VOICECALLSPATH;
-import static com.messagebird.MessageBirdClient.VOICE_CALLS_BASE_URL;
+import static com.messagebird.MessageBirdClient.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -113,10 +114,10 @@ public class MessageBirdClientTest {
         message.setReference(reference);
         final MessageResponse mr = messageBirdClient.sendMessage(message);
 
-        assertTrue(mr.getId() != null);
-        assertTrue(mr.getReference().equals(reference));
-        assertTrue(mr.getBody().equals(body));
-        assertTrue(mr.getDatacoding().equals(DataCodingType.plain));
+        assertNotNull(mr.getId());
+        assertEquals(mr.getReference(), reference);
+        assertEquals(mr.getBody(), body);
+        assertEquals(mr.getDatacoding(), DataCodingType.plain);
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -126,7 +127,7 @@ public class MessageBirdClientTest {
     @Test
     public void testSendDeleteMessage1() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN));
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Collections.singletonList(messageBirdMSISDN));
         assertNotNull(mr.getId());
 
         // Deleting of a message is not yet supported in test mode
@@ -143,7 +144,7 @@ public class MessageBirdClientTest {
         System.setProperty("java.version", "");
 
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN));
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Collections.singletonList(messageBirdMSISDN));
 
         assertNotNull(mr.getId());
 
@@ -154,12 +155,12 @@ public class MessageBirdClientTest {
     @Test
     public void testSendMessageTestOriginatorLength() throws Exception {
         // test if our local object does truncate correctly
-        Message originatorTest = new Message("originator1234567890", "Foo", Arrays.asList(messageBirdMSISDN));
+        Message originatorTest = new Message("originator1234567890", "Foo", Collections.singletonList(messageBirdMSISDN));
         assertEquals(17, originatorTest.getOriginator().length());
 
         // test of the server returns us the same
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("12345678901234567890", body, Arrays.asList(messageBirdMSISDN));
+        final MessageResponse mr = messageBirdClient.sendMessage("12345678901234567890", body, Collections.singletonList(messageBirdMSISDN));
         // originator get's truncated to 17 chars and when it's numeric it will be prefixed with +, that's ok
         assertEquals("+12345678901234567", mr.getOriginator());
 
@@ -172,7 +173,7 @@ public class MessageBirdClientTest {
     public void testSendDeleteMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Reference Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Arrays.asList(messageBirdMSISDN), reference);
+        final MessageResponse mr = messageBirdClient.sendMessage("originator", body, Collections.singletonList(messageBirdMSISDN), reference);
         assertNotNull(mr.getId());
         assertEquals(mr.getReference(), reference);
 
@@ -184,7 +185,7 @@ public class MessageBirdClientTest {
     @Test
     public void testSendDeleteFlashMessage() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(messageBirdMSISDN));
+        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Collections.singletonList(messageBirdMSISDN));
         assertNotNull(mr.getId());
         assertSame(mr.getType(), MsgType.flash);
         assertSame(mr.getMclass(), MClassType.flash);
@@ -198,7 +199,7 @@ public class MessageBirdClientTest {
     public void testSendDeleteFlashMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Reference Über € " + messageBirdMSISDN;
-        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Arrays.asList(messageBirdMSISDN), reference);
+        final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Collections.singletonList(messageBirdMSISDN), reference);
         assertNotNull(mr.getId());
         assertEquals(mr.getReference(), reference);
 
@@ -269,7 +270,7 @@ public class MessageBirdClientTest {
     @Test
     public void testSendVoiceMessage1() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
-        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(messageBirdMSISDN));
+        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Collections.singletonList(messageBirdMSISDN));
         assertNotNull(mr.getId());
         assertEquals(mr.getBody(), body);
 
@@ -282,7 +283,7 @@ public class MessageBirdClientTest {
     public void testSendVoiceMessage2() throws Exception {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final String reference = "My Voice Reference Über " + messageBirdMSISDN;
-        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Arrays.asList(messageBirdMSISDN), reference);
+        final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(body, Collections.singletonList(messageBirdMSISDN), reference);
         assertNotNull(mr.getId());
         assertEquals(mr.getBody(), body);
         assertEquals(mr.getReference(), reference);
@@ -356,7 +357,7 @@ public class MessageBirdClientTest {
         } catch (GeneralException e) {
             // we expect only one error about token and nothing else
             assertEquals("token", e.getErrors().get(0).getParameter());
-            assertTrue(e.getErrors().size() == 1);
+            assertEquals(1, e.getErrors().size());
         }
     }
 
@@ -372,9 +373,6 @@ public class MessageBirdClientTest {
         }
     }
 
-    /**
-     * Test Voice Calling system
-     */
     @Test
     public void testSendVoiceCalls() throws Exception {
 
@@ -388,10 +386,11 @@ public class MessageBirdClientTest {
                 .thenReturn(voiceCallResponse);
 
         final VoiceCallResponse response = messageBirdClientInjectMock.sendVoiceCall(voiceCall);
+        verify(messageBirdServiceMock, times(1))
+                .sendPayLoad(VOICE_CALLS_BASE_URL + VOICECALLSPATH, voiceCall, VoiceCallResponse.class);
         assertNotNull(response);
         assertEquals(response.getData().get(0).getDestination(), voiceCallResponse.getData().get(0).getDestination());
         assertEquals(response.getData().get(0).getSource(), voiceCallResponse.getData().get(0).getSource());
-
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -464,7 +463,8 @@ public class MessageBirdClientTest {
                 VoiceCallResponse.class)).thenReturn(voiceCallResponse);
 
         final VoiceCallResponse responseFromViewVoiceCall = messageBirdClientInjectMock.viewVoiceCall("ANY_ID");
-
+        verify(messageBirdServiceMock, times(1)).requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_ID",
+                VoiceCallResponse.class);
         assertNotNull(responseFromViewVoiceCall);
         assertEquals(responseFromViewVoiceCall.getData().get(0).getDestination(), voiceCallResponse.getData().get(0).getDestination());
         assertEquals(responseFromViewVoiceCall.getData().get(0).getSource(), voiceCallResponse.getData().get(0).getSource());
@@ -496,11 +496,138 @@ public class MessageBirdClientTest {
         when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class))
                 .thenReturn(voiceCallResponseList);
 
-        VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls();
-        assertEquals(response.getItems().get(0).getData().get(0).getDestination(), voiceCallResponseList.getItems().get(0).getData().get(0).getDestination());
-        assertEquals(response.getItems().get(0).getData().get(0).getSource(), voiceCallResponseList.getItems().get(0).getData().get(0).getSource());
-        assertEquals(response.getItems().get(0).getData().get(0).getStatus(), voiceCallResponseList.getItems().get(0).getData().get(0).getStatus());
-        assertEquals(response.getItems().get(0).getData().get(0).getId(), voiceCallResponseList.getItems().get(0).getData().get(0).getId());
+        final VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls();
+        verify(messageBirdServiceMock, times(1)).requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class);
+        assertEquals(response.getData().get(0).getDestination(), voiceCallResponseList.getData().get(0).getDestination());
+        assertEquals(response.getData().get(0).getSource(), voiceCallResponseList.getData().get(0).getSource());
+        assertEquals(response.getData().get(0).getStatus(), voiceCallResponseList.getData().get(0).getStatus());
+        assertEquals(response.getData().get(0).getId(), voiceCallResponseList.getData().get(0).getId());
+
+    }
+
+    @Test
+    public void testViewRecording() throws UnauthorizedException, GeneralException, NotFoundException {
+        final Recording recording = TestUtil.createRecording();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("legs", "ANY_LEG_ID");
+        params.put("recordings", "ANY_ID");
+
+        when(messageBirdServiceMock.requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_CALL_ID",
+                params, Recording.class)).thenReturn(recording);
+
+        final RecordingResponse response = messageBirdClientInjectMock.viewRecording("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID");
+        verify(messageBirdServiceMock, times(1)).requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_CALL_ID",
+                params, Recording.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), recording.getId());
+        assertEquals(response.getData().get(0).getFormat(), recording.getFormat());
+        assertEquals(response.getData().get(0).getState(), recording.getState());
+        assertEquals(response.getData().get(0).getLegId(), recording.getLegId());
+        assertEquals(response.getData().get(0).getDuration(), recording.getDuration());
+        assertEquals(response.getData().get(0).getCreatedAt(), recording.getCreatedAt());
+        assertEquals(response.getData().get(0).getUpdatedAt(), recording.getUpdatedAt());
+        assertEquals(response.getData().get(0).get_links().get("self"), recording.get_links().get("self"));
+        assertEquals(response.getData().get(0).get_links().get("file"), recording.get_links().get("file"));
+    }
+
+    @Test
+    public void testCreateTranscription() throws UnauthorizedException, GeneralException {
+
+        final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                "ANY_ID",
+                TRANSCRIPTIONPATH);
+
+        when(messageBirdServiceMock.sendPayLoad(url, "nl-NL", TranscriptionResponse.class))
+                .thenReturn(transcriptionResponse);
+
+        final TranscriptionResponse response = messageBirdClientInjectMock
+                .createTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", "nl-NL");
+
+        verify(messageBirdServiceMock, times(1)).sendPayLoad(url, "nl-NL", TranscriptionResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());
+        assertEquals(response.getData().get(0).getRecordingId(), transcriptionResponse.getData().get(0).getRecordingId());
+        assertEquals(response.getData().get(0).getCreatedAt(), transcriptionResponse.getData().get(0).getCreatedAt());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenLanguageIsNotSupported() throws UnauthorizedException, GeneralException {
+        messageBirdClient.createTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", "tr-TR");
+    }
+
+    @Test
+    public void testViewTranscription() throws UnauthorizedException, GeneralException {
+        final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                "ANY_ID");
+
+        when(messageBirdServiceMock.requestList(url, 0, 20, TranscriptionResponse.class)).thenReturn(transcriptionResponse);
+
+        final TranscriptionResponse response = messageBirdClientInjectMock.viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID");
+        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 20, TranscriptionResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());
+        assertEquals(response.getData().get(0).getRecordingId(), transcriptionResponse.getData().get(0).getRecordingId());
+        assertEquals(response.getData().get(0).getCreatedAt(), transcriptionResponse.getData().get(0).getCreatedAt());
+
+    }
+
+    @Test
+    public void testCreateWebhook() throws UnauthorizedException, GeneralException {
+        final Webhook webhook = TestUtil.createWebHook();
+        final WebhookResponseData webhookResponseData = TestUtil.createWebhookResponseData();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class))
+                .thenReturn(webhookResponseData);
+        final WebhookResponseData response = messageBirdClientInjectMock.createWebhook(webhook);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), webhookResponseData.getData().get(0).getId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenCreateWebhookWithMissingTitle() throws UnauthorizedException, GeneralException {
+        final Webhook webhook = new Webhook();
+        webhook.setUrl("ANY_URL");
+        messageBirdClient.createWebhook(webhook);
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenCreateWebhookWithMissingUrl() throws UnauthorizedException, GeneralException {
+        final Webhook webhook = new Webhook();
+        webhook.setTitle("ANY_TITLE");
+        messageBirdClient.createWebhook(webhook);
 
     }
 }
