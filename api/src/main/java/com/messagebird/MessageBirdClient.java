@@ -1160,4 +1160,20 @@ public class MessageBirdClient {
 
         return messageBirdService.sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class);
     }
+
+    /**
+     * Function to view webhook
+     *
+     * @param id webhook id
+     * @return WebhookResponseData
+     * @throws UnauthorizedException
+     * @throws GeneralException
+     */
+    public WebhookResponseData viewWebhook(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id of webhook must be specified.");
+        }
+
+        return messageBirdService.requestByID(VOICE_CALLS_BASE_URL + WEBHOOKS, id, WebhookResponseData.class);
+    }
 }

@@ -493,7 +493,7 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
-        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, new Paging.PagedPaging(1,2), VoiceCallResponseList.class))
+        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, new Paging.PagedPaging(1, 2), VoiceCallResponseList.class))
                 .thenReturn(voiceCallResponseList);
 
         final VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls(1, 2);
@@ -588,7 +588,7 @@ public class MessageBirdClientTest {
                 RECORDINGPATH,
                 "ANY_ID");
 
-        when(messageBirdServiceMock.requestList(url, new Paging.PagedPaging(1,2), TranscriptionResponse.class)).thenReturn(transcriptionResponse);
+        when(messageBirdServiceMock.requestList(url, new Paging.PagedPaging(1, 2), TranscriptionResponse.class)).thenReturn(transcriptionResponse);
 
         final TranscriptionResponse response = messageBirdClientInjectMock.viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", 1, 2);
         verify(messageBirdServiceMock, times(1)).requestList(url, 0, 20, TranscriptionResponse.class);
@@ -629,5 +629,22 @@ public class MessageBirdClientTest {
         webhook.setTitle("ANY_TITLE");
         messageBirdClient.createWebhook(webhook);
 
+    }
+
+    @Test
+    public void testViewWebhook() throws UnauthorizedException, GeneralException, NotFoundException {
+        final WebhookResponseData webhookResponseData = TestUtil.createWebhookResponseData();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestByID(VOICE_CALLS_BASE_URL + WEBHOOKS, "ANY_ID", WebhookResponseData.class))
+                .thenReturn(webhookResponseData);
+        final WebhookResponseData response = messageBirdClientInjectMock.viewWebhook("ANY_ID");
+        verify(messageBirdServiceMock, times(1)).requestByID(VOICE_CALLS_BASE_URL + WEBHOOKS,
+                "ANY_ID", WebhookResponseData.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), webhookResponseData.getData().get(0).getId());
+        assertEquals(response.getData().get(0).getUrl(), webhookResponseData.getData().get(0).getUrl());
     }
 }
