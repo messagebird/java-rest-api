@@ -370,7 +370,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @param token
      * @return Verify object
@@ -390,7 +389,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @return Verify object
      * @throws NotFoundException
@@ -405,7 +403,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
      * @param id
      * @throws NotFoundException
      * @throws GeneralException
@@ -721,7 +718,7 @@ public class MessageBirdClient {
     /**
      * Updates a conversation.
      *
-     * @param id Conversation to update.
+     * @param id     Conversation to update.
      * @param status New status for the conversation.
      * @return The updated Conversation.
      */
@@ -775,8 +772,8 @@ public class MessageBirdClient {
      * Gets a ConversationMessage listing with specified pagination options.
      *
      * @param conversationId Conversation to get messages for.
-     * @param offset Number of objects to skip.
-     * @param limit Number of objects to take.
+     * @param offset         Number of objects to skip.
+     * @param limit          Number of objects to take.
      * @return List of messages.
      */
     public ConversationMessageList listConversationMessages(
@@ -825,7 +822,7 @@ public class MessageBirdClient {
      * Sends a message to an existing Conversation.
      *
      * @param conversationId Conversation to send message to.
-     * @param request Message to send.
+     * @param request        Message to send.
      * @return The newly created message.
      */
     public ConversationMessage sendConversationMessage(
@@ -878,8 +875,9 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with the specified pagination options.
+     *
      * @param offset Number of objects to skip.
-     * @param limit Number of objects to skip.
+     * @param limit  Number of objects to skip.
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
@@ -890,6 +888,7 @@ public class MessageBirdClient {
 
     /**
      * Gets a ConversationWebhook listing with default pagination options.
+     *
      * @return List of webhooks.
      */
     public ConversationWebhookList listConversationWebhooks() throws UnauthorizedException, GeneralException {
@@ -953,7 +952,6 @@ public class MessageBirdClient {
 
         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
         return messageBirdService.requestByID(url, id, VoiceCallResponse.class);
-
     }
 
     /**
@@ -971,15 +969,13 @@ public class MessageBirdClient {
 
         String url = VOICE_CALLS_BASE_URL + VOICECALLSPATH;
         messageBirdService.deleteByID(url, id);
-
     }
-
 
     /**
      * Retrieves a listing of all legs.
      *
-     * @param callId Voice call ID
-     * @param page page to fetch (can be null - will return first page), number of first page is 1
+     * @param callId   Voice call ID
+     * @param page     page to fetch (can be null - will return first page), number of first page is 1
      * @param pageSize page size
      * @return
      * @throws UnsupportedEncodingException
@@ -997,7 +993,7 @@ public class MessageBirdClient {
      * The parameters are the unique ID of the call and of the leg that were returned upon their respective creation.
      *
      * @param callId Voice call ID
-     * @param legId ID of leg of specified call {callId}
+     * @param legId  ID of leg of specified call {callId}
      * @return
      * @throws UnsupportedEncodingException
      * @throws NotFoundException
@@ -1009,7 +1005,7 @@ public class MessageBirdClient {
                 VOICECALLSPATH + "/" + urlEncode(callId) +
                 VOICELEGS_SUFFIX_PATH;
 
-        VoiceCallLegResponse response =  messageBirdService.requestByID(url, legId, VoiceCallLegResponse.class);
+        VoiceCallLegResponse response = messageBirdService.requestByID(url, legId, VoiceCallLegResponse.class);
 
         if (response.getData().size() == 1) {
             return response.getData().get(0);
@@ -1053,7 +1049,6 @@ public class MessageBirdClient {
         params.put("recordings", recordingId);
 
         return messageBirdService.requestByID(url, callID, params, RecordingResponse.class);
-
     }
 
     /**
@@ -1142,7 +1137,7 @@ public class MessageBirdClient {
     }
 
     /**
-     * Function to view recording by call id , leg id and recording id
+     * Function to create webhook
      *
      * @param webhook title, url and token of webhook
      * @return WebhookResponseData

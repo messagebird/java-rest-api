@@ -60,7 +60,7 @@ class TestUtil {
         return voiceCallResponseList;
     }
 
-    static Recording createRecording() {
+    private static Recording createRecording() {
         final Recording recording = new Recording();
         recording.setId("ANY_ID");
         recording.setFormat("wav");
@@ -76,6 +76,16 @@ class TestUtil {
         links.put("file", "ANY_FILE");
         recording.set_links(links);
         return recording;
+    }
+
+    static RecordingResponse createRecordingResponse(){
+        final RecordingResponse recordingResponse = new RecordingResponse();
+        recordingResponse.setData(Collections.singletonList(createRecording()));
+        Map<String, String> links = new LinkedHashMap<>();
+        links.put("self", "ANY_SELF");
+        links.put("file", "ANY_FILE");
+        recordingResponse.set_links(links);
+        return recordingResponse;
     }
 
     static TranscriptionResponse createTranscriptionResponse() {

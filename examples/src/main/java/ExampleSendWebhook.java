@@ -6,7 +6,8 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.voicecalls.Webhook;
 import com.messagebird.objects.voicecalls.WebhookResponseData;
 
-public class ExampleCreateWebhook {
+public class ExampleSendWebhook {
+
     public static void main(String[] args) {
         if (args.length < 3) {
             System.out.println("Please specify your access key, title of webhook and url of webhook :" +

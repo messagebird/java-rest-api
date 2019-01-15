@@ -8,6 +8,7 @@ import com.messagebird.objects.voicecalls.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -493,11 +494,14 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
-        when(messageBirdServiceMock.requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, new Paging.PagedPaging(1, 2), VoiceCallResponseList.class))
+        when(messageBirdServiceMock.requestList(Mockito.eq(VOICE_CALLS_BASE_URL + VOICECALLSPATH), Mockito.isA(Paging.class),
+                Mockito.eq(VoiceCallResponseList.class)))
                 .thenReturn(voiceCallResponseList);
 
         final VoiceCallResponseList response = messageBirdClientInjectMock.listAllVoiceCalls(1, 2);
-        verify(messageBirdServiceMock, times(1)).requestList(VOICE_CALLS_BASE_URL + VOICECALLSPATH, 0, 20, VoiceCallResponseList.class);
+        verify(messageBirdServiceMock, times(1))
+                .requestList(Mockito.eq(VOICE_CALLS_BASE_URL + VOICECALLSPATH), Mockito.isA(Paging.class),
+                        Mockito.eq(VoiceCallResponseList.class));
         assertEquals(response.getData().get(0).getDestination(), voiceCallResponseList.getData().get(0).getDestination());
         assertEquals(response.getData().get(0).getSource(), voiceCallResponseList.getData().get(0).getSource());
         assertEquals(response.getData().get(0).getStatus(), voiceCallResponseList.getData().get(0).getStatus());
@@ -507,7 +511,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testViewRecording() throws UnauthorizedException, GeneralException, NotFoundException {
-        final Recording recording = TestUtil.createRecording();
+        final RecordingResponse recordingResponse = TestUtil.createRecordingResponse();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
@@ -517,21 +521,21 @@ public class MessageBirdClientTest {
         params.put("recordings", "ANY_ID");
 
         when(messageBirdServiceMock.requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_CALL_ID",
-                params, Recording.class)).thenReturn(recording);
+                params, RecordingResponse.class)).thenReturn(recordingResponse);
 
         final RecordingResponse response = messageBirdClientInjectMock.viewRecording("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID");
         verify(messageBirdServiceMock, times(1)).requestByID(VOICE_CALLS_BASE_URL + VOICECALLSPATH, "ANY_CALL_ID",
-                params, Recording.class);
+                params, RecordingResponse.class);
         assertNotNull(response);
-        assertEquals(response.getData().get(0).getId(), recording.getId());
-        assertEquals(response.getData().get(0).getFormat(), recording.getFormat());
-        assertEquals(response.getData().get(0).getState(), recording.getState());
-        assertEquals(response.getData().get(0).getLegId(), recording.getLegId());
-        assertEquals(response.getData().get(0).getDuration(), recording.getDuration());
-        assertEquals(response.getData().get(0).getCreatedAt(), recording.getCreatedAt());
-        assertEquals(response.getData().get(0).getUpdatedAt(), recording.getUpdatedAt());
-        assertEquals(response.getData().get(0).get_links().get("self"), recording.get_links().get("self"));
-        assertEquals(response.getData().get(0).get_links().get("file"), recording.get_links().get("file"));
+        assertEquals(response.getData().get(0).getId(), recordingResponse.getData().get(0).getId());
+        assertEquals(response.getData().get(0).getFormat(), recordingResponse.getData().get(0).getFormat());
+        assertEquals(response.getData().get(0).getState(), recordingResponse.getData().get(0).getState());
+        assertEquals(response.getData().get(0).getLegId(), recordingResponse.getData().get(0).getLegId());
+        assertEquals(response.getData().get(0).getDuration(), recordingResponse.getData().get(0).getDuration());
+        assertEquals(response.getData().get(0).getCreatedAt(), recordingResponse.getData().get(0).getCreatedAt());
+        assertEquals(response.getData().get(0).getUpdatedAt(), recordingResponse.getData().get(0).getUpdatedAt());
+        assertEquals(response.getData().get(0).get_links().get("self"), recordingResponse.get_links().get("self"));
+        assertEquals(response.getData().get(0).get_links().get("file"), recordingResponse.get_links().get("file"));
     }
 
     @Test
@@ -588,10 +592,13 @@ public class MessageBirdClientTest {
                 RECORDINGPATH,
                 "ANY_ID");
 
-        when(messageBirdServiceMock.requestList(url, new Paging.PagedPaging(1, 2), TranscriptionResponse.class)).thenReturn(transcriptionResponse);
+        when(messageBirdServiceMock.requestList(Mockito.eq(url), Mockito.isA(Paging.class), Mockito.eq(TranscriptionResponse.class)))
+                .thenReturn(transcriptionResponse);
 
-        final TranscriptionResponse response = messageBirdClientInjectMock.viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", 1, 2);
-        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 20, TranscriptionResponse.class);
+        final TranscriptionResponse response = messageBirdClientInjectMock
+                .viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", 1, 2);
+        verify(messageBirdServiceMock, times(1))
+                .requestList(Mockito.eq(url), Mockito.isA(Paging.class), Mockito.eq(TranscriptionResponse.class));
         assertNotNull(response);
         assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());
         assertEquals(response.getData().get(0).getRecordingId(), transcriptionResponse.getData().get(0).getRecordingId());

@@ -5,7 +5,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.voicecalls.TranscriptionResponse;
 
-public class ExampleCreateTranscription {
+public class ExampleSendTranscription {
 
     public static void main(String[] args) {
         if (args.length < 5) {
