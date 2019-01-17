@@ -448,11 +448,6 @@ public class MessageBirdClientTest {
         messageBirdClient.sendVoiceCall(voiceCall);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void shouldThrowNotFoundExceptionWhenViewVoiceCall() throws Exception {
-        messageBirdClient.viewVoiceCall("Foo");
-    }
-
     @Test
     public void testViewVoiceCall() throws UnauthorizedException, GeneralException, NotFoundException {
         final VoiceCallResponse voiceCallResponse = TestUtil.createVoiceCallResponse();
