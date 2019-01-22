@@ -4,7 +4,6 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.MessageList;
 
 /**
  * Created by rvt on 1/8/15.
@@ -24,26 +23,16 @@ public class ExampleDeleteMessage {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
         try {
-            // Get Balance
+            // Deleting message by id
             System.out.println("Delete message:");
             messageBirdClient.deleteMessage(args[1]);
             System.out.println("Message ["+args[1]+"] deleted.");
 
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors()!=null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() != null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
-        } catch (NotFoundException notFoundException) {
-            if (notFoundException.getErrors() !=null) {
-                System.out.println(notFoundException.getErrors().toString());
-            }
-            notFoundException.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }

@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": "first-leg-of-unforgiven-call",
+      "callId": "unforgiven-call",
+      "source": "TestSource",
+      "destination": "31612345678",
+      "status": "hangup",
+      "direction": "outgoing",
+      "duration": 7,
+      "cost": 0.001519,
+      "currency": "EUR",
+      "createdAt": "2019-01-10T16:12:54Z",
+      "updatedAt": "2019-01-10T16:13:54Z",
+      "answeredAt": "2019-01-10T16:13:24Z",
+      "endedAt": "2019-01-10T16:13:30Z"
+    }
+  ],
+  "_links": {
+    "self": "/calls/unforgiven-call/legs/first-leg-of-unforgiven-call"
+  }
+}

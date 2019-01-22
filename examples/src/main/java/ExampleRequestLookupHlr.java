@@ -1,7 +1,6 @@
 import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.LookupHlr;
@@ -35,16 +34,11 @@ public class ExampleRequestLookupHlr {
             }
             final LookupHlr lookupHlr = messageBirdClient.requestLookupHlr(lookupHlrRequest);
             System.out.println(lookupHlr.toString());
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors()!=null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() !=null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }

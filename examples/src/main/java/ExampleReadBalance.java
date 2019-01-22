@@ -32,21 +32,11 @@ public class ExampleReadBalance {
             // Display balance
             System.out.println(balance.toString());
 
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors() != null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException | NotFoundException  exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() != null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
-        } catch (NotFoundException notFoundException) {
-            if (notFoundException.getErrors() !=null) {
-                System.out.println(notFoundException.getErrors().toString());
-            }
-            notFoundException.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }

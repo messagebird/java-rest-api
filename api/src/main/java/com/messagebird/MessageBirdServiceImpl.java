@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,11 +20,12 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.ErrorReport;
+import com.messagebird.objects.PagedPaging;
 
 /**
  * Implementation of MessageBirdService
  * Sends and receives JSON objects from the Messagebird platform
- *
+ * <p>
  * Created by rvt on 1/5/15.
  */
 public class MessageBirdServiceImpl implements MessageBirdService {
@@ -43,7 +45,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     private static final List<String> REQUEST_METHODS = Arrays.asList(METHOD_DELETE, METHOD_GET, METHOD_PATCH, METHOD_POST);
     private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList(METHOD_PATCH, METHOD_POST);
-    private static final List<String> PROTOCOLS = Arrays.asList(new String[]{"http://", "https://"});
+    private static final String[] PROTOCOL_LISTS = new String[]{"http://", "https://"};
+    private static final List<String> PROTOCOLS = Arrays.asList(PROTOCOL_LISTS);
 
     // Used when the actual version can not be parsed.
     private static final double DEFAULT_JAVA_VERSION = 0.0;
@@ -83,7 +86,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Initiate service with default serviceUrl.
-     * @param accessKey
+     *
+     * @param accessKey developer access key
      */
     public MessageBirdServiceImpl(final String accessKey) {
         this(accessKey, "https://rest.messagebird.com");
@@ -119,11 +123,24 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     @Override
     public <R> R requestList(String request, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException {
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
-        if (offset!=null) map.put("offset", String.valueOf(offset));
-        if (limit!=null) map.put("limit", String.valueOf(limit));
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (offset != null) map.put("offset", String.valueOf(offset));
+        if (limit != null) map.put("limit", String.valueOf(limit));
         try {
-            return getJsonData(request+"?"+getPathVariables(map), null, "GET", clazz);
+            return getJsonData(request + "?" + getPathVariables(map), null, "GET", clazz);
+        } catch (NotFoundException e) {
+            throw new GeneralException(e);
+        }
+    }
+
+    @Override
+    public <R> R requestList(String request, PagedPaging pagedPaging, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (pagedPaging.getPage() != null) map.put("page", String.valueOf(pagedPaging.getPage()));
+        if (pagedPaging.getPageSize() != null) map.put("perPage", String.valueOf(pagedPaging.getPageSize()));
+
+        try {
+            return getJsonData(request + "?" + getPathVariables(map), null, "GET", clazz);
         } catch (NotFoundException e) {
             throw new GeneralException(e);
         }
@@ -193,14 +210,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     /**
      * Actually sends a HTTP request and returns its body and HTTP status code.
      *
-     * @param method HTTP method.
-     * @param url Absolute URL.
+     * @param method  HTTP method.
+     * @param url     Absolute URL.
      * @param payload Payload to JSON encode for the request body. May be null.
-     * @param <P> Type of the payload.
-     *
+     * @param <P>     Type of the payload.
      * @return APIResponse containing the response's body and status.
      */
-    protected <P> APIResponse doRequest(final String method, final String url, final P payload) throws GeneralException {
+    <P> APIResponse doRequest(final String method, final String url, final P payload) throws GeneralException {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
@@ -295,7 +311,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * string representation.
      *
      * @param inputStream Stream to read from.
-     *
      * @return UTF-8 encoded string representation of stream's contents.
      */
     private String readToEnd(InputStream inputStream) {
@@ -307,8 +322,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     /**
      * Attempts determining whether the provided URL is an absolute one, based on the scheme.
      *
-     * @param url
-     * @return
+     * @param url provided url
+     * @return boolean
      */
     private boolean isURLAbsolute(String url) {
         for (String protocol : PROTOCOLS) {
@@ -326,8 +341,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @param serviceUrl  URL that needs to be requested
      * @param postData    PostDATA, must be not null for requestType is POST
      * @param requestType Request type POST requests without a payload will generate a exception
-     * @return
-     * @throws IOException
+     * @return base class
+     * @throws IOException io exception
      */
     public <P> HttpURLConnection getConnection(final String serviceUrl, final P postData, final String requestType) throws IOException {
         if (requestType == null || !REQUEST_METHODS.contains(requestType)) {
@@ -367,7 +382,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             mapper.setDateFormat(df);
 
             final String json = mapper.writeValueAsString(postData);
-            connection.getOutputStream().write(json.getBytes("UTF-8"));
+            connection.getOutputStream().write(json.getBytes(String.valueOf(StandardCharsets.UTF_8)));
         } else if ("DELETE".equals(requestType)) {
             // could have just used rquestType as it is
             connection.setDoOutput(false);
@@ -426,7 +441,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
             List<ErrorReport> result = Arrays.asList(errors);
 
-            if (result != null && result.isEmpty()) {
+            if (result.isEmpty()) {
                 return null;
             }
 
@@ -438,7 +453,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Get the used access key
-     * @return
+     *
+     * @return String
      */
     public String getAccessKey() {
         return accessKey;
@@ -446,7 +462,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * get the used service URL
-     * @return
+     *
+     * @return String
      */
     public String getServiceUrl() {
         return serviceUrl;
@@ -454,7 +471,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Get the client version
-     * @return
+     *
+     * @return String
      */
     public String getClientVersion() {
         return clientVersion;
@@ -462,7 +480,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Get the user agent string
-     * @return
+     *
+     * @return String
      */
     public String getUserAgentString() {
         return userAgentString;
@@ -473,7 +492,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * example:
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));
      * messageBirdService.setProxy(proxy);
-     * @param proxy
+     *
+     * @param proxy proxy
      */
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
@@ -481,7 +501,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Get the proxy object if set
-     * @return
+     *
+     * @return Proxy
      */
     public Proxy getProxy() {
         return proxy;
@@ -489,21 +510,24 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Safe-close a input stream
-     * @param is
+     *
+     * @param is input stream
      */
     private void saveClose(final InputStream is) {
         if (is != null) {
             try {
                 is.close();
             } catch (IOException e) {
+                // Do nothing
             }
         }
     }
 
     /**
      * Build a path variable for GET requests
-     * @param map
-     * @return
+     *
+     * @param map map for getting path variables
+     * @return String
      */
     private String getPathVariables(final Map<String, Object> map) {
         final StringBuilder bpath = new StringBuilder();
@@ -512,8 +536,9 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 bpath.append("&");
             }
             try {
-                bpath.append(URLEncoder.encode(param.getKey(), "UTF-8") + "=" + URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
+                bpath.append(URLEncoder.encode(param.getKey(), String.valueOf(StandardCharsets.UTF_8))).append("=").append(URLEncoder.encode(String.valueOf(param.getValue()), String.valueOf(StandardCharsets.UTF_8)));
+            } catch (UnsupportedEncodingException exception) {
+                // Do nothing
             }
         }
         return bpath.toString();
