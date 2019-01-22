@@ -25,7 +25,7 @@ public class APIResponse {
 
     /**
      * Initializes an APIResponse object and sets the HTTP status code to 200.
-     * @param body
+     * @param body response body
      */
     APIResponse(final String body) {
         this(body, STATUS_OK);
@@ -34,11 +34,11 @@ public class APIResponse {
     /**
      * Determines whether the provided HTTP status code indicates success.
      *
-     * @param status
+     * @param status response status
      *
      * @return True if the status indicates success.
      */
-    public static boolean isSuccessStatus(final int status) {
+     static boolean isSuccessStatus(final int status) {
         return status >= STATUS_RANGE_SUCCESS_START
                 && status <= STATUS_RANGE_SUCCESS_END;
     }

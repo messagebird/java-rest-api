@@ -1,7 +1,6 @@
 import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.objects.MessageResponse;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
@@ -30,24 +29,19 @@ public class ExampleSendMessage {
         try {
             // Get Hlr using msgId and msisdn
             System.out.println("Sending message:");
-            final List<BigInteger> phones = new ArrayList<BigInteger>();
+            final List<BigInteger> phones = new ArrayList<>();
             for (final String phoneNumber : args[1].split(",")) {
                 phones.add(new BigInteger(phoneNumber));
             }
 
             final MessageResponse response = messageBirdClient.sendMessage("MessageBird", args[2], phones);
+            //Display message response
             System.out.println(response.toString());
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors() != null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() != null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
+            exception.printStackTrace();
         }
-
     }
 }

@@ -2,9 +2,7 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.Balance;
 import com.messagebird.objects.MessageList;
 
 /**
@@ -25,22 +23,17 @@ public class ExampleListMessages {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
         try {
-            // Get list
+            // Get list of messages with offset and limit
             System.out.println("Retrieving message list");
             final MessageList messageList = messageBirdClient.listMessages(3, null);
 
             // Display balance
             System.out.println(messageList.toString());
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors()!=null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() != null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }

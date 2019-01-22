@@ -49,4 +49,8 @@ public class ListBase<T> {
     public List<T> getItems() {
         return items;
     }
+
+    public void setItems(List<T> items) {
+        this.items = items;
+    }
 }

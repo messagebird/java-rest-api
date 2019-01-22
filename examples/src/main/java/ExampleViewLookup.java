@@ -31,23 +31,15 @@ public class ExampleViewLookup {
             if (args.length > 2 && args[2] != null && !args[2].isEmpty()) {
                 lookupRequest.setCountryCode(args[2]);
             }
+
             final Lookup lookup = messageBirdClient.viewLookup(lookupRequest);
             System.out.println(lookup.toString());
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors()!=null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() !=null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
-        } catch (NotFoundException notFoundException) {
-            if (notFoundException.getErrors() !=null) {
-                System.out.println(notFoundException.getErrors().toString());
-            }
-            notFoundException.printStackTrace();
+
+            exception.printStackTrace();
         }
     }
 }

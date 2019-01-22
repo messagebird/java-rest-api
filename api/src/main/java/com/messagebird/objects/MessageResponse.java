@@ -57,7 +57,8 @@ public class MessageResponse implements MessageResponseBase, Serializable {
 
     /**
      * An unique random ID which is created on the MessageBird platform and is returned upon creation of the object.
-     * @return
+     *
+     * @return String
      */
     @Override
     public String getId() {
@@ -74,7 +75,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
      * mt: mobile terminated (sent to mobile)
      * mo: mobile originated (received from mobile)
      *
-     * @return
+     * @return String
      */
     public String getDirection() {
         return direction;
@@ -83,7 +84,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The type of message. Values can be: sms, binary, premium, or flash
      *
-     * @return
+     * @return MsgType
      */
     public MsgType getType() {
         return type;
@@ -92,7 +93,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The sender of the message. This can be a telephone number (including country code) or an alphanumeric string. In case of an alphanumeric string, the maximum length is 11 characters.
      *
-     * @return
+     * @return String
      */
     public String getOriginator() {
         return originator;
@@ -121,7 +122,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The amount of seconds that the message is valid. If a message is not delivered within this time, the message will be discarded.
      *
-     * @return
+     * @return Integer
      */
     public Integer getValidity() {
         return validity;
@@ -130,7 +131,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The SMS route that is used to send the message.
      *
-     * @return
+     * @return Integer
      */
     public Integer getGateway() {
         return gateway;
@@ -139,7 +140,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The datacoding used, can be plain or unicode
      *
-     * @return
+     * @return DataCodingType
      */
     public DataCodingType getDatacoding() {
         return datacoding;
@@ -148,7 +149,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * Indicated the message type. 1 is a normal message, 0 is a flash message.
      *
-     * @return
+     * @return MClassType
      */
     public MClassType getMclass() {
         return mclass;
@@ -157,7 +158,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The scheduled date and time of the message
      *
-     * @return
+     * @return Date
      */
     public Date getScheduledDatetime() {
         return scheduledDatetime;
@@ -166,7 +167,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     /**
      * The date and time of the creation of the message
      *
-     * @return
+     * @return Date
      */
     public Date getCreatedDatetime() {
         return createdDatetime;
@@ -179,7 +180,8 @@ public class MessageResponse implements MessageResponseBase, Serializable {
 
     /**
      * Return type details object
-     * @return
+     *
+     * @return Map<String   ,       Object>
      */
     public Map<String, Object> getTypeDetails() {
         return typeDetails;
@@ -214,7 +216,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The count of recipients that have the message pending (status sent, and buffered).
          *
-         * @return
+         * @return Integer
          */
         public Integer getTotalSentCount() {
             return totalSentCount;
@@ -223,7 +225,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The count of recipients where the message is delivered (status delivered).
          *
-         * @return
+         * @return Integer
          */
         public Integer getTotalDeliveredCount() {
             return totalDeliveredCount;
@@ -232,7 +234,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The count of recipients where the delivery has failed (status delivery_failed).
          *
-         * @return
+         * @return Integer
          */
         public Integer getTotalDeliveryFailedCount() {
             return totalDeliveryFailedCount;
@@ -241,7 +243,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * An array of recipient hashes
          *
-         * @return
+         * @return List<Items>
          */
         public List<Items> getItems() {
             return items;
@@ -274,7 +276,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The msisdn of the recipient
          *
-         * @return
+         * @return BigInteger
          */
         public BigInteger getRecipient() {
             return recipient;
@@ -283,7 +285,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The status of the message sent to the recipient. Possible values: scheduled, sent, buffered, delivered, and delivery_failed
          *
-         * @return
+         * @return String
          */
         public String getStatus() {
             return status;
@@ -292,7 +294,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         /**
          * The datum time of the last status
          *
-         * @return
+         * @return Date
          */
         public Date getStatusDatetime() {
             return statusDatetime;

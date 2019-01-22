@@ -2,9 +2,7 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 
@@ -25,7 +23,6 @@ public class ExampleSendVerifyToken {
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
-
         try {
             // Send verify token
             System.out.println("sending verify token request:");
@@ -33,16 +30,11 @@ public class ExampleSendVerifyToken {
             verifyRequest.setTimeout(120);
             final Verify verify = messageBirdClient.sendVerifyToken(verifyRequest);
             System.out.println(verify.toString());
-        } catch (UnauthorizedException unauthorized) {
-            if (unauthorized.getErrors() != null) {
-                System.out.println(unauthorized.getErrors().toString());
+        } catch (UnauthorizedException | GeneralException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
             }
-            unauthorized.printStackTrace();
-        } catch (GeneralException generalException) {
-            if (generalException.getErrors() != null) {
-                System.out.println(generalException.getErrors().toString());
-            }
-            generalException.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }
