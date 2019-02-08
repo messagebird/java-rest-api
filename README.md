@@ -29,7 +29,7 @@ If you are using maven simply add the messagebird API to your dependencies like 
 <dependency>
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -37,11 +37,11 @@ In case you are building without maven you still need maven to build the librari
 then simply copy the following jar's over to your project
 
 ```
-messagebird-api-2.0.0.jar
-jackson-core-2.9.0.jar
-jackson-databind-2.9.0.jar
-jackson-dataformat-csv-2.9.0.jar
-jackson-annotations-2.1.1.jar
+messagebird-api-2.1.0.jar
+jackson-core-2.9.8.jar
+jackson-databind-2.9.8.jar
+jackson-dataformat-csv-2.9.8.jar
+jackson-annotations-2.9.8.jar
 ```
 
 
@@ -142,4 +142,4 @@ Complete documentation, instructions, and examples are available at:
 
 License
 -------
-The MessageBird REST Client for Java is licensed under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2015, MessageBird
+The MessageBird REST Client for Java is licensed under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2015-2019, MessageBird
