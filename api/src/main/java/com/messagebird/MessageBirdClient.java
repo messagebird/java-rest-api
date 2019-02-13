@@ -137,7 +137,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    MessageResponse sendMessage(final Message message) throws UnauthorizedException, GeneralException {
+    public MessageResponse sendMessage(final Message message) throws UnauthorizedException, GeneralException {
         return messageBirdService.sendPayLoad(MESSAGESPATH, message, MessageResponse.class);
     }
 
@@ -166,7 +166,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    MessageResponse sendMessage(final String originator, final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
+    public MessageResponse sendMessage(final String originator, final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
         final Message message = new Message(originator, body, recipients);
         message.setReference(reference);
         return messageBirdService.sendPayLoad(MESSAGESPATH, message, MessageResponse.class);
@@ -182,7 +182,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    MessageResponse sendFlashMessage(final String originator, final String body, final List<BigInteger> recipients) throws UnauthorizedException, GeneralException {
+    public MessageResponse sendFlashMessage(final String originator, final String body, final List<BigInteger> recipients) throws UnauthorizedException, GeneralException {
         final Message message = new Message(originator, body, recipients);
         message.setType(MsgType.flash);
         return messageBirdService.sendPayLoad(MESSAGESPATH, message, MessageResponse.class);
@@ -199,7 +199,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    MessageResponse sendFlashMessage(final String originator, final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
+    public MessageResponse sendFlashMessage(final String originator, final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
         final Message message = new Message(originator, body, recipients);
         message.setType(MsgType.flash);
         message.setReference(reference);
@@ -270,7 +270,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients) throws UnauthorizedException, GeneralException {
+    public VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients) throws UnauthorizedException, GeneralException {
         final VoiceMessage message = new VoiceMessage(body, recipients);
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, message, VoiceMessageResponse.class);
     }
@@ -285,7 +285,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
+    public VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
         final VoiceMessage message = new VoiceMessage(body, recipients);
         message.setReference(reference);
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, message, VoiceMessageResponse.class);
@@ -298,7 +298,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    void deleteVoiceMessage(final String id) throws UnauthorizedException, GeneralException, NotFoundException {
+    public void deleteVoiceMessage(final String id) throws UnauthorizedException, GeneralException, NotFoundException {
         if (id == null) {
             throw new IllegalArgumentException("Message ID must be specified.");
         }
@@ -360,7 +360,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    Verify sendVerifyToken(String recipient) throws UnauthorizedException, GeneralException {
+    public Verify sendVerifyToken(String recipient) throws UnauthorizedException, GeneralException {
         if (recipient == null || recipient.isEmpty()) {
             throw new IllegalArgumentException("Recipient cannot be empty for verify");
         }
@@ -407,7 +407,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    void deleteVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public void deleteVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("ID cannot be empty for verify");
         }
@@ -557,7 +557,7 @@ public class MessageBirdClient {
     /**
      * Gets a contact listing with default pagination options.
      */
-    ContactList listContacts() throws UnauthorizedException, GeneralException {
+    public ContactList listContacts() throws UnauthorizedException, GeneralException {
         final int limit = 20;
         final int offset = 0;
 
@@ -568,7 +568,7 @@ public class MessageBirdClient {
      * Creates a new contact object. MessageBird returns the created contact
      * object with each request.
      */
-    Contact sendContact(final ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+    public Contact sendContact(final ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
         return messageBirdService.sendPayLoad(CONTACTPATH, contactRequest, Contact.class);
     }
 
@@ -576,7 +576,7 @@ public class MessageBirdClient {
      * Updates an existing contact. You only need to supply the unique id that
      * was returned upon creation.
      */
-    Contact updateContact(final String id, ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
+    public Contact updateContact(final String id, ContactRequest contactRequest) throws UnauthorizedException, GeneralException {
         if (id == null) {
             throw new IllegalArgumentException("Contact ID must be specified.");
         }
@@ -588,7 +588,7 @@ public class MessageBirdClient {
      * Retrieves the information of an existing contact. You only need to supply
      * the unique contact ID that was returned upon creation or receiving.
      */
-    Contact viewContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public Contact viewContact(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
             throw new IllegalArgumentException("Contact ID must be specified.");
         }
@@ -599,7 +599,7 @@ public class MessageBirdClient {
      * Deletes an existing group. You only need to supply the unique id that
      * was returned upon creation.
      */
-    void deleteGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public void deleteGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
             throw new IllegalArgumentException("Group ID must be specified.");
         }
@@ -610,7 +610,7 @@ public class MessageBirdClient {
      * Removes a contact from group. You need to supply the IDs of the group
      * and contact. Does not delete the contact.
      */
-    void deleteGroupContact(final String groupId, final String contactId) throws NotFoundException, GeneralException, UnauthorizedException {
+    public void deleteGroupContact(final String groupId, final String contactId) throws NotFoundException, GeneralException, UnauthorizedException {
         if (groupId == null) {
             throw new IllegalArgumentException("Group ID must be specified.");
         }
@@ -625,7 +625,7 @@ public class MessageBirdClient {
     /**
      * Gets a contact listing with specified pagination options.
      */
-    GroupList listGroups(final int offset, final int limit) throws UnauthorizedException, GeneralException {
+    public GroupList listGroups(final int offset, final int limit) throws UnauthorizedException, GeneralException {
         return messageBirdService.requestList(GROUPPATH, offset, limit, GroupList.class);
     }
 
@@ -643,7 +643,7 @@ public class MessageBirdClient {
      * Creates a new group object. MessageBird returns the created group object
      * with each request.
      */
-    Group sendGroup(final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+    public Group sendGroup(final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
         return messageBirdService.sendPayLoad(GROUPPATH, groupRequest, Group.class);
     }
 
@@ -651,7 +651,7 @@ public class MessageBirdClient {
      * Adds contact to group. You need to supply the IDs of the group and
      * contact.
      */
-    void sendGroupContact(final String groupId, final String[] contactIds) throws NotFoundException, GeneralException, UnauthorizedException {
+    public void sendGroupContact(final String groupId, final String[] contactIds) throws NotFoundException, GeneralException, UnauthorizedException {
         // reuestByID appends the "ID" to the base path, so this workaround
         // lets us add a query string.
         String path = String.format("%s%s?%s", groupId, CONTACTPATH, getQueryString(contactIds));
@@ -681,7 +681,7 @@ public class MessageBirdClient {
      * Updates an existing group. You only need to supply the unique ID that
      * was returned upon creation.
      */
-    Group updateGroup(final String id, final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
+    public Group updateGroup(final String id, final GroupRequest groupRequest) throws UnauthorizedException, GeneralException {
         if (id == null) {
             throw new IllegalArgumentException("Group ID must be specified.");
         }
@@ -693,7 +693,7 @@ public class MessageBirdClient {
      * Retrieves the information of an existing group. You only need to supply
      * the unique group ID that was returned upon creation or receiving.
      */
-    Group viewGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public Group viewGroup(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
             throw new IllegalArgumentException("Group ID must be specified.");
         }
@@ -706,7 +706,7 @@ public class MessageBirdClient {
      * @param id Conversation to retrieved.
      * @return The retrieved conversation.
      */
-    Conversation viewConversation(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public Conversation viewConversation(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified");
         }
@@ -721,7 +721,7 @@ public class MessageBirdClient {
      * @param status New status for the conversation.
      * @return The updated Conversation.
      */
-    Conversation updateConversation(final String id, final ConversationStatus status)
+    public Conversation updateConversation(final String id, final ConversationStatus status)
             throws UnauthorizedException, GeneralException {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified.");
@@ -737,7 +737,7 @@ public class MessageBirdClient {
      * @param limit  Number of objects to take.
      * @return List of conversations.
      */
-    ConversationList listConversations(final int offset, final int limit)
+    public ConversationList listConversations(final int offset, final int limit)
             throws UnauthorizedException, GeneralException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_PATH;
         return messageBirdService.requestList(url, offset, limit, ConversationList.class);
@@ -748,7 +748,7 @@ public class MessageBirdClient {
      *
      * @return List of conversations.
      */
-    ConversationList listConversations() throws UnauthorizedException, GeneralException {
+    public ConversationList listConversations() throws UnauthorizedException, GeneralException {
         final int offset = 0;
         final int limit = 10;
 
@@ -761,7 +761,7 @@ public class MessageBirdClient {
      * @param request Data for this request.
      * @return The created Conversation.
      */
-    Conversation startConversation(ConversationStartRequest request)
+    public Conversation startConversation(ConversationStartRequest request)
             throws UnauthorizedException, GeneralException {
         String url = String.format("%s%s/start", CONVERSATIONS_BASE_URL, CONVERSATION_PATH);
         return messageBirdService.sendPayLoad(url, request, Conversation.class);
@@ -775,7 +775,7 @@ public class MessageBirdClient {
      * @param limit          Number of objects to take.
      * @return List of messages.
      */
-    ConversationMessageList listConversationMessages(
+    public ConversationMessageList listConversationMessages(
             final String conversationId,
             final int offset,
             final int limit
@@ -811,7 +811,7 @@ public class MessageBirdClient {
      * @param messageId Message to retrieve.
      * @return The retrieved message.
      */
-    ConversationMessage viewConversationMessage(final String messageId)
+    public ConversationMessage viewConversationMessage(final String messageId)
             throws NotFoundException, GeneralException, UnauthorizedException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_MESSAGE_PATH;
         return messageBirdService.requestByID(url, messageId, ConversationMessage.class);
@@ -824,7 +824,7 @@ public class MessageBirdClient {
      * @param request        Message to send.
      * @return The newly created message.
      */
-    ConversationMessage sendConversationMessage(
+    public ConversationMessage sendConversationMessage(
             final String conversationId,
             final ConversationMessageRequest request
     ) throws UnauthorizedException, GeneralException {
@@ -843,7 +843,7 @@ public class MessageBirdClient {
      *
      * @param webhookId Webhook to delete.
      */
-    void deleteConversationWebhook(final String webhookId)
+    public void deleteConversationWebhook(final String webhookId)
             throws NotFoundException, GeneralException, UnauthorizedException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
         messageBirdService.deleteByID(url, webhookId);
@@ -855,7 +855,7 @@ public class MessageBirdClient {
      * @param request Webhook to create.
      * @return Newly created webhook.
      */
-    ConversationWebhook sendConversationWebhook(final ConversationWebhookRequest request)
+    public ConversationWebhook sendConversationWebhook(final ConversationWebhookRequest request)
             throws UnauthorizedException, GeneralException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.sendPayLoad(url, request, ConversationWebhook.class);
@@ -867,7 +867,7 @@ public class MessageBirdClient {
      * @param webhookId Webhook to retrieve.
      * @return The retrieved webhook.
      */
-    ConversationWebhook viewConversationWebhook(final String webhookId) throws NotFoundException, GeneralException, UnauthorizedException {
+    public ConversationWebhook viewConversationWebhook(final String webhookId) throws NotFoundException, GeneralException, UnauthorizedException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.requestByID(url, webhookId, ConversationWebhook.class);
     }
@@ -1008,7 +1008,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException        if client is unauthorized
      * @throws GeneralException             general exception
      */
-    VoiceCallLeg viewCallLegByCallIdAndLegId(final String callId, String legId) throws UnsupportedEncodingException, NotFoundException, GeneralException, UnauthorizedException {
+    public VoiceCallLeg viewCallLegByCallIdAndLegId(final String callId, String legId) throws UnsupportedEncodingException, NotFoundException, GeneralException, UnauthorizedException {
         if (callId == null) {
             throw new IllegalArgumentException("Voice call ID must be specified.");
         }
