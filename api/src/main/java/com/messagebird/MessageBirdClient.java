@@ -1118,7 +1118,7 @@ public class MessageBirdClient {
     }
 
     /**
-     * Function to view recording by call id , leg id and recording id
+     * Function to view recording by call id, leg id and recording id
      *
      * @param callID      Voice call ID
      * @param legId       Leg ID
