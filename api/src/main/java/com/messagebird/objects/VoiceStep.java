@@ -1,6 +1,7 @@
 package com.messagebird.objects;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class VoiceStep implements Serializable {
 
@@ -9,6 +10,9 @@ public class VoiceStep implements Serializable {
     private String id;
     private String action;
     private VoiceStepOption options;
+    private String onKeypressGoto;
+    private String onKeypressVar;
+    private List<Condition> conditions;
 
     public String getId() {
         return id;
@@ -34,12 +38,39 @@ public class VoiceStep implements Serializable {
         this.options = options;
     }
 
+    public String getOnKeypressGoto() {
+        return onKeypressGoto;
+    }
+
+    public void setOnKeypressGoto(String onKeypressGoto) {
+        this.onKeypressGoto = onKeypressGoto;
+    }
+
+    public String getOnKeypressVar() {
+        return onKeypressVar;
+    }
+
+    public void setOnKeypressVar(String onKeypressVar) {
+        this.onKeypressVar = onKeypressVar;
+    }
+
+    public List<Condition> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(List<Condition> conditions) {
+        this.conditions = conditions;
+    }
+
     @Override
     public String toString() {
         return "VoiceStep{" +
                 "id='" + id + '\'' +
                 ", action='" + action + '\'' +
-                ", options=" + options +
+                ", options='" + options + '\'' +
+                ", onKeypressGoto='" + onKeypressGoto + '\'' +
+                ", onKeypressVar='" + onKeypressVar + '\'' +
+                ", conditions=" + conditions +
                 '}';
     }
 }
