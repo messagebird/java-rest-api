@@ -115,4 +115,37 @@ class TestUtil {
         webhookResponseData.setData(Collections.singletonList(createWebhookResponse()));
         return webhookResponseData;
     }
+
+    private static Contact createContact(){
+        final CustomDetails customDetails = new CustomDetails();
+        customDetails.setCustom1("ANY_DETAIL");
+
+        final MessageReference messageReferance =  new MessageReference();
+        messageReferance.setHREF("ANY_HREF");
+        messageReferance.setTotalCount(30);
+
+        final GroupReference groupReference = new GroupReference();
+        groupReference.setHREF("ANY_HREF");
+        groupReference.setTotalCount(30);
+
+        final Contact contact = new Contact();
+        contact.setFirstName("ANY_NAME");
+        contact.setLastName("ANY_LAST_NAME");
+        contact.setId("ANY_ID");
+        contact.setCreatedDatetime(new Date());
+        contact.setMsisdn("ANY_MSISDN");
+        contact.setCustomDetails(customDetails);
+        contact.setMessages(messageReferance);
+        contact.setHref("ANY_HREF");
+        contact.setGroups(groupReference);
+        contact.setUpdatedDatetime(new Date());
+
+        return contact;
+    }
+    static ContactList createContactList() {
+        final ContactList contactList = new ContactList();
+        contactList.setItems(Collections.singletonList(createContact()));
+        return contactList;
+    }
+
 }
