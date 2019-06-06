@@ -120,9 +120,9 @@ class TestUtil {
         final CustomDetails customDetails = new CustomDetails();
         customDetails.setCustom1("ANY_DETAIL");
 
-        final MessageReference messageReferance =  new MessageReference();
-        messageReferance.setHREF("ANY_HREF");
-        messageReferance.setTotalCount(30);
+        final MessageReference messageReference =  new MessageReference();
+        messageReference.setHREF("ANY_HREF");
+        messageReference.setTotalCount(30);
 
         final GroupReference groupReference = new GroupReference();
         groupReference.setHREF("ANY_HREF");
@@ -135,7 +135,7 @@ class TestUtil {
         contact.setCreatedDatetime(new Date());
         contact.setMsisdn("ANY_MSISDN");
         contact.setCustomDetails(customDetails);
-        contact.setMessages(messageReferance);
+        contact.setMessages(messageReference);
         contact.setHref("ANY_HREF");
         contact.setGroups(groupReference);
         contact.setUpdatedDatetime(new Date());
