@@ -5,13 +5,16 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import org.junit.*;
-
+import org.mockito.Mockito;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class ContactTest {
 
     private static MessageBirdServiceImpl messageBirdService;
     private static MessageBirdClient messageBirdClient;
+    private static final String CONTACTPATH = "/contacts";
 
     private static String msisdn;
 
@@ -62,12 +65,20 @@ public class ContactTest {
 
     @Test
     public void testList() throws UnauthorizedException, GeneralException {
-        ContactList actual = messageBirdClient.listContacts();
+        final ContactList contactResponseList = TestUtil.createContactList();
 
-        assertSame(20, actual.getLimit());
-        assertSame(0, actual.getOffset());
-        assertNotSame(0, actual.getTotalCount());
-        assertNotNull(actual.getItems().get(0).getId());
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestList(Mockito.eq(CONTACTPATH), Mockito.eq(0), Mockito.eq(20),
+                Mockito.eq(ContactList.class)))
+                .thenReturn(contactResponseList);
+
+        final ContactList response = messageBirdClientInjectMock.listContacts();
+        verify(messageBirdServiceMock, times(1))
+                .requestList(Mockito.eq(CONTACTPATH), Mockito.eq(0), Mockito.eq(20),
+                        Mockito.eq(ContactList.class));
+        assertReflectionEquals(response.getItems().get(0),contactResponseList.getItems().get(0));
     }
 
     @Test

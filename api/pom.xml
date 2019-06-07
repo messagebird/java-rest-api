@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>2.1.0</version> <!--
+    <version>2.1.2</version> <!--
         are you going to bump a major number?
         then you are pleased to replace com.messagebird.Base64 with some library, for example net.iharder.base64
     -->
@@ -44,7 +42,8 @@
         <connection>scm:git:git@github.com:messagebird/java-rest-api.git</connection>
         <developerConnection>scm:git:git@github.com:messagebird/java-rest-api.git</developerConnection>
         <url>git@github.com:messagebird/java-rest-api.git</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <profiles>
         <profile>
@@ -54,8 +53,8 @@
             </activation>
             <properties>
                 <skipTests>true</skipTests>
-                <messageBirdAccessKey></messageBirdAccessKey>
-                <messageBirdMSISDN></messageBirdMSISDN>
+                <messageBirdAccessKey />
+                <messageBirdMSISDN />
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
             </properties>
         </profile>
@@ -73,8 +72,8 @@
             <properties>
                 <doclint>none</doclint>
                 <skipTests>true</skipTests>
-                <messageBirdAccessKey></messageBirdAccessKey>
-                <messageBirdMSISDN></messageBirdMSISDN>
+                <messageBirdAccessKey />
+                <messageBirdMSISDN />
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
             </properties>
         </profile>
@@ -100,6 +99,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
