@@ -855,10 +855,25 @@ public class MessageBirdClient {
      * @param request Webhook to create.
      * @return Newly created webhook.
      */
-    public ConversationWebhook sendConversationWebhook(final ConversationWebhookRequest request)
+    public ConversationWebhook sendConversationWebhook(final ConversationWebhookCreateRequest request)
             throws UnauthorizedException, GeneralException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.sendPayLoad(url, request, ConversationWebhook.class);
+    }
+
+    /**
+     * Update an existing webhook.
+     *
+     * @param request update request.
+     * @return Updated webhook.
+     */
+    public ConversationWebhook updateConversationWebhook(final String id, final ConversationWebhookUpdateRequest request) throws UnauthorizedException, GeneralException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Conversation webhook ID must be specified.");
+        }
+
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH + "/" + id;
+        return messageBirdService.sendPayLoad("PATCH", url, request, ConversationWebhook.class);
     }
 
     /**

@@ -3,43 +3,53 @@ package com.messagebird;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.conversations.ConversationWebhook;
-import com.messagebird.objects.conversations.ConversationWebhookEvent;
-import com.messagebird.objects.conversations.ConversationWebhookList;
-import com.messagebird.objects.conversations.ConversationWebhookRequest;
+import com.messagebird.objects.conversations.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ConversationWebhooksTest {
+    private static final String WHID = "whid";
+    private static final String CONVERSATIONS_WEBHOOK_URL = "https://conversations.messagebird.com/v1/webhooks";
+    private static final String CHANID = "chanid";
+    private static final String HTTPS_EXAMPLE_COM_WEBHOOKS = "https://example.com/webhooks";
 
-    private static final String EMPTY_RESPONSE_BODY = "";
-    private static final String JSON_WEBHOOK = "{\"id\": \"whid\",\"url\": \"https://example.com/webhooks\",\"channelId\": \"chanid\",\"events\": [\"message.created\"],\"createdDatetime\": \"2018-08-30T09:34:36Z\",\"updatedDatetime\": null}";
-    private static final String JSON_WEBHOOK_LIST = "{\"offset\": 10,\"limit\": 5,\"count\": 1,\"totalCount\": 11,\"items\": [{\"id\": \"whid\",\"url\": \"https://example.com/webhooks\",\"channelId\": \"chanid\",\"events\": [\"message.created\"],\"createdDatetime\": \"2018-08-24T14:46:39Z\",\"updatedDatetime\": null}]}";
 
-    private static final int STATUS_NO_CONTENT = 204;
+    private MessageBirdService mockMessageBirdService;
+    private MessageBirdClient messageBirdClient;
+
+    @Before
+    public void setUp() {
+        mockMessageBirdService = mock(MessageBirdService.class);
+        messageBirdClient = new MessageBirdClient(mockMessageBirdService);
+    }
 
     @Test
     public void testDeleteConversationWebhook() throws GeneralException, NotFoundException, UnauthorizedException {
-        MessageBirdService messageBirdService = SpyService
-                .expects("DELETE", "webhooks/whid")
-                .withConversationsAPIBaseURL()
-                .andReturns(new APIResponse(EMPTY_RESPONSE_BODY, STATUS_NO_CONTENT));
-        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        doNothing().when(mockMessageBirdService).deleteByID(HTTPS_EXAMPLE_COM_WEBHOOKS, WHID);
 
+        messageBirdClient.deleteConversationWebhook(WHID);
 
-        messageBirdClient.deleteConversationWebhook("whid");
+        verify(mockMessageBirdService, times(1)).deleteByID(CONVERSATIONS_WEBHOOK_URL, WHID);
     }
 
     @Test
     public void testListConversationWebhooks() throws GeneralException, UnauthorizedException {
-        MessageBirdService messageBirdService = SpyService
-                .expects("GET", "webhooks?offset=10&limit=5")
-                .withConversationsAPIBaseURL()
-                .andReturns(new APIResponse(JSON_WEBHOOK_LIST));
-        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        ConversationWebhookList conversationWebhookListResponse = mock(ConversationWebhookList.class);
+        ConversationWebhook conversationWebhook = new ConversationWebhook();
+        conversationWebhook.setId(WHID);
+        when(conversationWebhookListResponse.getItems()).thenReturn(Collections.singletonList(conversationWebhook));
+        when(conversationWebhookListResponse.getLimit()).thenReturn(5);
+        when(conversationWebhookListResponse.getOffset()).thenReturn(10);
+        when(conversationWebhookListResponse.getTotalCount()).thenReturn(11);
+        when(mockMessageBirdService.requestList(CONVERSATIONS_WEBHOOK_URL, 10, 5, ConversationWebhookList.class))
+                .thenReturn(conversationWebhookListResponse);
 
         ConversationWebhookList conversationWebhookList
                 = messageBirdClient.listConversationWebhooks(10, 5);
@@ -47,44 +57,104 @@ public class ConversationWebhooksTest {
         assertEquals(Integer.valueOf(10), conversationWebhookList.getOffset());
         assertEquals(Integer.valueOf(5), conversationWebhookList.getLimit());
         assertEquals(Integer.valueOf(11), conversationWebhookList.getTotalCount());
-        assertEquals("whid", conversationWebhookList.getItems().get(0).getId());
+        assertEquals(WHID, conversationWebhookList.getItems().get(0).getId());
     }
 
     @Test
     public void testSendConversationWebhook() throws GeneralException, UnauthorizedException {
-        ConversationWebhookRequest request = new ConversationWebhookRequest(
-                "chanid",
-                "https://example.com/webhooks",
+        ConversationWebhookCreateRequest request = new ConversationWebhookCreateRequest(
+                CHANID,
+                HTTPS_EXAMPLE_COM_WEBHOOKS,
                 Arrays.asList(
                         ConversationWebhookEvent.CONVERSATION_CREATED,
                         ConversationWebhookEvent.MESSAGE_CREATED
                 )
         );
 
-        MessageBirdService messageBirdService = SpyService
-                .expects("POST", "webhooks", request)
-                .withConversationsAPIBaseURL()
-                .andReturns(new APIResponse(JSON_WEBHOOK));
-        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
+        conversationWebhookResponse.setId(WHID);
+
+        when(mockMessageBirdService.sendPayLoad(CONVERSATIONS_WEBHOOK_URL, request, ConversationWebhook.class))
+                .thenReturn(conversationWebhookResponse);
 
         ConversationWebhook conversationWebhook = messageBirdClient.sendConversationWebhook(request);
 
-        assertEquals("whid", conversationWebhook.getId());
+        assertEquals(WHID, conversationWebhook.getId());
+    }
+
+    @Test
+    public void testUpdateConversationWebhook() throws GeneralException, UnauthorizedException {
+        ConversationWebhookUpdateRequest request = new ConversationWebhookUpdateRequest(
+                ConversationWebhookStatus.ENABLED,
+                HTTPS_EXAMPLE_COM_WEBHOOKS,
+                Arrays.asList(
+                        ConversationWebhookEvent.CONVERSATION_UPDATED,
+                        ConversationWebhookEvent.MESSAGE_UPDATED
+                )
+        );
+
+        ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
+        conversationWebhookResponse.setId(WHID);
+        conversationWebhookResponse.setUpdatedDatetime(new Date());
+
+        when(mockMessageBirdService.sendPayLoad("PATCH",CONVERSATIONS_WEBHOOK_URL + "/chanid", request, ConversationWebhook.class))
+                .thenReturn(conversationWebhookResponse);
+
+        ConversationWebhook conversationWebhook = messageBirdClient.updateConversationWebhook(CHANID, request);
+
+        assertEquals(WHID, conversationWebhook.getId());
+        assertNotNull(conversationWebhook.getUpdatedDatetime());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateConversationWebhookWithNullWebhookId() throws GeneralException, UnauthorizedException {
+        ConversationWebhookUpdateRequest request = new ConversationWebhookUpdateRequest(
+                ConversationWebhookStatus.ENABLED,
+                HTTPS_EXAMPLE_COM_WEBHOOKS,
+                Arrays.asList(
+                        ConversationWebhookEvent.CONVERSATION_UPDATED,
+                        ConversationWebhookEvent.MESSAGE_UPDATED
+                )
+        );
+
+        messageBirdClient = new MessageBirdClient(null);
+
+        messageBirdClient.updateConversationWebhook(null, request);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateConversationWebhookWithEmptyWebhookId() throws GeneralException, UnauthorizedException {
+        ConversationWebhookUpdateRequest request = new ConversationWebhookUpdateRequest(
+                ConversationWebhookStatus.ENABLED,
+                HTTPS_EXAMPLE_COM_WEBHOOKS,
+                Arrays.asList(
+                        ConversationWebhookEvent.CONVERSATION_UPDATED,
+                        ConversationWebhookEvent.MESSAGE_UPDATED
+                )
+        );
+
+        messageBirdClient = new MessageBirdClient(null);
+
+        messageBirdClient.updateConversationWebhook("", request);
     }
 
     @Test
     public void testViewConversationWebhook() throws GeneralException, NotFoundException, UnauthorizedException {
-        MessageBirdService messageBirdService = SpyService
-                .expects("GET", "webhooks/whid")
-                .withConversationsAPIBaseURL()
-                .andReturns(new APIResponse(JSON_WEBHOOK));
-        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
+        conversationWebhookResponse.setId(WHID);
+        conversationWebhookResponse.setUrl(HTTPS_EXAMPLE_COM_WEBHOOKS);
+        conversationWebhookResponse.setChannelId(CHANID);
+        conversationWebhookResponse.setEvents(Collections.singletonList(
+                ConversationWebhookEvent.MESSAGE_CREATED
+        ));
+        when(mockMessageBirdService.requestByID(CONVERSATIONS_WEBHOOK_URL, WHID, ConversationWebhook.class))
+                .thenReturn(conversationWebhookResponse);
 
-        ConversationWebhook conversationWebhook = messageBirdClient.viewConversationWebhook("whid");
+        ConversationWebhook conversationWebhook = messageBirdClient.viewConversationWebhook(WHID);
 
-        assertEquals("whid", conversationWebhook.getId());
-        assertEquals("https://example.com/webhooks", conversationWebhook.getUrl());
-        assertEquals("chanid", conversationWebhook.getChannelId());
+        assertEquals(WHID, conversationWebhook.getId());
+        assertEquals(HTTPS_EXAMPLE_COM_WEBHOOKS, conversationWebhook.getUrl());
+        assertEquals(CHANID, conversationWebhook.getChannelId());
         assertEquals(1, conversationWebhook.getEvents().size());
         assertEquals(ConversationWebhookEvent.MESSAGE_CREATED, conversationWebhook.getEvents().get(0));
     }
