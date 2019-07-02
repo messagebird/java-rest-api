@@ -1,7 +1,6 @@
 package com.messagebird.objects.conversations;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Request object used to update webhook.
