@@ -1,12 +1,10 @@
 package com.messagebird;
 
 import com.messagebird.objects.*;
+import com.messagebird.objects.conversations.*;
 import com.messagebird.objects.voicecalls.*;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 class TestUtil {
 
@@ -148,4 +146,36 @@ class TestUtil {
         return contactList;
     }
 
+    static ConversationWebhook createConversationWebhook() {
+        ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
+        conversationWebhookResponse.setId("whid");
+        conversationWebhookResponse.setUrl("https://example.com/webhooks");
+        conversationWebhookResponse.setChannelId("chanid");
+        conversationWebhookResponse.setEvents(Collections.singletonList(
+                ConversationWebhookEvent.MESSAGE_CREATED
+        ));
+        return conversationWebhookResponse;
+    }
+
+    static ConversationWebhookUpdateRequest createConversationWebhookUpdateRequest() {
+        return new ConversationWebhookUpdateRequest(
+                ConversationWebhookStatus.ENABLED,
+                "https://example.com/webhooks",
+                Arrays.asList(
+                        ConversationWebhookEvent.CONVERSATION_UPDATED,
+                        ConversationWebhookEvent.MESSAGE_UPDATED
+                )
+        );
+    }
+
+    static ConversationWebhookRequest createConversationWebhookRequest() {
+        return new ConversationWebhookRequest(
+                "chanid",
+                "https://example.com/webhooks",
+                Arrays.asList(
+                        ConversationWebhookEvent.CONVERSATION_CREATED,
+                        ConversationWebhookEvent.MESSAGE_CREATED
+                )
+        );
+    }
 }

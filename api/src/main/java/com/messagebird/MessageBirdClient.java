@@ -855,7 +855,7 @@ public class MessageBirdClient {
      * @param request Webhook to create.
      * @return Newly created webhook.
      */
-    public ConversationWebhook sendConversationWebhook(final ConversationWebhookCreateRequest request)
+    public ConversationWebhook sendConversationWebhook(final ConversationWebhookRequest request)
             throws UnauthorizedException, GeneralException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.sendPayLoad(url, request, ConversationWebhook.class);

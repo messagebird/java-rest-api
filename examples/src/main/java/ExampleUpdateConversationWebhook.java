@@ -6,16 +6,18 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.conversations.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ExampleUpdateConversationWebhook {
 
     public static void main(String[] args) {
-        if (args.length < 4 || args.length > 8) {
-            System.out.println("Please specify your access key, webhook id, enabled or not, url of webhook and events.\n" +
+        if (args.length < 1 || args.length > 8) {
+            System.out.println("Please at least specify your access key and a max of 8 arguments.\n" +
+                    "You can also specify a webhook id, enabled or not, url of webhook and events. Default value would be used if you don't\n" +
                     "Events can be a maximum of 4 between conversation.created, conversation.updated, message.created, message.updated\n" +
-                    "If third argument is enabled, then status of the webhook will be updated to enabled, otherwise will be disabled\n" +
-                    "Usage : java -jar <this jar file> test_accesskey webhook_title webhook-url");
+                    "If third argument is enabled, then status of the webhook will be updated to enabled, otherwise will be disabled\n\n" +
+                    "Usage : java -jar <this jar file> test_accesskey(Required) webhook_title(Optional) enabled(Optional) webhook-url(Optional) event1(Optional) event2(Optional) event3(Optional) event4(Optional)");
             return;
         }
 
@@ -29,23 +31,27 @@ public class ExampleUpdateConversationWebhook {
             //Creating webHook object to send client
             System.out.println("Updating conversation webhook..");
 
-            String[] arrayOfEvents = new String[args.length - 4];
-            System.arraycopy(args, 4, arrayOfEvents, 0, args.length - 4);
-
             ConversationWebhookUpdateRequest request = new ConversationWebhookUpdateRequest(
-                    args[2].equals("enabled") ? ConversationWebhookStatus.ENABLED : ConversationWebhookStatus.DISABLED,
-                    args[3],
-                    parseConversationWebHookEvents(arrayOfEvents)
+                    getStatus(args) ,
+                    getWebhookUrl(args),
+                    getConversationWebHookEvents(args)
             );
 
             //Sending ConversationWebHook update request
             final ConversationWebhook conversationWebhookResponse = messageBirdClient.updateConversationWebhook(args[1], request);
             //Display conversationWebhook response
-            System.out.println(conversationWebhookResponse.toString());
+            System.out.println(conversationWebhookResponse);
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();
         }
+    }
 
+    private static ConversationWebhookStatus getStatus(String[] args) {
+        return (args.length <= 3 || args[2].equals("enabled")) ? ConversationWebhookStatus.ENABLED : ConversationWebhookStatus.DISABLED;
+    }
+
+    private static String getWebhookUrl(String[] args) {
+        return args.length > 4 ? args[3] : "https://example-web-hook-url";
     }
 
     private static List<ConversationWebhookEvent> parseConversationWebHookEvents(String[] args) {
@@ -63,5 +69,15 @@ public class ExampleUpdateConversationWebhook {
         }
 
         return conversationWebhookEventList;
+    }
+
+    private static List<ConversationWebhookEvent> getConversationWebHookEvents(String[] args) {
+        if (args.length < 5)
+            return Arrays.asList(ConversationWebhookEvent.CONVERSATION_CREATED, ConversationWebhookEvent.MESSAGE_CREATED);
+
+        String[] arrayOfEvents = new String[args.length - 4];
+        System.arraycopy(args, 4, arrayOfEvents, 0, args.length - 4);
+
+        return parseConversationWebHookEvents(arrayOfEvents);
     }
 }

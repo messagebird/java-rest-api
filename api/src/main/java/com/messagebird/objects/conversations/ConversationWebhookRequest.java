@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * Request object used to create webhooks.
  */
-public class ConversationWebhookCreateRequest extends ConversationWebhookBaseRequest{
+public class ConversationWebhookRequest extends ConversationWebhookBaseRequest{
 
     private String channelId;
 
-    public ConversationWebhookCreateRequest(
+    public ConversationWebhookRequest(
             final String channelId,
             final String url,
             final List<ConversationWebhookEvent> events
@@ -21,7 +21,7 @@ public class ConversationWebhookCreateRequest extends ConversationWebhookBaseReq
 
     @Override
     protected String getRequestName() {
-        return "ConversationWebhookCreateRequest";
+        return "ConversationWebhookRequest";
     }
 
     @Override
