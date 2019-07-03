@@ -62,7 +62,7 @@ public class ConversationWebhooksTest {
 
     @Test
     public void testSendConversationWebhook() throws GeneralException, UnauthorizedException {
-        ConversationWebhookRequest request = createConversationWebhookRequest();
+        ConversationWebhookCreateRequest request = createConversationWebhookRequest();
 
         ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
         conversationWebhookResponse.setId(WHID);

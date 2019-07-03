@@ -168,8 +168,8 @@ class TestUtil {
         );
     }
 
-    static ConversationWebhookRequest createConversationWebhookRequest() {
-        return new ConversationWebhookRequest(
+    static ConversationWebhookCreateRequest createConversationWebhookRequest() {
+        return new ConversationWebhookCreateRequest(
                 "chanid",
                 "https://example.com/webhooks",
                 Arrays.asList(
