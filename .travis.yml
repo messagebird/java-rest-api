@@ -5,7 +5,3 @@ script: mvn test -Ptest -DskipTests=false -Dhttps.protocols=TLSv1.2 -DmessageBir
 jdk:
   - oraclejdk11
   - openjdk11
-matrix:
-  include:
-    - jdk: oraclejdk11
-      dist: precise
