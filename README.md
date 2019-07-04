@@ -23,27 +23,7 @@ cd java-rest-api/api
 mvn install
 ```
 
-If you are using maven simply add the messagebird API to your dependencies like this:
-
-```
-<dependency>
-    <groupId>com.messagebird</groupId>
-    <artifactId>messagebird-api</artifactId>
-    <version>2.1.1</version>
-</dependency>
-```
-
-In case you are building without maven you still need maven to build the libraries but
-then simply copy the following jar's over to your project
-
-```
-messagebird-api-2.1.1.jar
-jackson-core-2.9.8.jar
-jackson-databind-2.9.8.jar
-jackson-dataformat-csv-2.9.8.jar
-jackson-annotations-2.9.8.jar
-```
-
+If you are using maven, please refer to the [mvn repository](https://mvnrepository.com/artifact/com.messagebird/messagebird-api) and choose your desired package version.
 
 Examples
 --------
