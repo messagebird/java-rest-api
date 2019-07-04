@@ -3,11 +3,5 @@ dist: trusty
 before_script: cd api/
 script: mvn test -Ptest -DskipTests=false -Dhttps.protocols=TLSv1.2 -DmessageBirdAccessKey=test_iQpAp0KCs5GCsMpDhIx2leuNB -DmessageBirdMSISDN=31612345678
 jdk:
-  - oraclejdk8
-  - oraclejdk9
-  - openjdk7
-  - openjdk8
-matrix:
-  include:
-    - jdk: oraclejdk7
-      dist: precise
+  - oraclejdk11
+  - openjdk11

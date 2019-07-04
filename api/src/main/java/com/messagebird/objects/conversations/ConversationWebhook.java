@@ -2,6 +2,7 @@ package com.messagebird.objects.conversations;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Webhooks enable real-time notifications of conversation events to be
@@ -15,6 +16,7 @@ public class ConversationWebhook {
     private String id;
     private String channelId;
     private String url;
+    private ConversationWebhookStatus status;
     private List<ConversationWebhookEvent> events;
     private Date createdDatetime;
     private Date updatedDatetime;
@@ -41,6 +43,14 @@ public class ConversationWebhook {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public ConversationWebhookStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConversationWebhookStatus status) {
+        this.status = status;
     }
 
     public List<ConversationWebhookEvent> getEvents() {
@@ -73,9 +83,12 @@ public class ConversationWebhook {
                 "id='" + id + '\'' +
                 ", channelId='" + channelId + '\'' +
                 ", url='" + url + '\'' +
-                ", events=" + events +
+                ", status='" + status  + '\'' +
+                ", events=" + events.stream().map(ConversationWebhookEvent::toString).collect(Collectors.joining(",")) +
                 ", createdDatetime=" + createdDatetime +
                 ", updatedDatetime=" + updatedDatetime +
                 '}';
     }
+
+
 }
