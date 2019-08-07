@@ -6,8 +6,6 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
 import com.messagebird.objects.voicecalls.*;
-import com.messagebird.objects.voicecalls.VoiceCallLeg;
-import com.messagebird.objects.voicecalls.VoiceCallLegResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -64,6 +62,7 @@ public class MessageBirdClient {
     static final String RECORDINGPATH = "/recordings";
     static final String TRANSCRIPTIONPATH = "/transcriptions";
     static final String WEBHOOKS = "/webhooks";
+    static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
 
     private MessageBirdService messageBirdService;
@@ -532,6 +531,59 @@ public class MessageBirdClient {
         final LookupHlr lookupHlr = new LookupHlr();
         lookupHlr.setPhoneNumber(phoneNumber);
         return this.viewLookupHlr(lookupHlr);
+    }
+
+    /**
+     * Convenient function to list all call flows 
+     *
+     * @param offset     
+     * @param limit       
+     * @return VoiceCallFlowList
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public VoiceCallFlowList listVoiceCallFlows(final Integer offset, final Integer limit) 
+        throws UnauthorizedException, GeneralException {
+        if (offset != null && offset < 0) {
+            throw new IllegalArgumentException("Offset must be > 0");
+        }
+        if (limit != null && limit < 0) {
+            throw new IllegalArgumentException("Limit must be > 0");
+        }
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
+
+        return messageBirdService.requestList(url, offset, limit, VoiceCallFlowList.class);
+    }
+
+    /**
+     * Convenient function to create a call flow 
+     *
+     * @param VoiceCallFlowRequest     
+     * @return VoiceCallFlowResponse
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public VoiceCallFlowResponse sendVoiceCallFlow(final VoiceCallFlowRequest voiceCallFlowRequest)
+        throws UnauthorizedException, GeneralException {
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
+
+        return messageBirdService.sendPayLoad(url, voiceCallFlowRequest, VoiceCallFlowResponse.class);
+    }
+
+    /**
+     * Convenient function to delete call flow 
+     *
+     * @param String     
+     * @return void
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    void deleteVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Voice Call Flow ID must be specified.");
+        }
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
+        messageBirdService.deleteByID(url, id);
     }
 
     /**

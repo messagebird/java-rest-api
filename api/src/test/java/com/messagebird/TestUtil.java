@@ -146,6 +146,39 @@ class TestUtil {
         return contactList;
     }
 
+    /*
+     * @TODO add more options here
+     */
+    private static VoiceStepOption createVoiceStepOption()
+    {
+        final VoiceStepOption voiceStepOption = new VoiceStepOption();
+        voiceStepOption.setDestination("31612345678");
+        return voiceStepOption;
+    }
+
+    /*
+     * @TODO consider expanding the voiceStep to include more options
+     */
+    public static VoiceStep createVoiceStep() {
+        final VoiceStep voiceStep = new VoiceStep();
+        voiceStep.setId("ANY_ID");
+        voiceStep.setAction("transfer");
+        voiceStep.setOptions(createVoiceStepOption());
+        return voiceStep;
+    }
+
+    private static VoiceCallFlow createCallFlow() {
+        final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
+        voiceCallFlow.setId("ANY_ID");
+        voiceCallFlow.setTitle("ANY_TITLE");
+        voiceCallFlow.setRecord(true);
+        voiceCallFlow.setSteps(Collections.singletonList(createVoiceStep()));
+        voiceCallFlow.setDefaultWebRtc(true);
+        voiceCallFlow.setDefaultCall(true);
+
+        return voiceCallFlow;
+    }
+
     static ConversationWebhook createConversationWebhook() {
         ConversationWebhook conversationWebhookResponse = new ConversationWebhook();
         conversationWebhookResponse.setId("whid");

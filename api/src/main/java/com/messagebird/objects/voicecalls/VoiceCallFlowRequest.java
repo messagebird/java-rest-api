@@ -1,36 +1,35 @@
 package com.messagebird.objects.voicecalls;
 
-import com.messagebird.objects.VoiceStep;
+import java.util.List;
+import java.util.Date;
+import com.messagebird.objects.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+/**
+ * Contains writable values for VoiceCallFlow objects.
+ */
+public class VoiceCallFlowRequest {
 
-public class VoiceCallFlow implements Serializable {
-
-    private static final long serialVersionUID = -6885592947212493454L;
-
+ 
     private String id;
     private String title;
     private boolean record;
     private List<VoiceStep> steps;
-
-    /*
-     * default is reserved name in JAVA so we use alternate name
-     */
+    
     @JsonProperty("default")
     private boolean defaultCall;
-
-    /* Possibly deprecated */
     private boolean defaultWebRtc;
-
     private Date createdAt;
     private Date updatedAt;
 
-    @JsonProperty("_links")
-    private Map<String, String> links;
+    public VoiceCallFlowRequest(String id)
+    {
+        this.id = id;
+    }
+
+    public VoiceCallFlowRequest() 
+    {
+    }
 
     public String getId() {
         return id;
@@ -64,20 +63,20 @@ public class VoiceCallFlow implements Serializable {
         this.steps = steps;
     }
 
-    public boolean isDefaultWebRtc() {
-        return this.defaultWebRtc;
-    }
-
-    public void setDefaultWebRtc(boolean defaultWebRtc) {
-        this.defaultWebRtc = defaultWebRtc;
-    }
-
     public boolean isDefaultCall() {
         return defaultCall;
     }
 
     public void setDefaultCall(boolean defaultCall) {
         this.defaultCall = defaultCall;
+    }
+
+    public boolean isDefaultWebRtc() {
+        return defaultWebRtc;
+    }
+
+    public void setDefaultWebRtc(boolean defaultWebRtc) {
+        this.defaultWebRtc = defaultWebRtc;
     }
 
     public Date getCreatedAt() {
@@ -99,8 +98,7 @@ public class VoiceCallFlow implements Serializable {
     @Override
     public String toString() {
         return "VoiceCallFlow{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", record=" + record +
                 ", steps=" + steps +
                 ", default=" + defaultCall +
