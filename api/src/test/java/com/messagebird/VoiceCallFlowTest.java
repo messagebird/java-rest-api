@@ -5,12 +5,14 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import com.messagebird.objects.voicecalls.*;
+import com.messagebird.util.Resources;
 
 import org.junit.*;
 import org.mockito.Mockito;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import java.util.*;
 
 /*
@@ -22,128 +24,244 @@ public class VoiceCallFlowTest {
 
     private static MessageBirdServiceImpl messageBirdService;
     private static MessageBirdClient messageBirdClient;
+    private static String NOT_FOUND_ERROR = "{\"data\":null,\"errors\":[{\"message\":\"No call flow found for ID `1`.\",\"code\":13}]}";
+
+    /*
+     * We define a fixture and we test against the fixture all the setters and getters
+     * as well as the transformation of the JSON retrieved
+     */
+    @Test
+    public void testCreate() throws GeneralException, UnauthorizedException {
+        VoiceCallFlowRequest voiceCallFlowRequest = TestUtil.createVoiceCallFlowRequest();
+        String responseFixture = Resources.readResourceText("/fixtures/call_flows_post.json");
+
+        MessageBirdService messageBirdService = SpyService
+            .expects("POST", "call-flows", voiceCallFlowRequest)
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlow voiceCallFlow = messageBirdClient.sendVoiceCallFlow(voiceCallFlowRequest).getData().get(0);
+        this.testVoiceCallFlowAgainstFixture(voiceCallFlow);
+    }
+
+    @Test
+    public void testView() throws GeneralException, UnauthorizedException, NotFoundException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flow_view.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows/e781a76f-14ad-45b0-8490-409300244e20")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlow voiceCallFlow = messageBirdClient
+            .viewVoiceCallFlow("e781a76f-14ad-45b0-8490-409300244e20")
+            .getData()
+            .get(0);
+        this.testVoiceCallFlowAgainstFixture(voiceCallFlow);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testViewShouldThrowInvalidArgumentException() throws NotFoundException, GeneralException, UnauthorizedException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flow_view.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows/e781a76f-14ad-45b0-8490-409300244e20")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient
+            .viewVoiceCallFlow(null);
+    }
+
+    @Test
+    public void testUpdate() throws GeneralException, UnauthorizedException, NotFoundException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flow_update_response.json");
+
+        VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest("e781a76f-14ad-45b0-8490-409300244e20");
+        voiceCallFlowRequest.setTitle("Forward call to 316123456782");
+        voiceCallFlowRequest.setDefaultCall(true);
+        voiceCallFlowRequest.setRecord(true);
+        VoiceStep voiceStep = new VoiceStep();
+        voiceStep.setId("a8e44a38-b935-482f-b17f-ed3472c6292c");
+        voiceStep.setAction("transfer");
+        VoiceStepOption voiceStepOption = new VoiceStepOption();
+        voiceStepOption.setDestination("123");
+        voiceStepOption.setPayload("Test payload Update");
+        voiceStepOption.setLanguage("en-US");
+        voiceStepOption.setVoice("female");
+        voiceStepOption.setRepeat("5");
+        voiceStepOption.setMedia("test.wav");
+        voiceStepOption.setLength(10);
+        voiceStepOption.setMaxLength(20);
+        voiceStepOption.setTimeout(30);
+        voiceStepOption.setFinishOnKey("#");
+        voiceStepOption.setTranscribe(true);
+        voiceStepOption.setTranscribeLanguage("en-US");
+        voiceStepOption.setRecord("in");
+        voiceStepOption.setUrl("http://www.");
+        voiceStepOption.setIfMachine("machine1");
+        voiceStepOption.setMachineTimeout(2000);
+        voiceStepOption.setOnFinish("http://www.");
+        voiceStepOption.setMask(false);
+        voiceStep.setOptions(voiceStepOption);
+        voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep));
+
+        MessageBirdService messageBirdService = SpyService
+            .expects("PUT", "call-flows/e781a76f-14ad-45b0-8490-409300244e20", voiceCallFlowRequest)
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        
+        VoiceCallFlow voiceCallFlow = messageBirdClient
+            .updateVoiceCallFlow("e781a76f-14ad-45b0-8490-409300244e20", voiceCallFlowRequest)
+            .getData()
+            .get(0);
+        this.testVoiceCallFlowAgainstFixture(voiceCallFlow);
+    }
+
+    @Test (expected = GeneralException.class)
+    public void testUpdateGeneralException() throws GeneralException, UnauthorizedException {
+        VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest("123");
+        MessageBirdService messageBirdService = SpyService
+            .expects("PUT", "call-flows/123", voiceCallFlowRequest)
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(NOT_FOUND_ERROR, HTTP_NOT_FOUND));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient
+            .updateVoiceCallFlow("123", voiceCallFlowRequest);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateIllegalArgumentException() throws GeneralException, UnauthorizedException {
+        VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest("123");
+        MessageBirdService messageBirdService = SpyService
+            .expects("PUT", "call-flows/123", voiceCallFlowRequest)
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(NOT_FOUND_ERROR, HTTP_NOT_FOUND));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient
+            .updateVoiceCallFlow(null, voiceCallFlowRequest);
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void testViewNotFoundException() throws NotFoundException, GeneralException, UnauthorizedException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flow_view.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows/e781a76f-14ad-45b0-8490-409300244e20")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(NOT_FOUND_ERROR, HTTP_NOT_FOUND));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlow voiceCallFlow = messageBirdClient
+            .viewVoiceCallFlow("e781a76f-14ad-45b0-8490-409300244e20")
+            .getData()
+            .get(0);
+
+    }
+
+    @Test
+    public void testList() throws GeneralException, UnauthorizedException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flows_list.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows?offset=0&limit=0")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(0, 0);
+        assertEquals((int) voiceCallFlowList.getItems().size(), 1);
+        assertEquals((int) voiceCallFlowList.getTotalCount(), 10);
+        assertEquals((int) voiceCallFlowList.getPageCount(), 3);
+        assertEquals((int) voiceCallFlowList.getCurrentPage(), 2);
+        assertEquals((int) voiceCallFlowList.getPerPage(), 12);
+        VoiceCallFlow voiceCallFlow = voiceCallFlowList.getItems().get(0);
+        this.testVoiceCallFlowAgainstFixture(voiceCallFlow);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testListShouldThrowInvalidArgumentException()
+        throws GeneralException, UnauthorizedException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flows_list.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows?offset=0&limit=0")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(-1, 0);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testListShouldThrowInvalidArgumentExceptionForLimit()
+        throws GeneralException, UnauthorizedException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flows_list.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows?offset=0&limit=0")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(0, -1);
+    }   
+
+    @Test
+    public void testDelete() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdService = SpyService
+            .expects("DELETE", "call-flows/123abc")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse("", HTTP_NO_CONTENT));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient.deleteVoiceCallFlow("123abc");
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void testDeleteNotFoundException() throws NotFoundException, GeneralException, UnauthorizedException {
+        // test not found exception
+        MessageBirdService messageBirdService = SpyService
+            .expects("DELETE", "call-flows/123abc")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse("", HTTP_NOT_FOUND));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient.deleteVoiceCallFlow("123abc");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testDeleteIllegalArgumentException() throws NotFoundException, GeneralException, UnauthorizedException {
+        // test not found exception
+        MessageBirdService messageBirdService = SpyService
+            .expects("DELETE", "call-flows/123abc")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse("", HTTP_NOT_FOUND));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        messageBirdClient.deleteVoiceCallFlow(null);
+    }
 
     /**
-     * VoiceCallFlow object to operate on during tests.
+     * In order to reuse this method for further tests you need to make sure that the fixtures
+     * match the date in this test. See call_flows_post.json
      */
-    private static VoiceCallFlow voiceCallFlow;
-    private static VoiceCallFlow voiceCallFlowFixture;
-
-    @BeforeClass
-    public static void setUpClass() throws UnauthorizedException, GeneralException {
-        String accessKey = System.getProperty("messageBirdAccessKey");
-        messageBirdService = new MessageBirdServiceImpl(accessKey);
-        messageBirdClient = new MessageBirdClient(messageBirdService);
-        voiceCallFlowFixture = new VoiceCallFlow();
-        voiceCallFlowFixture.setTitle("Test Title");
-        voiceCallFlowFixture.setDefaultCall(false);
-        voiceCallFlowFixture.setDefaultWebRtc(true);
-        voiceCallFlowFixture.setRecord(true);
-        voiceCallFlowFixture.setSteps(Collections.singletonList(TestUtil.createVoiceStep()));
-        VoiceCallFlowResponse voiceCallFlowResponse = createVoiceCallFlow(voiceCallFlowFixture);
-        voiceCallFlow = voiceCallFlowResponse.getData().get(0);
-
-    }
-
-    /*
-     * static method used for creating a VoiceCallFlow from the fixture defined at class level
-     */
-    private static VoiceCallFlowResponse createVoiceCallFlow(VoiceCallFlow voiceCallFlowFixture) throws UnauthorizedException, GeneralException {
-        VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest();
-        voiceCallFlowRequest.setTitle(voiceCallFlowFixture.getTitle());
-        voiceCallFlowRequest.setRecord(voiceCallFlowFixture.isRecord());
-        voiceCallFlowRequest.setDefaultCall(voiceCallFlowFixture.isDefaultCall());
-        voiceCallFlowRequest.setSteps(voiceCallFlowFixture.getSteps());
-
-        return messageBirdClient.sendVoiceCallFlow(voiceCallFlowRequest);
-    }
-
-    /*
-     * For this test we are checking if the CallFlow inserted in the setup is visible in the list
-     * This way we test the Create SDK and the List method in one test
-     */
-    @Test
-    public void testCreateAndList() throws UnauthorizedException, GeneralException {
-        VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(0, 0);
-        VoiceCallFlow foundVoiceCall = null;
-        Iterator<VoiceCallFlow> items = voiceCallFlowList.getItems().iterator();
-        while (items.hasNext()) {
-            VoiceCallFlow nextItem = items.next();
-            if (nextItem.getId().equals(voiceCallFlow.getId())) {
-                foundVoiceCall = nextItem;
-            }
-        }
-        assertNotNull(foundVoiceCall);
-        assertEquals(foundVoiceCall.getTitle(), this.voiceCallFlowFixture.getTitle());
-        assertEquals(foundVoiceCall.isDefaultCall(), this.voiceCallFlowFixture.isDefaultCall());
-        assertEquals(foundVoiceCall.getSteps().size(), this.voiceCallFlowFixture.getSteps().size());
-    }
-
-    /*
-     * In this test we are making use of the previous fixture and object defined
-     */
-    @Test
-    public void testUpdate() throws UnauthorizedException, GeneralException {
-
-    }
-
-    @Test
-    public void testView() throws UnauthorizedException, GeneralException {
-
-    }
-
-    /*
-     * The purpose of this method is to create various scenarios in regards
-     * to creating steps
-     */
-    public void testCreateSteps() {
-        // null steps
-        // duplicate steps
-        // test Media field - string
-        // test media field - array
-        // test 2 Steps
-        // test 3 options for a step
-        // ensure each type of option is visible
-    }
-
-    /*
-     * The purpose of this method is to update stepOptions and stepActions
-     * with various values and ensure that these values become visible
-     */
-    public void testUpdateSteps() {
-        // test update for all fields
-        // ensure the values have been update for each field
-        // convert media field from string to array
-        // update all elements and ensure they are visible
-    }
-
-    /**
-     * This method tests the create and delete at the same time. In case the delete
-     * fails, then the fixture inserted in setup() will still be avaialble
-     * on the environment and will require a separate removal
-     */
-    @Test
-    public void testCreateAndDelete()
-    throws UnauthorizedException, GeneralException, NotFoundException {
-        VoiceCallFlowResponse voiceCallFlowResponse = createVoiceCallFlow(voiceCallFlowFixture);
-        String id = voiceCallFlowResponse.getData().get(0).getId();
-        messageBirdClient.deleteVoiceCallFlow(
-            id
-        );
-        VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(0, 0);
-        boolean isVoiceCallFound = false;
-        Iterator<VoiceCallFlow> items = voiceCallFlowList.getItems().iterator();
-        while (items.hasNext()) {
-            VoiceCallFlow nextItem = items.next();
-            if (nextItem.getId().equals(id)) {
-                isVoiceCallFound = true;
-            }
-        }
-        assertEquals(false, isVoiceCallFound);
-    }
-
-    @AfterClass
-    public static void tearDown() throws UnauthorizedException, GeneralException, NotFoundException {
-        messageBirdClient.deleteVoiceCallFlow(voiceCallFlow.getId());
+    private void testVoiceCallFlowAgainstFixture(VoiceCallFlow voiceCallFlow) {
+        assertEquals(voiceCallFlow.getId(), "e781a76f-14ad-45b0-8490-409300244e20");
+        assertEquals(voiceCallFlow.getTitle(), "Forward call to 31612345678");
+        assertEquals(voiceCallFlow.isRecord(), true);
+        assertEquals(voiceCallFlow.isDefaultCall(), false);
+        assertEquals(voiceCallFlow.getCreatedAt().toString(), "Tue Aug 06 16:13:06 CEST 2019");
+        assertEquals(voiceCallFlow.getUpdatedAt().toString(), "Tue Aug 06 16:13:06 CEST 2019");
+        assertEquals(voiceCallFlow.getSteps().size(), 1);
+        VoiceStep voiceStep = voiceCallFlow.getSteps().get(0);
+        assertEquals(voiceStep.getId(), "a8e44a38-b935-482f-b17f-ed3472c6292c");
+        assertEquals(voiceStep.getAction(), "transfer");
+        VoiceStepOption voiceStepOption = voiceStep.getOptions();
+        assertEquals(voiceStepOption.getDestination(), "31612345678");
+        assertEquals(voiceStepOption.getPayload(), "Test payload");
+        assertEquals(voiceStepOption.getLanguage(), "en-GB");
+        assertEquals(voiceStepOption.getVoice(), "male");
+        assertEquals(voiceStepOption.getRepeat(), "1");
+        assertEquals(voiceStepOption.getMedia(), "test.mp3");
+        assertEquals(voiceStepOption.getFinishOnKey(), "1");
+        assertEquals(voiceStepOption.getTranscribeLanguage(), "en-GB");
+        assertEquals(voiceStepOption.getRecord(), "both");
+        assertEquals(voiceStepOption.getUrl(), "http://");
+        assertEquals(voiceStepOption.getIfMachine(), "ifMachine");
+        assertEquals(voiceStepOption.getMachineTimeout(), 200);
+        assertEquals(voiceStepOption.getOnFinish(), "http://");
+        assertEquals(voiceStepOption.getLength(), 1);
+        assertEquals(voiceStepOption.getTimeout(), 3);
+        assertEquals(voiceStepOption.getMaxLength(), 2);
+        assertEquals(voiceStepOption.isTranscribe(), false);
     }
 }

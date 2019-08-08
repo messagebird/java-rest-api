@@ -20,8 +20,7 @@ public class VoiceCallFlowList implements Serializable {
     @JsonProperty("_links")
     private Map<String, String> links;
 
-    @JsonProperty("pagination")
-    private Map<String, String> pagination;
+    private Pagination pagination;
 
     private List<VoiceCallFlow> items;
 
@@ -40,18 +39,26 @@ public class VoiceCallFlowList implements Serializable {
                 '}';
     }
 
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public Integer getLimit() {
-        return limit;
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
     }
 
     public Integer getTotalCount() {
-        return totalCount;
+        return this.pagination.getTotalCount();
     }
+
+    public Integer getPageCount() {
+        return this.pagination.getPageCount();
+    }
+
+    public Integer getCurrentPage() {
+        return this.pagination.getCurrentPage();
+    }
+
+    public Integer getPerPage() {
+        return this.pagination.getPerPage();
+    }
+
 
     public List<VoiceCallFlow> getItems() {
         return items;

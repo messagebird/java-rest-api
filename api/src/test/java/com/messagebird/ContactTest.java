@@ -10,6 +10,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
+/**
+ * @deprecated - This is an integration test, not a unit test and it should
+ * be refactored to use mocks instead of LIVE API
+ */
 public class ContactTest {
 
     private static MessageBirdServiceImpl messageBirdService;

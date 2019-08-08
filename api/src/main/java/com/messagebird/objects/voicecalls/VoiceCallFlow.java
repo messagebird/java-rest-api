@@ -23,9 +23,6 @@ public class VoiceCallFlow implements Serializable {
     @JsonProperty("default")
     private boolean defaultCall;
 
-    /* Possibly deprecated */
-    private boolean defaultWebRtc;
-
     private Date createdAt;
     private Date updatedAt;
 
@@ -64,14 +61,6 @@ public class VoiceCallFlow implements Serializable {
         this.steps = steps;
     }
 
-    public boolean isDefaultWebRtc() {
-        return this.defaultWebRtc;
-    }
-
-    public void setDefaultWebRtc(boolean defaultWebRtc) {
-        this.defaultWebRtc = defaultWebRtc;
-    }
-
     public boolean isDefaultCall() {
         return defaultCall;
     }
@@ -104,7 +93,6 @@ public class VoiceCallFlow implements Serializable {
                 ", record=" + record +
                 ", steps=" + steps +
                 ", default=" + defaultCall +
-                ", defaultWebRtc=" + defaultWebRtc +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
