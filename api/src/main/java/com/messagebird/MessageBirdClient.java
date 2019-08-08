@@ -556,6 +556,19 @@ public class MessageBirdClient {
     }
 
     /**
+     * Retrieves the information of an existing Call Flow. You only need to supply
+     * the unique call flow ID that was returned upon creation or receiving.
+     */
+    public VoiceCallFlowResponse viewVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Call Flow ID must be specified.");
+        }
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
+
+        return messageBirdService.requestByID(url, id, VoiceCallFlowResponse.class);
+    }
+
+    /**
      * Convenient function to create a call flow 
      *
      * @param VoiceCallFlowRequest     
@@ -570,6 +583,21 @@ public class MessageBirdClient {
         return messageBirdService.sendPayLoad(url, voiceCallFlowRequest, VoiceCallFlowResponse.class);
     }
 
+    /**
+     * Updates an existing Call Flow. You only need to supply the unique id that
+     * was returned upon creation.
+     */
+    public VoiceCallFlowResponse updateVoiceCallFlow(final String id, VoiceCallFlowRequest voiceCallFlowRequest)
+        throws UnauthorizedException, GeneralException {
+        if (id == null) {
+            throw new IllegalArgumentException("Call Flow ID must be specified.");
+        }
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
+        String request = url + "/" + id;
+
+        return messageBirdService.sendPayLoad("PUT", request, voiceCallFlowRequest, VoiceCallFlowResponse.class);
+    }
+    
     /**
      * Convenient function to delete call flow 
      *

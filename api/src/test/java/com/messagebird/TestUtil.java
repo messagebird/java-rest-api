@@ -146,9 +146,6 @@ class TestUtil {
         return contactList;
     }
 
-    /*
-     * @TODO add more options here
-     */
     private static VoiceStepOption createVoiceStepOption()
     {
         final VoiceStepOption voiceStepOption = new VoiceStepOption();
@@ -156,9 +153,6 @@ class TestUtil {
         return voiceStepOption;
     }
 
-    /*
-     * @TODO consider expanding the voiceStep to include more options
-     */
     public static VoiceStep createVoiceStep() {
         final VoiceStep voiceStep = new VoiceStep();
         voiceStep.setId("ANY_ID");
@@ -167,13 +161,12 @@ class TestUtil {
         return voiceStep;
     }
 
-    private static VoiceCallFlow createCallFlow() {
-        final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
+    public static VoiceCallFlowRequest createVoiceCallFlowRequest() {
+        final VoiceCallFlowRequest voiceCallFlow = new VoiceCallFlowRequest();
         voiceCallFlow.setId("ANY_ID");
         voiceCallFlow.setTitle("ANY_TITLE");
         voiceCallFlow.setRecord(true);
         voiceCallFlow.setSteps(Collections.singletonList(createVoiceStep()));
-        voiceCallFlow.setDefaultWebRtc(true);
         voiceCallFlow.setDefaultCall(true);
 
         return voiceCallFlow;
