@@ -25,6 +25,11 @@ public class VoiceCallFlowTest {
     private static MessageBirdServiceImpl messageBirdService;
     private static MessageBirdClient messageBirdClient;
     private static String NOT_FOUND_ERROR = "{\"data\":null,\"errors\":[{\"message\":\"No call flow found for ID `1`.\",\"code\":13}]}";
+    
+    @BeforeClass
+    public static void setUpClass() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Amsterdam"));
+    }
 
     /*
      * We define a fixture and we test against the fixture all the setters and getters
@@ -79,30 +84,11 @@ public class VoiceCallFlowTest {
         voiceCallFlowRequest.setTitle("Forward call to 316123456782");
         voiceCallFlowRequest.setDefaultCall(true);
         voiceCallFlowRequest.setRecord(true);
-        VoiceStep voiceStep = new VoiceStep();
-        voiceStep.setId("a8e44a38-b935-482f-b17f-ed3472c6292c");
-        voiceStep.setAction("transfer");
-        VoiceStepOption voiceStepOption = new VoiceStepOption();
-        voiceStepOption.setDestination("123");
-        voiceStepOption.setPayload("Test payload Update");
-        voiceStepOption.setLanguage("en-US");
-        voiceStepOption.setVoice("female");
-        voiceStepOption.setRepeat("5");
-        voiceStepOption.setMedia("test.wav");
-        voiceStepOption.setLength(10);
-        voiceStepOption.setMaxLength(20);
-        voiceStepOption.setTimeout(30);
-        voiceStepOption.setFinishOnKey("#");
-        voiceStepOption.setTranscribe(true);
-        voiceStepOption.setTranscribeLanguage("en-US");
-        voiceStepOption.setRecord("in");
-        voiceStepOption.setUrl("http://www.");
-        voiceStepOption.setIfMachine("machine1");
-        voiceStepOption.setMachineTimeout(2000);
-        voiceStepOption.setOnFinish("http://www.");
-        voiceStepOption.setMask(false);
-        voiceStep.setOptions(voiceStepOption);
-        voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep));
+        voiceCallFlowRequest.setSteps(
+            Collections.singletonList(
+                TestUtil.createVoiceStep()
+            )
+        );
 
         MessageBirdService messageBirdService = SpyService
             .expects("PUT", "call-flows/e781a76f-14ad-45b0-8490-409300244e20", voiceCallFlowRequest)

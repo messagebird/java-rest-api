@@ -149,13 +149,30 @@ class TestUtil {
     private static VoiceStepOption createVoiceStepOption()
     {
         final VoiceStepOption voiceStepOption = new VoiceStepOption();
-        voiceStepOption.setDestination("31612345678");
+        voiceStepOption.setDestination("123");
+        voiceStepOption.setPayload("Test payload Update");
+        voiceStepOption.setLanguage("en-US");
+        voiceStepOption.setVoice("female");
+        voiceStepOption.setRepeat("5");
+        voiceStepOption.setMedia("test.wav");
+        voiceStepOption.setLength(10);
+        voiceStepOption.setMaxLength(20);
+        voiceStepOption.setTimeout(30);
+        voiceStepOption.setFinishOnKey("#");
+        voiceStepOption.setTranscribe(true);
+        voiceStepOption.setTranscribeLanguage("en-US");
+        voiceStepOption.setRecord("in");
+        voiceStepOption.setUrl("http://www.");
+        voiceStepOption.setIfMachine("machine1");
+        voiceStepOption.setMachineTimeout(2000);
+        voiceStepOption.setOnFinish("http://www.");
+        voiceStepOption.setMask(false);
         return voiceStepOption;
     }
 
     public static VoiceStep createVoiceStep() {
         final VoiceStep voiceStep = new VoiceStep();
-        voiceStep.setId("ANY_ID");
+        voiceStep.setId("a8e44a38-b935-482f-b17f-ed3472c6292c");
         voiceStep.setAction("transfer");
         voiceStep.setOptions(createVoiceStepOption());
         return voiceStep;
