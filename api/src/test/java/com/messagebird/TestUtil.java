@@ -180,7 +180,6 @@ class TestUtil {
 
     public static VoiceCallFlowRequest createVoiceCallFlowRequest() {
         final VoiceCallFlowRequest voiceCallFlow = new VoiceCallFlowRequest();
-        voiceCallFlow.setId("ANY_ID");
         voiceCallFlow.setTitle("ANY_TITLE");
         voiceCallFlow.setRecord(true);
         voiceCallFlow.setSteps(Collections.singletonList(createVoiceStep()));

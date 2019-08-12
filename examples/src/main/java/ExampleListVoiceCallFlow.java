@@ -9,9 +9,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * @TODO - not working, needs implementation
- */
 public class ExampleListVoiceCallFlow {
 
     public static void main(String[] args) {
@@ -28,15 +25,12 @@ public class ExampleListVoiceCallFlow {
 
         try {
             // Get list of call flows with offset and limit
-            System.out.println("Retrieving message list");
-            final MessageList messageList = messageBirdClient.listCallFlow(3, null);
+            System.out.println("Retrieving call flows list");
+            VoiceCallFlowList voiceCallFlowList = messageBirdClient.listVoiceCallFlows(0, 0);
 
             // Display balance
-            System.out.println(messageList.toString());
+            System.out.println(voiceCallFlowList.toString());
         } catch (UnauthorizedException | GeneralException exception) {
-            if (exception.getErrors() != null) {
-                System.out.println(exception.getErrors().toString());
-            }
             exception.printStackTrace();
         }
     }
