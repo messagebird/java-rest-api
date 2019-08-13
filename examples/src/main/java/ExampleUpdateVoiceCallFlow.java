@@ -2,13 +2,16 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.VoiceStep;
+import com.messagebird.objects.voicecalls.VoiceCallFlowRequest;
+import com.messagebird.objects.voicecalls.VoiceCallFlow;
+import java.util.Collections;
 
-public class ExampleCreateVoiceCallFlow {
+public class ExampleUpdateVoiceCallFlow {
 
     public static void main(String[] args) {
-        if (args.length < 6) {
+        if (args.length < 3) {
             System.out.println("Please specify your access key and voice call flow arguments");
             return;
         }
@@ -19,12 +22,13 @@ public class ExampleCreateVoiceCallFlow {
         //Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
-        final VoiceCallFlowRequest voiceCallFlow = new VoiceCallFlowRequest();
+        final VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest();
 
-        voiceCallFlow.setTitle(args[2]);
-        voiceCallFlow.setRecord(args[3]);
-        voiceCallFlow.setSteps(args[4]); // VoiceStep Object
-        voiceCallFlow.setDefaultCall(args[5]);
+        voiceCallFlowRequest.setTitle(args[2]);
+        voiceCallFlowRequest.setRecord(true); // Can be false as well, see docs
+        VoiceStep voiceStep = new VoiceStep();
+        voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep)); // VoiceStep Object
+        voiceCallFlowRequest.setDefaultCall(true); // Can be false as well, see docs
 
         try {
             //Deleting voice call by id
@@ -39,6 +43,6 @@ public class ExampleCreateVoiceCallFlow {
             exception.printStackTrace();
         }
 
-        System.out.print(voiceCallFlow.toString());
+        System.out.print(voiceCallFlowRequest.toString());
     }
 }

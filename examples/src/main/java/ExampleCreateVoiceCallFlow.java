@@ -2,8 +2,11 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.voicecalls.VoiceCallFlowRequest;
+import com.messagebird.objects.VoiceStep;
+
+import java.util.Collections;
 
 public class ExampleCreateVoiceCallFlow {
 
@@ -19,17 +22,18 @@ public class ExampleCreateVoiceCallFlow {
         //Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
-        final VoiceCallFlowRequest voiceCallFlow = new VoiceCallFlowRequest();
+        final VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest();
 
-        voiceCallFlow.setTitle(args[1]);
-        voiceCallFlow.setRecord(args[2]);
-        voiceCallFlow.setSteps(args[3]); // VoiceStep Object
-        voiceCallFlow.setDefaultCall(args[4]);
+        voiceCallFlowRequest.setTitle(args[2]);
+        voiceCallFlowRequest.setRecord(true); // Can be false as well, see docs
+        VoiceStep voiceStep = new VoiceStep();
+        voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep)); // VoiceStep Object
+        voiceCallFlowRequest.setDefaultCall(true); // Can be false as well, see docs
 
         try {
-            //Deleting voice call by id
+            //Creating voice call by id
             System.out.println("Creting a Voice Call Flow");
-            messageBirdClient.sendVoiceCallFlow(voiceCallFlow);
+            messageBirdClient.sendVoiceCallFlow(voiceCallFlowRequest);
             System.out.println("Voice call flow created");
 
         } catch (GeneralException | UnauthorizedException exception) {
