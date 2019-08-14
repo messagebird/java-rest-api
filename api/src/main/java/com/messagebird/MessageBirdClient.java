@@ -43,7 +43,9 @@ public class MessageBirdClient {
      * can, however, override this behaviour by providing absolute URLs
      * ourselves.
      */
-    private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
+    private String CONVERSATIONS_BASE_URL  = "https://conversations.messagebird.com/v1";
+    private static final String CONVERSATIONS_WHATSAPP_SANDBOX_BASE_URL ="https://whatsapp-sandbox.messagebird.com/v1";
+    
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
@@ -68,10 +70,19 @@ public class MessageBirdClient {
 
     private MessageBirdService messageBirdService;
 
+
+    public static final String ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX = "ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX";
+
     public MessageBirdClient(final MessageBirdService messageBirdService) {
         this.messageBirdService = messageBirdService;
     }
 
+    public MessageBirdClient(final MessageBirdService messageBirdService, String[] features) {
+        this.messageBirdService = messageBirdService;
+        if(Arrays.asList(features).contains(MessageBirdClient.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX)) {
+            this.CONVERSATIONS_BASE_URL = CONVERSATIONS_WHATSAPP_SANDBOX_BASE_URL;
+        }
+    }
     /****************************************************************************************************/
     /** Balance and HRL methods                                                                        **/
     /****************************************************************************************************/
