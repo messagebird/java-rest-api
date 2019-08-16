@@ -71,15 +71,17 @@ public class MessageBirdClient {
     private MessageBirdService messageBirdService;
 
 
-    public static final String ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX = "ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX";
+    public enum Feature {
+        ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX
+    }
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
         this.messageBirdService = messageBirdService;
     }
 
-    public MessageBirdClient(final MessageBirdService messageBirdService, String[] features) {
+    public MessageBirdClient(final MessageBirdService messageBirdService, Feature[] features) {
         this.messageBirdService = messageBirdService;
-        if(Arrays.asList(features).contains(MessageBirdClient.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX)) {
+        if(Arrays.asList(features).contains(Feature.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX)) {
             this.CONVERSATIONS_BASE_URL = CONVERSATIONS_WHATSAPP_SANDBOX_BASE_URL;
         }
     }

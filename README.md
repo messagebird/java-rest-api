@@ -122,7 +122,7 @@ To use the whatsapp sandbox you need to add `MessageBirdClient.ENABLE_CONVERSATI
     // Create a MessageBirdService
     final MessageBirdService messageBirdService = new MessageBirdServiceImpl("YOUR_ACCESS_KEY");
     // Add the service to the client
-    final MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService, new String[]{MessageBirdClient.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX});
+    final MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService, new MessageBirdClient.Feature[]{MessageBirdClient.Feature.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX});
 ```
 
 Documentation
