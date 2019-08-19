@@ -5,10 +5,6 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.voicecalls.VoiceCallFlowList;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 public class ExampleListVoiceCallFlow {
 
     public static void main(String[] args) {
