@@ -1,7 +1,6 @@
 import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
-import com.messagebird.objects.MessageResponse;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.voicecalls.VoiceCallFlowList;

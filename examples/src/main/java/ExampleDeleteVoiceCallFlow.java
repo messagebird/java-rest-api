@@ -3,6 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.exceptions.NotFoundException;
 
 public class ExampleDeleteVoiceCallFlow {
 
@@ -21,11 +22,10 @@ public class ExampleDeleteVoiceCallFlow {
         try {
             //Deleting voice call by id
             System.out.println("Deleting a Voice Call Flow");
-            VoiceCallFlow voiceCallFlow = messageBirdClient
-                .deleteVoiceCallFlow(args[1]);
+            messageBirdClient.deleteVoiceCallFlow(args[1]);
             System.out.println("Voice call flow deleted ");
 
-        } catch (GeneralException | UnauthorizedException exception) {
+        } catch (GeneralException | NotFoundException | UnauthorizedException exception) {
             exception.printStackTrace();
         }
     }

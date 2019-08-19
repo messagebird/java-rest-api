@@ -558,6 +558,11 @@ public class MessageBirdClient {
     /**
      * Retrieves the information of an existing Call Flow. You only need to supply
      * the unique call flow ID that was returned upon creation or receiving.
+     * @param id String
+     * @return VoiceCallFlowResponse
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
      */
     public VoiceCallFlowResponse viewVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
@@ -571,7 +576,7 @@ public class MessageBirdClient {
     /**
      * Convenient function to create a call flow 
      *
-     * @param VoiceCallFlowRequest     
+     * @param voiceCallFlowRequest VoiceCallFlowRequest
      * @return VoiceCallFlowResponse
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
@@ -586,8 +591,13 @@ public class MessageBirdClient {
     /**
      * Updates an existing Call Flow. You only need to supply the unique id that
      * was returned upon creation.
+     * @param id String
+     * @param voiceCallFlowRequest VoiceCallFlowRequest
+     * @return VoiceCallFlowResponse
+     * @throws UnauthorizedException
+     * @throws GeneralException
      */
-    public VoiceCallFlowResponse updateVoiceCallFlow(final String id, VoiceCallFlowRequest voiceCallFlowRequest)
+    public VoiceCallFlowResponse updateVoiceCallFlow(String id, VoiceCallFlowRequest voiceCallFlowRequest)
         throws UnauthorizedException, GeneralException {
         if (id == null) {
             throw new IllegalArgumentException("Call Flow ID must be specified.");
@@ -601,12 +611,12 @@ public class MessageBirdClient {
     /**
      * Convenient function to delete call flow 
      *
-     * @param String     
+     * @param id String
      * @return void
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    void deleteVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public void deleteVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null) {
             throw new IllegalArgumentException("Voice Call Flow ID must be specified.");
         }

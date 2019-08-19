@@ -3,7 +3,8 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.voicecalls.VoiceCallFlow;
+import com.messagebird.exceptions.NotFoundException;
+import com.messagebird.objects.voicecalls.VoiceCallFlowResponse;
 
 public class ExampleViewVoiceCallFlow {
 
@@ -22,11 +23,11 @@ public class ExampleViewVoiceCallFlow {
         try {
             //Deleting voice call by id
             System.out.println("Requesting a Voice Call Flow");
-            VoiceCallFlow voiceCallFlow = messageBirdClient
+            VoiceCallFlowResponse voiceCallFlowResponse = messageBirdClient
                 .viewVoiceCallFlow(args[1]);
             System.out.println("Voice call flow retrieved ");
 
-        } catch (GeneralException | UnauthorizedException exception) {
+        } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
             exception.printStackTrace();
         }
     }
