@@ -11,7 +11,7 @@ import java.util.Collections;
 public class ExampleCreateVoiceCallFlow {
 
     public static void main(String[] args) {
-        if (args.length < 4) {
+        if (args.length < 2) {
             System.out.println("Please specify your access key and voice call flow arguments");
             return;
         }
@@ -24,7 +24,7 @@ public class ExampleCreateVoiceCallFlow {
 
         final VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest();
 
-        voiceCallFlowRequest.setTitle(args[2]);
+        voiceCallFlowRequest.setTitle(args[1]);
         voiceCallFlowRequest.setRecord(true); // Can be false as well, see docs
         VoiceStep voiceStep = new VoiceStep();
         voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep)); // VoiceStep Object
