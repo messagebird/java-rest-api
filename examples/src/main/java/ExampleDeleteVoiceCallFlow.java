@@ -5,11 +5,11 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.exceptions.NotFoundException;
 
-public class ExampleDeleteVoiceCall {
+public class ExampleDeleteVoiceCallFlow {
 
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Please specify your access key and a call ID : java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938");
+            System.out.println("Please specify your access key and a voice call flow ID");
             return;
         }
 
@@ -21,9 +21,9 @@ public class ExampleDeleteVoiceCall {
 
         try {
             //Deleting voice call by id
-            System.out.println("Deleting voice call");
-            messageBirdClient.deleteVoiceCall(args[1]);
-            System.out.println("Voice call [" + args[1] + "] deleted.");
+            System.out.println("Deleting a Voice Call Flow");
+            messageBirdClient.deleteVoiceCallFlow(args[1]);
+            System.out.println("Voice call flow deleted ");
 
         } catch (GeneralException | NotFoundException | UnauthorizedException exception) {
             exception.printStackTrace();

@@ -42,9 +42,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String METHOD_GET = "GET";
     private static final String METHOD_PATCH = "PATCH";
     private static final String METHOD_POST = "POST";
+    private static final String METHOD_PUT = "PUT";
 
-    private static final List<String> REQUEST_METHODS = Arrays.asList(METHOD_DELETE, METHOD_GET, METHOD_PATCH, METHOD_POST);
-    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList(METHOD_PATCH, METHOD_POST);
+    private static final List<String> REQUEST_METHODS = Arrays.asList(METHOD_DELETE, METHOD_GET, METHOD_PATCH, METHOD_POST, METHOD_PUT);
+    private static final List<String> REQUEST_METHODS_WITH_PAYLOAD = Arrays.asList(METHOD_PATCH, METHOD_POST, METHOD_PUT);
     private static final String[] PROTOCOL_LISTS = new String[]{"http://", "https://"};
     private static final List<String> PROTOCOLS = Arrays.asList(PROTOCOL_LISTS);
 
@@ -302,6 +303,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
         allowedMethods.addAll(Arrays.asList(existingMethods));
         allowedMethods.add(METHOD_PATCH);
+        allowedMethods.add(METHOD_PUT);
 
         return allowedMethods.toArray(new String[0]);
     }

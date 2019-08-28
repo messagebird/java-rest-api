@@ -1,33 +1,32 @@
 package com.messagebird.objects.voicecalls;
 
-import com.messagebird.objects.VoiceStep;
+import java.util.List;
+import java.util.Date;
+import com.messagebird.objects.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+/**
+ * Contains writable values for VoiceCallFlow objects.
+ */
+public class VoiceCallFlowRequest {
 
-public class VoiceCallFlow implements Serializable {
-
-    private static final long serialVersionUID = -6885592947212493454L;
-
+ 
     private String id;
     private String title;
     private boolean record;
     private List<VoiceStep> steps;
-
-    /*
-     * default is reserved name in JAVA so we use alternate name
-     */
+    
     @JsonProperty("default")
     private boolean defaultCall;
 
-    private Date createdAt;
-    private Date updatedAt;
+    public VoiceCallFlowRequest(String id)
+    {
+        this.id = id;
+    }
 
-    @JsonProperty("_links")
-    private Map<String, String> links;
+    public VoiceCallFlowRequest() 
+    {
+    }
 
     public String getId() {
         return id;
@@ -69,32 +68,13 @@ public class VoiceCallFlow implements Serializable {
         this.defaultCall = defaultCall;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Override
     public String toString() {
-        return "VoiceCallFlow{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
+        return "VoiceCallFlowRequest{" +
+                "title='" + title + '\'' +
                 ", record=" + record +
                 ", steps=" + steps +
                 ", default=" + defaultCall +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

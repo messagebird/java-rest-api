@@ -23,6 +23,7 @@ public class VoiceStepOption implements Serializable {
     private String ifMachine;
     private int machineTimeout;
     private String onFinish;
+    private boolean mask;
 
     public String getDestination() {
         return destination;
@@ -160,6 +161,14 @@ public class VoiceStepOption implements Serializable {
         this.onFinish = onFinish;
     }
 
+    public boolean isMask() {
+        return mask;
+    }
+
+    public void setMask(boolean mask) {
+        this.mask = mask;
+    }
+
     @Override
     public String toString() {
         return "VoiceStepOption{" +
@@ -180,6 +189,7 @@ public class VoiceStepOption implements Serializable {
                 ", ifMachine='" + ifMachine + '\'' +
                 ", machineTimeout=" + machineTimeout +
                 ", onFinish='" + onFinish + '\'' +
+                ", mask='" + mask + '\'' +
                 '}';
     }
 }
