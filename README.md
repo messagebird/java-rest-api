@@ -116,13 +116,13 @@ If you server doesn't have a direct connection to the internet you can setup a p
 ```
 
 ##### Conversations WhatsApp Sandbox
-To use the whatsapp sandbox you need to add `MessageBirdClient.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX` to the list of features you want enabled. Don't forget to replace `YOUR_ACCESS_KEY` with your actual access key.
+To use the whatsapp sandbox you need to add `MessageBirdClient.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX` to the list of features you want enabled. Don't forget to replace `YOUR_ACCESS_KEY` with your actual access key.
 
 ```java
     // Create a MessageBirdService
     final MessageBirdService messageBirdService = new MessageBirdServiceImpl("YOUR_ACCESS_KEY");
     // Add the service to the client
-    final MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService, new MessageBirdClient.Feature[]{MessageBirdClient.Feature.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX});
+    final MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService, new MessageBirdClient.Feature[]{MessageBirdClient.Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX});
 ```
 
 Documentation

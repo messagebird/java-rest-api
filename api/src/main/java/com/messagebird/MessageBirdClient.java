@@ -72,7 +72,7 @@ public class MessageBirdClient {
 
 
     public enum Feature {
-        ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX
+        ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX
     }
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
@@ -81,7 +81,7 @@ public class MessageBirdClient {
 
     public MessageBirdClient(final MessageBirdService messageBirdService, Feature[] features) {
         this.messageBirdService = messageBirdService;
-        if(Arrays.asList(features).contains(Feature.ENABLE_CONVERSATIONAPI_WHATSAPP_SANDBOX)) {
+        if(Arrays.asList(features).contains(Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX)) {
             this.CONVERSATIONS_BASE_URL = CONVERSATIONS_WHATSAPP_SANDBOX_BASE_URL;
         }
     }
