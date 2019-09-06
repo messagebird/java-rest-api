@@ -77,14 +77,13 @@ public class MessageBirdClient {
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
         this.messageBirdService = messageBirdService;
+        this.conversationsBaseUrl = BASE_URL_CONVERSATIONS;
     }
 
     public MessageBirdClient(final MessageBirdService messageBirdService, List<Feature> features) {
-        this.messageBirdService = messageBirdService;
+        this(messageBirdService);
         if(features.indexOf(Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX) >= 0) {
             this.conversationsBaseUrl = BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX;
-        } else {
-            this.conversationsBaseUrl = BASE_URL_CONVERSATIONS;
         }
     }
     /****************************************************************************************************/
