@@ -369,6 +369,7 @@ public class MessageBirdClient {
         return messageBirdService.sendPayLoad(VERIFYPATH, verifyRequest, Verify.class);
     }
 
+    
     /**
      * @param recipient The telephone number that you want to verify.
      * @return Verify object
