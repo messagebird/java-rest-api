@@ -133,3 +133,5 @@ Complete documentation, instructions, and examples are available at:
 License
 -------
 The MessageBird REST Client for Java is licensed under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2015-2019, MessageBird
+
+CI
