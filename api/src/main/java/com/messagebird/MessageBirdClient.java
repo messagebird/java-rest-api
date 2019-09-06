@@ -69,7 +69,6 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
 
     private MessageBirdService messageBirdService;
-
     private String conversationsBaseUrl = BASE_URL_CONVERSATIONS;
 
     public enum Feature {
