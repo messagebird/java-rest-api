@@ -69,7 +69,7 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
 
     private MessageBirdService messageBirdService;
-    private String conversationsBaseUrl = BASE_URL_CONVERSATIONS;
+    private String conversationsBaseUrl;
 
     public enum Feature {
         ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX
@@ -83,6 +83,8 @@ public class MessageBirdClient {
         this.messageBirdService = messageBirdService;
         if(features.indexOf(Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX) >= 0) {
             this.conversationsBaseUrl = BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX;
+        } else {
+            this.conversationsBaseUrl = BASE_URL_CONVERSATIONS;
         }
     }
     /****************************************************************************************************/
