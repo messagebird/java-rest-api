@@ -41,7 +41,9 @@ public class MessageBirdClient {
      * can, however, override this behaviour by providing absolute URLs
      * ourselves.
      */
-    private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
+    private static final String BASE_URL_CONVERSATIONS = "https://conversations.messagebird.com/v1";
+    private static final String BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX = "https://whatsapp-sandbox.messagebird.com/v1";
+    
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
@@ -66,11 +68,23 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
 
     private MessageBirdService messageBirdService;
+    private String conversationsBaseUrl;
+
+    public enum Feature {
+        ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX
+    }
 
     public MessageBirdClient(final MessageBirdService messageBirdService) {
         this.messageBirdService = messageBirdService;
+        this.conversationsBaseUrl = BASE_URL_CONVERSATIONS;
     }
 
+    public MessageBirdClient(final MessageBirdService messageBirdService, List<Feature> features) {
+        this(messageBirdService);
+        if(features.indexOf(Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX) >= 0) {
+            this.conversationsBaseUrl = BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX;
+        }
+    }
     /****************************************************************************************************/
     /** Balance and HRL methods                                                                        **/
     /****************************************************************************************************/
@@ -800,7 +814,7 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified");
         }
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_PATH;
         return messageBirdService.requestByID(url, id, Conversation.class);
     }
 
@@ -816,7 +830,7 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified.");
         }
-        String url = String.format("%s%s/%s", CONVERSATIONS_BASE_URL, CONVERSATION_PATH, id);
+        String url = String.format("%s%s/%s", this.conversationsBaseUrl, CONVERSATION_PATH, id);
         return messageBirdService.sendPayLoad("PATCH", url, status, Conversation.class);
     }
 
@@ -829,7 +843,7 @@ public class MessageBirdClient {
      */
     public ConversationList listConversations(final int offset, final int limit)
             throws UnauthorizedException, GeneralException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_PATH;
         return messageBirdService.requestList(url, offset, limit, ConversationList.class);
     }
 
@@ -853,7 +867,7 @@ public class MessageBirdClient {
      */
     public Conversation startConversation(ConversationStartRequest request)
             throws UnauthorizedException, GeneralException {
-        String url = String.format("%s%s/start", CONVERSATIONS_BASE_URL, CONVERSATION_PATH);
+        String url = String.format("%s%s/start", this.conversationsBaseUrl, CONVERSATION_PATH);
         return messageBirdService.sendPayLoad(url, request, Conversation.class);
     }
 
@@ -872,7 +886,7 @@ public class MessageBirdClient {
     ) throws UnauthorizedException, GeneralException {
         String url = String.format(
                 "%s%s/%s%s",
-                CONVERSATIONS_BASE_URL,
+                this.conversationsBaseUrl,
                 CONVERSATION_PATH,
                 conversationId,
                 CONVERSATION_MESSAGE_PATH
@@ -903,7 +917,7 @@ public class MessageBirdClient {
      */
     public ConversationMessage viewConversationMessage(final String messageId)
             throws NotFoundException, GeneralException, UnauthorizedException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_MESSAGE_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_MESSAGE_PATH;
         return messageBirdService.requestByID(url, messageId, ConversationMessage.class);
     }
 
@@ -920,7 +934,7 @@ public class MessageBirdClient {
     ) throws UnauthorizedException, GeneralException {
         String url = String.format(
                 "%s%s/%s%s",
-                CONVERSATIONS_BASE_URL,
+                this.conversationsBaseUrl,
                 CONVERSATION_PATH,
                 conversationId,
                 CONVERSATION_MESSAGE_PATH
@@ -935,7 +949,7 @@ public class MessageBirdClient {
      */
     public void deleteConversationWebhook(final String webhookId)
             throws NotFoundException, GeneralException, UnauthorizedException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH;
         messageBirdService.deleteByID(url, webhookId);
     }
 
@@ -947,7 +961,7 @@ public class MessageBirdClient {
      */
     public ConversationWebhook sendConversationWebhook(final ConversationWebhookCreateRequest request)
             throws UnauthorizedException, GeneralException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.sendPayLoad(url, request, ConversationWebhook.class);
     }
 
@@ -962,7 +976,7 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Conversation webhook ID must be specified.");
         }
 
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH + "/" + id;
+        String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH + "/" + id;
         return messageBirdService.sendPayLoad("PATCH", url, request, ConversationWebhook.class);
     }
 
@@ -973,7 +987,7 @@ public class MessageBirdClient {
      * @return The retrieved webhook.
      */
     public ConversationWebhook viewConversationWebhook(final String webhookId) throws NotFoundException, GeneralException, UnauthorizedException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.requestByID(url, webhookId, ConversationWebhook.class);
     }
 
@@ -986,7 +1000,7 @@ public class MessageBirdClient {
      */
     ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
             throws UnauthorizedException, GeneralException {
-        String url = CONVERSATIONS_BASE_URL + CONVERSATION_WEBHOOK_PATH;
+        String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.requestList(url, offset, limit, ConversationWebhookList.class);
     }
 
