@@ -6,10 +6,6 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.conversations.*;
 import java.util.List;
 
-// import java.util.ArrayList;
-// import java.util.Arrays;
-// import java.util.List;
-
 public class ExampleStartConversationsWithWhatsAppSandbox {
 
     public static void main(String[] args) {
