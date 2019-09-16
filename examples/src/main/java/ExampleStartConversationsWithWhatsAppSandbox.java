@@ -22,7 +22,6 @@ public class ExampleStartConversationsWithWhatsAppSandbox {
         //First create your service object
         final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
 
-        System.out.println("Done");
         //Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr, List.of(MessageBirdClient.Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX)); //Create client with WhatsApp Sandbox enabled
 
@@ -43,8 +42,5 @@ public class ExampleStartConversationsWithWhatsAppSandbox {
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();
         }
-        System.out.println("Done");
-
-        
     }
 }
