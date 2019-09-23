@@ -1309,4 +1309,25 @@ public class MessageBirdClient {
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
         return messageBirdService.requestByID(url, id, WebhookResponseData.class);
     }
+
+    /**
+     * Function to list webhooks
+     *
+     * @param offset offset for result list
+     * @param limit  limit for result list
+     * @return WebhookList
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public WebhookList listWebHooks(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
+        if (offset != null && offset < 0) {
+            throw new IllegalArgumentException("Offset must be > 0");
+        }
+        if (limit != null && limit < 0) {
+            throw new IllegalArgumentException("Limit must be > 0");
+        }
+
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
+        return messageBirdService.requestList(url, offset, limit, WebhookList.class);
+    }
 }
