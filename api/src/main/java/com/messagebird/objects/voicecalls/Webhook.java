@@ -6,17 +6,8 @@ public class Webhook implements Serializable {
 
     private static final long serialVersionUID = 727746356185518354L;
 
-    private String title;
     private String url;
     private String token;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getUrl() {
         return url;
@@ -37,8 +28,7 @@ public class Webhook implements Serializable {
     @Override
     public String toString() {
         return "Webhook{" +
-                "title='" + title + '\'' +
-                ", url='" + url + '\'' +
+                "url='" + url + '\'' +
                 ", token='" + token + '\'' +
                 '}';
     }
