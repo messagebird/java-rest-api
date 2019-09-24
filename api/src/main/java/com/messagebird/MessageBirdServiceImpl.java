@@ -341,18 +341,18 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * Create a HttpURLConnection connection object
      *
      * @param serviceUrl  URL that needs to be requested
-     * @param postData    PostDATA, must be not null for requestType is POST
+     * @param body body could not be empty for POST or PUT requests
      * @param requestType Request type POST requests without a payload will generate a exception
      * @return base class
      * @throws IOException io exception
      */
-    public <P> HttpURLConnection getConnection(final String serviceUrl, final P postData, final String requestType) throws IOException {
+    public <P> HttpURLConnection getConnection(final String serviceUrl, final P body, final String requestType) throws IOException {
         if (requestType == null || !REQUEST_METHODS.contains(requestType)) {
             throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, requestType));
         }
 
-        if (postData == null && "POST".equals(requestType)) {
-            throw new IllegalArgumentException("POST detected without a payload, please supply a payload with a POST request");
+        if (body == null && ("POST".equals(requestType) || "PUT".equals(requestType))) {
+            throw new IllegalArgumentException("Empty body is not allowed for POST or PUT requests");
         }
 
         final URL restService = new URL(serviceUrl);
@@ -370,7 +370,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         connection.setRequestProperty("Authorization", "AccessKey " + accessKey);
         connection.setRequestProperty("User-agent", userAgentString);
 
-        if ("POST".equals(requestType) || "PATCH".equals(requestType)) {
+        if ("POST".equals(requestType) || "PUT".equals(requestType) || "PATCH".equals(requestType)) {
             connection.setRequestMethod(requestType);
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
@@ -383,7 +383,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             DateFormat df = getDateFormat();
             mapper.setDateFormat(df);
 
-            final String json = mapper.writeValueAsString(postData);
+            final String json = mapper.writeValueAsString(body);
             connection.getOutputStream().write(json.getBytes(String.valueOf(StandardCharsets.UTF_8)));
         } else if ("DELETE".equals(requestType)) {
             // could have just used rquestType as it is
