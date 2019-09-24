@@ -1009,7 +1009,7 @@ public class MessageBirdClient {
      *
      * @return List of webhooks.
      */
-    public ConversationWebhookList listConversationWebHooks() throws UnauthorizedException, GeneralException {
+    public ConversationWebhookList listConversationWebhooks() throws UnauthorizedException, GeneralException {
         final int offset = 0;
         final int limit = 10;
 
@@ -1273,18 +1273,14 @@ public class MessageBirdClient {
     }
 
     /**
-     * Function to create web hook
+     * Function to create a webhook
      *
-     * @param webhook title, url and token of webHook
-     * @return WebHookResponseData
+     * @param webhook webhook to create
+     * @return WebhookResponseData created webhook
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public WebhookResponseData createWebHook(Webhook webhook) throws UnauthorizedException, GeneralException {
-        if (webhook.getTitle() == null) {
-            throw new IllegalArgumentException("Title of webhook must be specified.");
-        }
-
+    public WebhookResponseData createWebhook(Webhook webhook) throws UnauthorizedException, GeneralException {
         if (webhook.getUrl() == null) {
             throw new IllegalArgumentException("URL of webhook must be specified.");
         }
@@ -1294,16 +1290,33 @@ public class MessageBirdClient {
     }
 
     /**
-     * Function to view webhook
+     * Function to update a webhook
      *
-     * @param id webHook id
-     * @return WebHookResponseData
+     * @param webhook webhook fields to update
+     * @return WebhookResponseData updated webhook
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public WebhookResponseData viewWebHook(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public WebhookResponseData updateWebhook(String id, Webhook webhook) throws UnauthorizedException, GeneralException {
         if (id == null) {
-            throw new IllegalArgumentException("Id of webHook must be specified.");
+            throw new IllegalArgumentException("Id of webhook must be specified.");
+        }
+
+        String url = String.format("%s%s/%s", VOICE_CALLS_BASE_URL, WEBHOOKS, id);
+        return messageBirdService.sendPayLoad("PUT", url, webhook, WebhookResponseData.class);
+    }
+
+    /**
+     * Function to view a webhook
+     *
+     * @param id id of a webhook
+     * @return WebhookResponseData
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public WebhookResponseData viewWebhook(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Id of webhook must be specified.");
         }
 
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
@@ -1319,7 +1332,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public WebhookList listWebHooks(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
+    public WebhookList listWebhooks(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
         if (offset != null && offset < 0) {
             throw new IllegalArgumentException("Offset must be > 0");
         }
@@ -1329,5 +1342,22 @@ public class MessageBirdClient {
 
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
         return messageBirdService.requestList(url, offset, limit, WebhookList.class);
+    }
+
+    /**
+     * Function to delete a webhook
+     *
+     * @param id A unique random ID which is created on the MessageBird platform
+     * @throws NotFoundException     if id is not found
+     * @throws GeneralException      general exception
+     * @throws UnauthorizedException if client is unauthorized
+     */
+    public void deleteWebhook(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+        if (id == null) {
+            throw new IllegalArgumentException("Webhook ID must be specified.");
+        }
+
+        String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
+        messageBirdService.deleteByID(url, id);
     }
 }

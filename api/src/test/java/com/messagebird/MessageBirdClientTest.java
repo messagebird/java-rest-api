@@ -603,7 +603,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testCreateWebhook() throws UnauthorizedException, GeneralException {
-        final Webhook webhook = TestUtil.createWebHook();
+        final Webhook webhook = TestUtil.createWebhook();
         final WebhookResponseData webhookResponseData = TestUtil.createWebhookResponseData();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
@@ -611,26 +611,10 @@ public class MessageBirdClientTest {
 
         when(messageBirdServiceMock.sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class))
                 .thenReturn(webhookResponseData);
-        final WebhookResponseData response = messageBirdClientInjectMock.createWebHook(webhook);
+        final WebhookResponseData response = messageBirdClientInjectMock.createWebhook(webhook);
         verify(messageBirdServiceMock, times(1)).sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class);
         assertNotNull(response);
         assertEquals(response.getData().get(0).getId(), webhookResponseData.getData().get(0).getId());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenCreateWebhookWithMissingTitle() throws UnauthorizedException, GeneralException {
-        final Webhook webhook = new Webhook();
-        webhook.setUrl("ANY_URL");
-        messageBirdClient.createWebHook(webhook);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenCreateWebhookWithMissingUrl() throws UnauthorizedException, GeneralException {
-        final Webhook webhook = new Webhook();
-        webhook.setTitle("ANY_TITLE");
-        messageBirdClient.createWebHook(webhook);
-
     }
 
     @Test
@@ -642,7 +626,7 @@ public class MessageBirdClientTest {
 
         when(messageBirdServiceMock.requestByID(VOICE_CALLS_BASE_URL + WEBHOOKS, "ANY_ID", WebhookResponseData.class))
                 .thenReturn(webhookResponseData);
-        final WebhookResponseData response = messageBirdClientInjectMock.viewWebHook("ANY_ID");
+        final WebhookResponseData response = messageBirdClientInjectMock.viewWebhook("ANY_ID");
         verify(messageBirdServiceMock, times(1)).requestByID(VOICE_CALLS_BASE_URL + WEBHOOKS,
                 "ANY_ID", WebhookResponseData.class);
         assertNotNull(response);

@@ -93,9 +93,8 @@ class TestUtil {
         return transcriptionResponse;
     }
 
-    static Webhook createWebHook() {
+    static Webhook createWebhook() {
         final Webhook webhook = new Webhook();
-        webhook.setTitle("ANY_TITLE");
         webhook.setUrl("ANY_URL");
         return webhook;
     }
