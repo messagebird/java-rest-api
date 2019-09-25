@@ -4,7 +4,6 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
-import com.messagebird.objects.conversations.ConversationWebhookList;
 import com.messagebird.objects.voicecalls.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
