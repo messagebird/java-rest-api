@@ -93,9 +93,8 @@ class TestUtil {
         return transcriptionResponse;
     }
 
-    static Webhook createWebHook() {
+    static Webhook createWebhook() {
         final Webhook webhook = new Webhook();
-        webhook.setTitle("ANY_TITLE");
         webhook.setUrl("ANY_URL");
         return webhook;
     }
@@ -112,6 +111,13 @@ class TestUtil {
         final WebhookResponseData webhookResponseData = new WebhookResponseData();
         webhookResponseData.setData(Collections.singletonList(createWebhookResponse()));
         return webhookResponseData;
+    }
+
+    static WebhookList createWebhookList() {
+        final WebhookList webhookList = new WebhookList();
+        webhookList.setData(Collections.singletonList(createWebhookResponse()));
+        webhookList.setLinks(Collections.singletonMap("self", "ANY_ID"));
+        return webhookList;
     }
 
     private static Contact createContact(){

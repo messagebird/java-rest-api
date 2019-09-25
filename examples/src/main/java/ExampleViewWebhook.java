@@ -22,11 +22,11 @@ public class ExampleViewWebhook {
 
         try {
             System.out.println("Viewing webhook..");
-            final String webHookId = args[1];
-            //Viewing webHook by webHook id
-            final WebhookResponseData webHookResponseDataList = messageBirdClient.viewWebHook(webHookId);
-            //Display WebHook Response Data
-            System.out.println(webHookResponseDataList.toString());
+            final String webhookId = args[1];
+            //Viewing webhook by webhook id
+            final WebhookResponseData webhookResponseDataList = messageBirdClient.viewWebhook(webhookId);
+            //Display Webhook Response Data
+            System.out.println(webhookResponseDataList.toString());
         } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
             exception.printStackTrace();
         }

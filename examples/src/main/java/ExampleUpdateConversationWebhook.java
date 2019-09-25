@@ -28,16 +28,16 @@ public class ExampleUpdateConversationWebhook {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
         try {
-            //Creating webHook object to send client
+            //Creating webhook object to send client
             System.out.println("Updating conversation webhook..");
 
             ConversationWebhookUpdateRequest request = new ConversationWebhookUpdateRequest(
                     getStatus(args) ,
                     getWebhookUrl(args),
-                    getConversationWebHookEvents(args)
+                    getConversationWebhookEvents(args)
             );
 
-            //Sending ConversationWebHook update request
+            //Sending ConversationWebhook update request
             final ConversationWebhook conversationWebhookResponse = messageBirdClient.updateConversationWebhook(args[1], request);
             //Display conversationWebhook response
             System.out.println(conversationWebhookResponse);
@@ -54,7 +54,7 @@ public class ExampleUpdateConversationWebhook {
         return args.length > 4 ? args[3] : "https://example-web-hook-url";
     }
 
-    private static List<ConversationWebhookEvent> parseConversationWebHookEvents(String[] args) {
+    private static List<ConversationWebhookEvent> parseConversationWebhookEvents(String[] args) {
         List<ConversationWebhookEvent> conversationWebhookEventList = new ArrayList<>();
 
         for (String arg : args ) {
@@ -71,13 +71,13 @@ public class ExampleUpdateConversationWebhook {
         return conversationWebhookEventList;
     }
 
-    private static List<ConversationWebhookEvent> getConversationWebHookEvents(String[] args) {
+    private static List<ConversationWebhookEvent> getConversationWebhookEvents(String[] args) {
         if (args.length < 5)
             return Arrays.asList(ConversationWebhookEvent.CONVERSATION_CREATED, ConversationWebhookEvent.MESSAGE_CREATED);
 
         String[] arrayOfEvents = new String[args.length - 4];
         System.arraycopy(args, 4, arrayOfEvents, 0, args.length - 4);
 
-        return parseConversationWebHookEvents(arrayOfEvents);
+        return parseConversationWebhookEvents(arrayOfEvents);
     }
 }
