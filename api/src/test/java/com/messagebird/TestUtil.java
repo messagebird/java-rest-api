@@ -113,6 +113,13 @@ class TestUtil {
         return webhookResponseData;
     }
 
+    static WebhookList createWebhookList() {
+        final WebhookList webhookList = new WebhookList();
+        webhookList.setData(Collections.singletonList(createWebhookResponse()));
+        webhookList.setLinks(Collections.singletonMap("self", "ANY_ID"));
+        return webhookList;
+    }
+
     private static Contact createContact(){
         final CustomDetails customDetails = new CustomDetails();
         customDetails.setCustom1("ANY_DETAIL");

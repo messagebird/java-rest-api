@@ -640,4 +640,49 @@ public class MessageBirdClientTest {
         assertEquals(response.getData().get(0).getId(), webhookResponseData.getData().get(0).getId());
         assertEquals(response.getData().get(0).getUrl(), webhookResponseData.getData().get(0).getUrl());
     }
+
+    @Test
+    public void testListWebhooks() throws UnauthorizedException, GeneralException {
+        final WebhookList webhookList = TestUtil.createWebhookList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestList(anyString(), anyInt(), anyInt(), eq(WebhookList.class)))
+                .thenReturn(webhookList);
+        final WebhookList response = messageBirdClientMock.listWebhooks(0, 0);
+        verify(messageBirdServiceMock, times(1))
+                .requestList(VOICE_CALLS_BASE_URL + WEBHOOKS, 0, 0, WebhookList.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getId(), webhookList.getData().get(0).getId());
+        assertEquals(response.getData().get(0).getUrl(), webhookList.getData().get(0).getUrl());
+    }
+
+    @Test
+    public void testUpdateWebhook() throws UnauthorizedException, GeneralException {
+        final Webhook webhook = TestUtil.createWebhook();
+        final WebhookResponseData webhookResponseData = TestUtil.createWebhookResponseData();
+        final String id = webhookResponseData.getData().get(0).getId();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format("%s%s/%s", VOICE_CALLS_BASE_URL, WEBHOOKS, id);
+        when(messageBirdServiceMock.sendPayLoad(anyString(), anyString(), eq(webhook), eq(WebhookResponseData.class)))
+                .thenReturn(webhookResponseData);
+        final WebhookResponseData response = messageBirdClientMock.updateWebhook(id, webhook);
+        verify(messageBirdServiceMock, times(1))
+                .sendPayLoad("PUT", url, webhook, WebhookResponseData.class);
+        assertNotNull(response);
+        assertEquals(response.getData().get(0).getUrl(), webhookResponseData.getData().get(0).getUrl());
+    }
+
+    @Test
+    public void testDeleteWebhook() throws NotFoundException, GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        messageBirdClientMock.deleteWebhook("id");
+        verify(messageBirdServiceMock, times(1)).deleteByID(VOICE_CALLS_BASE_URL + WEBHOOKS, "id");
+    }
 }
