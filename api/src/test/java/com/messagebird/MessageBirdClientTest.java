@@ -4,6 +4,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
+import com.messagebird.objects.conversations.ConversationWebhookList;
 import com.messagebird.objects.voicecalls.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -615,6 +616,12 @@ public class MessageBirdClientTest {
         verify(messageBirdServiceMock, times(1)).sendPayLoad(VOICE_CALLS_BASE_URL + WEBHOOKS, webhook, WebhookResponseData.class);
         assertNotNull(response);
         assertEquals(response.getData().get(0).getId(), webhookResponseData.getData().get(0).getId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenCreateWebhookWithMissingUrl() throws UnauthorizedException, GeneralException {
+        final Webhook webhook = new Webhook();
+        messageBirdClient.createWebhook(webhook);
     }
 
     @Test
