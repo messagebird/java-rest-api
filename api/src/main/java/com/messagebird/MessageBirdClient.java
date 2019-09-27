@@ -998,7 +998,7 @@ public class MessageBirdClient {
      * @param limit  Number of objects to skip.
      * @return List of webhooks.
      */
-    ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
+    public ConversationWebhookList listConversationWebhooks(final int offset, final int limit)
             throws UnauthorizedException, GeneralException {
         String url = this.conversationsBaseUrl + CONVERSATION_WEBHOOK_PATH;
         return messageBirdService.requestList(url, offset, limit, ConversationWebhookList.class);
