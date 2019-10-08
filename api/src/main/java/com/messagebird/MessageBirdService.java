@@ -97,7 +97,7 @@ public interface MessageBirdService {
      * @param request  path to the request, for example "/messages"
      * @param basePath base path for storing directory
      * @param fileName the fileName that is going to be stored.
-     * @return basePath/fileName
+     * @return the path that file is stored
      * @throws UnauthorizedException
      * @throws GeneralException
      * @throws NotFoundException

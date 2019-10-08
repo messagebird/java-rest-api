@@ -1220,11 +1220,12 @@ public class MessageBirdClient {
 
     /**
      * Downloads the record in .wav format by using callId, legId and recordId and stores to basePath
+     *
      * @param callID Voice call ID
      * @param legId Leg ID
      * @param recordingId Recording ID
      * @param basePath store location
-     * @return
+     * @return the path that file is stored
      * @throws NotFoundException
      * @throws GeneralException
      * @throws UnauthorizedException
@@ -1259,6 +1260,7 @@ public class MessageBirdClient {
     }
 
     /**
+     * List the all recordings related to CallID and LegId
      *
      * @param callID Voice call ID
      * @param legId Leg ID
