@@ -85,6 +85,14 @@ public class VoiceCallFlow implements Serializable {
         this.updatedAt = updatedAt;
     }
 
+    public Map<String, String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Map<String, String> links) {
+        this.links = links;
+    }
+
     @Override
     public String toString() {
         return "VoiceCallFlow{" +

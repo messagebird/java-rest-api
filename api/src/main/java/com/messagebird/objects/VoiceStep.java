@@ -1,5 +1,7 @@
 package com.messagebird.objects;
 
+import com.messagebird.objects.voicecalls.VoiceCallCondition;
+
 import java.io.Serializable;
 
 public class VoiceStep implements Serializable {
@@ -9,6 +11,8 @@ public class VoiceStep implements Serializable {
     private String id;
     private String action;
     private VoiceStepOption options;
+
+    private VoiceCallCondition[] conditions;
 
     public String getId() {
         return id;
@@ -32,6 +36,14 @@ public class VoiceStep implements Serializable {
 
     public void setOptions(VoiceStepOption options) {
         this.options = options;
+    }
+
+    public VoiceCallCondition[] getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(VoiceCallCondition[] conditions) {
+        this.conditions = conditions;
     }
 
     @Override

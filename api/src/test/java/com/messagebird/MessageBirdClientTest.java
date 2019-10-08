@@ -565,6 +565,70 @@ public class MessageBirdClientTest {
         assertEquals(response.getData().get(0).getCreatedAt(), transcriptionResponse.getData().get(0).getCreatedAt());
     }
 
+    @Test
+    public void testListRecordings() throws UnauthorizedException, GeneralException {
+        final RecordingResponseList recordingResponseList = TestUtil.createRecordingResponseList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH
+        );
+        when(messageBirdServiceMock.requestList(Mockito.eq(url), 0, 0, Mockito.eq(RecordingResponseList.class)))
+                .thenReturn(recordingResponseList);
+
+        final RecordingResponseList response = messageBirdClientInjectMock
+                .listRecordings("ANY_CALL_ID", "ANY_LEG_ID", 0, 0);
+        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, RecordingResponseList.class);
+        assertNotNull(response);
+        for(int i = 0; i < response.getData().length ; i++) {
+            assertEquals(response.getData()[0].getData().get(0).getId(), recordingResponseList.getData()[0].getData().get(0).getId());
+            assertEquals(response.getData()[0].getData().get(0).getFormat(), recordingResponseList.getData()[0].getData().get(0).getFormat());
+            assertEquals(response.getData()[0].getData().get(0).getState(), recordingResponseList.getData()[0].getData().get(0).getState());
+            assertEquals(response.getData()[0].getData().get(0).getLegId(), recordingResponseList.getData()[0].getData().get(0).getLegId());
+            assertEquals(response.getData()[0].getData().get(0).getDuration(), recordingResponseList.getData()[0].getData().get(0).getDuration());
+            assertEquals(response.getData()[0].getData().get(0).getCreatedAt(), recordingResponseList.getData()[0].getData().get(0).getCreatedAt());
+            assertEquals(response.getData()[0].getData().get(0).getUpdatedAt(), recordingResponseList.getData()[0].getData().get(0).getUpdatedAt());
+            assertEquals(response.getData()[0].getData().get(0).getLinks().get("self"), recordingResponseList.getData()[0].getLinks().get("self"));
+            assertEquals(response.getData()[0].getData().get(0).getLinks().get("file"), recordingResponseList.getData()[0].getLinks().get("file"));
+        }
+    }
+
+    @Test
+    public void testDownloadRecording() throws NotFoundException, GeneralException, UnauthorizedException {
+        String recordId = "123123123";
+        String basePath = "test";
+        String fileName = String.format("%s%s", recordId, RECORDING_DOWNLOAD_FORMAT);
+        final String downloadPath = TestUtil.createDownloadPath(recordId, basePath);
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                fileName
+        );
+        when(messageBirdServiceMock.getBinaryData(url, basePath, fileName))
+                .thenReturn(downloadPath);
+        final String response = messageBirdClientInjectMock
+                .downloadRecording("ANY_CALL_ID", "ANY_LEG_ID", recordId, basePath);
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, fileName);
+        assertNotNull(response);
+        assertEquals(downloadPath, response);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionWhenLanguageIsNotSupported() throws UnauthorizedException, GeneralException {
         messageBirdClient.createTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", "tr-TR");

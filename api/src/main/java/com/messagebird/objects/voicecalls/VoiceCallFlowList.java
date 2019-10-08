@@ -13,10 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class VoiceCallFlowList implements Serializable {
 
-    private Integer offset;
-    private Integer limit;
-    private Integer totalCount;
-
     @JsonProperty("_links")
     private Map<String, String> links;
 
@@ -31,12 +27,7 @@ public class VoiceCallFlowList implements Serializable {
 
     @Override
     public String toString() {
-        return "ListBase{" +
-                "offset=" + offset +
-                ", limit=" + limit +
-                ", totalCount=" + totalCount +
-                ", items=" + items +
-                '}';
+        return pagination.toString();
     }
 
     public void setPagination(Pagination pagination) {

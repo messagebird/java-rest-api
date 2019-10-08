@@ -3,15 +3,58 @@ package com.messagebird;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.*;
-import com.messagebird.objects.conversations.*;
-import com.messagebird.objects.voicecalls.*;
+import com.messagebird.objects.Balance;
+import com.messagebird.objects.Contact;
+import com.messagebird.objects.ContactList;
+import com.messagebird.objects.ContactRequest;
+import com.messagebird.objects.ErrorReport;
+import com.messagebird.objects.Group;
+import com.messagebird.objects.GroupList;
+import com.messagebird.objects.GroupRequest;
+import com.messagebird.objects.Hlr;
+import com.messagebird.objects.Lookup;
+import com.messagebird.objects.LookupHlr;
+import com.messagebird.objects.Message;
+import com.messagebird.objects.MessageList;
+import com.messagebird.objects.MessageResponse;
+import com.messagebird.objects.MsgType;
+import com.messagebird.objects.PagedPaging;
+import com.messagebird.objects.Verify;
+import com.messagebird.objects.VerifyRequest;
+import com.messagebird.objects.VoiceMessage;
+import com.messagebird.objects.VoiceMessageList;
+import com.messagebird.objects.VoiceMessageResponse;
+import com.messagebird.objects.conversations.Conversation;
+import com.messagebird.objects.conversations.ConversationList;
+import com.messagebird.objects.conversations.ConversationMessage;
+import com.messagebird.objects.conversations.ConversationMessageList;
+import com.messagebird.objects.conversations.ConversationMessageRequest;
+import com.messagebird.objects.conversations.ConversationStartRequest;
+import com.messagebird.objects.conversations.ConversationStatus;
+import com.messagebird.objects.conversations.ConversationWebhook;
+import com.messagebird.objects.conversations.ConversationWebhookCreateRequest;
+import com.messagebird.objects.conversations.ConversationWebhookList;
+import com.messagebird.objects.conversations.ConversationWebhookUpdateRequest;
+import com.messagebird.objects.voicecalls.RecordingResponse;
+import com.messagebird.objects.voicecalls.RecordingResponseList;
+import com.messagebird.objects.voicecalls.TranscriptionResponse;
+import com.messagebird.objects.voicecalls.VoiceCall;
+import com.messagebird.objects.voicecalls.VoiceCallFlowList;
+import com.messagebird.objects.voicecalls.VoiceCallFlowRequest;
+import com.messagebird.objects.voicecalls.VoiceCallFlowResponse;
+import com.messagebird.objects.voicecalls.VoiceCallLeg;
+import com.messagebird.objects.voicecalls.VoiceCallLegResponse;
+import com.messagebird.objects.voicecalls.VoiceCallResponse;
+import com.messagebird.objects.voicecalls.VoiceCallResponseList;
+import com.messagebird.objects.voicecalls.Webhook;
+import com.messagebird.objects.voicecalls.WebhookList;
+import com.messagebird.objects.voicecalls.WebhookResponseData;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,6 +109,7 @@ public class MessageBirdClient {
     static final String WEBHOOKS = "/webhooks";
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
+    static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
 
     private MessageBirdService messageBirdService;
     private String conversationsBaseUrl;
@@ -220,12 +264,7 @@ public class MessageBirdClient {
     }
 
     public MessageList listMessages(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
-        if (offset != null && offset < 0) {
-            throw new IllegalArgumentException("Offset must be > 0");
-        }
-        if (limit != null && limit < 0) {
-            throw new IllegalArgumentException("Limit must be > 0");
-        }
+        verifyOffsetAndLimit(offset, limit);
         return messageBirdService.requestList(MESSAGESPATH, offset, limit, MessageList.class);
     }
 
@@ -343,12 +382,7 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      */
     public VoiceMessageList listVoiceMessages(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
-        if (offset != null && offset < 0) {
-            throw new IllegalArgumentException("Offset must be > 0");
-        }
-        if (limit != null && limit < 0) {
-            throw new IllegalArgumentException("Limit must be > 0");
-        }
+        verifyOffsetAndLimit(offset, limit);
         return messageBirdService.requestList(VOICEMESSAGESPATH, offset, limit, VoiceMessageList.class);
     }
 
@@ -558,12 +592,7 @@ public class MessageBirdClient {
      */
     public VoiceCallFlowList listVoiceCallFlows(final Integer offset, final Integer limit) 
         throws UnauthorizedException, GeneralException {
-        if (offset != null && offset < 0) {
-            throw new IllegalArgumentException("Offset must be > 0");
-        }
-        if (limit != null && limit < 0) {
-            throw new IllegalArgumentException("Limit must be > 0");
-        }
+        verifyOffsetAndLimit(offset, limit);
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
 
         return messageBirdService.requestList(url, offset, limit, VoiceCallFlowList.class);
@@ -1190,6 +1219,81 @@ public class MessageBirdClient {
     }
 
     /**
+     * Downloads the record in .wav format by using callId, legId and recordId and stores to basePath
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param recordingId Recording ID
+     * @param basePath store location
+     * @return
+     * @throws NotFoundException
+     * @throws GeneralException
+     * @throws UnauthorizedException
+     */
+    public String downloadRecording(String callID, String legId, String recordingId, String basePath) throws NotFoundException, GeneralException, UnauthorizedException {
+
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH,
+                recordingId,
+                RECORDING_DOWNLOAD_FORMAT
+                );
+        String fileName = String.format("%s%s",recordingId, RECORDING_DOWNLOAD_FORMAT);
+        return messageBirdService.getBinaryData(url, basePath, fileName);
+    }
+
+    /**
+     *
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param offset
+     * @param limit
+     * @param offset Number of objects to skip.
+     * @param limit  Number of objects to take.
+     * @return Recordings for CallID and LegID
+     * @throws GeneralException if client is unauthorized
+     * @throws UnauthorizedException general exception
+     */
+    public RecordingResponseList listRecordings(String callID, String legId, final Integer offset, final Integer limit)
+            throws GeneralException, UnauthorizedException {
+        verifyOffsetAndLimit(offset, limit);
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH);
+
+        return messageBirdService.requestList(url, offset, limit, RecordingResponseList.class);
+    }
+
+    /**
      * Function to view recording by call id , leg id and recording id
      *
      * @param callID      Voice call ID
@@ -1333,12 +1437,7 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      */
     public WebhookList listWebhooks(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
-        if (offset != null && offset < 0) {
-            throw new IllegalArgumentException("Offset must be > 0");
-        }
-        if (limit != null && limit < 0) {
-            throw new IllegalArgumentException("Limit must be > 0");
-        }
+        verifyOffsetAndLimit(offset, limit);
 
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
         return messageBirdService.requestList(url, offset, limit, WebhookList.class);
@@ -1359,5 +1458,14 @@ public class MessageBirdClient {
 
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, WEBHOOKS);
         messageBirdService.deleteByID(url, id);
+    }
+
+    private void verifyOffsetAndLimit(Integer offset, Integer limit) {
+        if (offset != null && offset < 0) {
+            throw new IllegalArgumentException("Offset must be > 0");
+        }
+        if (limit != null && limit < 0) {
+            throw new IllegalArgumentException("Limit must be > 0");
+        }
     }
 }
