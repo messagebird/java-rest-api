@@ -581,7 +581,7 @@ public class MessageBirdClientTest {
                 "ANY_LEG_ID",
                 RECORDINGPATH
         );
-        when(messageBirdServiceMock.requestList(Mockito.eq(url), 0, 0, Mockito.eq(RecordingResponseList.class)))
+        when(messageBirdServiceMock.requestList(url, 0, 0, RecordingResponseList.class))
                 .thenReturn(recordingResponseList);
 
         final RecordingResponseList response = messageBirdClientInjectMock
