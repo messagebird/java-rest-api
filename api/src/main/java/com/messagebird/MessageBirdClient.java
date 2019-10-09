@@ -36,7 +36,6 @@ import com.messagebird.objects.conversations.ConversationWebhookCreateRequest;
 import com.messagebird.objects.conversations.ConversationWebhookList;
 import com.messagebird.objects.conversations.ConversationWebhookUpdateRequest;
 import com.messagebird.objects.voicecalls.RecordingResponse;
-import com.messagebird.objects.voicecalls.RecordingResponseList;
 import com.messagebird.objects.voicecalls.TranscriptionResponse;
 import com.messagebird.objects.voicecalls.VoiceCall;
 import com.messagebird.objects.voicecalls.VoiceCallFlowList;
@@ -1224,7 +1223,7 @@ public class MessageBirdClient {
      * @param callID Voice call ID
      * @param legId Leg ID
      * @param recordingId Recording ID
-     * @param basePath store location
+     * @param basePath store location. It should be directory
      * @return the path that file is stored
      * @throws NotFoundException
      * @throws GeneralException
@@ -1272,7 +1271,7 @@ public class MessageBirdClient {
      * @throws GeneralException if client is unauthorized
      * @throws UnauthorizedException general exception
      */
-    public RecordingResponseList listRecordings(String callID, String legId, final Integer offset, final Integer limit)
+    public RecordingResponse listRecordings(String callID, String legId, final Integer offset, final Integer limit)
             throws GeneralException, UnauthorizedException {
         verifyOffsetAndLimit(offset, limit);
         if (callID == null) {
@@ -1292,7 +1291,7 @@ public class MessageBirdClient {
                 legId,
                 RECORDINGPATH);
 
-        return messageBirdService.requestList(url, offset, limit, RecordingResponseList.class);
+        return messageBirdService.requestList(url, offset, limit, RecordingResponse.class);
     }
 
     /**

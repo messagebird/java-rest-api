@@ -567,7 +567,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testListRecordings() throws UnauthorizedException, GeneralException {
-        final RecordingResponseList recordingResponseList = TestUtil.createRecordingResponseList();
+        final RecordingResponse recordings = TestUtil.createRecordingResponseList();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
@@ -581,23 +581,23 @@ public class MessageBirdClientTest {
                 "ANY_LEG_ID",
                 RECORDINGPATH
         );
-        when(messageBirdServiceMock.requestList(url, 0, 0, RecordingResponseList.class))
-                .thenReturn(recordingResponseList);
+        when(messageBirdServiceMock.requestList(url, 0, 0, RecordingResponse.class))
+                .thenReturn(recordings);
 
-        final RecordingResponseList response = messageBirdClientInjectMock
+        final RecordingResponse response = messageBirdClientInjectMock
                 .listRecordings("ANY_CALL_ID", "ANY_LEG_ID", 0, 0);
-        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, RecordingResponseList.class);
+        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, RecordingResponse.class);
         assertNotNull(response);
-        for(int i = 0; i < response.getData().length ; i++) {
-            assertEquals(response.getData()[0].getData().get(0).getId(), recordingResponseList.getData()[0].getData().get(0).getId());
-            assertEquals(response.getData()[0].getData().get(0).getFormat(), recordingResponseList.getData()[0].getData().get(0).getFormat());
-            assertEquals(response.getData()[0].getData().get(0).getState(), recordingResponseList.getData()[0].getData().get(0).getState());
-            assertEquals(response.getData()[0].getData().get(0).getLegId(), recordingResponseList.getData()[0].getData().get(0).getLegId());
-            assertEquals(response.getData()[0].getData().get(0).getDuration(), recordingResponseList.getData()[0].getData().get(0).getDuration());
-            assertEquals(response.getData()[0].getData().get(0).getCreatedAt(), recordingResponseList.getData()[0].getData().get(0).getCreatedAt());
-            assertEquals(response.getData()[0].getData().get(0).getUpdatedAt(), recordingResponseList.getData()[0].getData().get(0).getUpdatedAt());
-            assertEquals(response.getData()[0].getData().get(0).getLinks().get("self"), recordingResponseList.getData()[0].getLinks().get("self"));
-            assertEquals(response.getData()[0].getData().get(0).getLinks().get("file"), recordingResponseList.getData()[0].getLinks().get("file"));
+        for(int i = 0; i < response.getData().size() ; i++) {
+            assertEquals(response.getData().get(i).getId(), recordings.getData().get(i).getId());
+            assertEquals(response.getData().get(i).getFormat(), recordings.getData().get(i).getFormat());
+            assertEquals(response.getData().get(i).getState(), recordings.getData().get(i).getState());
+            assertEquals(response.getData().get(i).getLegId(), recordings.getData().get(i).getLegId());
+            assertEquals(response.getData().get(i).getDuration(), recordings.getData().get(i).getDuration());
+            assertEquals(response.getData().get(i).getCreatedAt(), recordings.getData().get(i).getCreatedAt());
+            assertEquals(response.getData().get(i).getUpdatedAt(), recordings.getData().get(i).getUpdatedAt());
+            assertEquals(response.getData().get(i).getLinks().get("self"), recordings.getLinks().get("self"));
+            assertEquals(response.getData().get(i).getLinks().get("file"), recordings.getLinks().get("file"));
         }
     }
 

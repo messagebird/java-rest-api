@@ -83,13 +83,14 @@ class TestUtil {
         return new RecordingResponse(Collections.singletonList(createRecording()), links, new Pagination());
     }
 
-    static RecordingResponseList createRecordingResponseList() {
+    static RecordingResponse createRecordingResponseList() {
         Map<String, String> links = new LinkedHashMap<>();
         links.put("self", "ANY_SELF");
         links.put("file", "ANY_FILE");
-        RecordingResponse[] responses = new RecordingResponse[]{new RecordingResponse(Collections.singletonList(createRecording()),
-                links, new Pagination())};
-        return new RecordingResponseList(responses);
+        List<Recording> recordingList = new ArrayList<>();
+        recordingList.add(createRecording());
+        recordingList.add(createRecording());
+        return new RecordingResponse(recordingList, links, new Pagination());
     }
 
     static String createDownloadPath(String recordId , String basePath)  {

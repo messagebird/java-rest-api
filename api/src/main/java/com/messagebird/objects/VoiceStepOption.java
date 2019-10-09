@@ -25,9 +25,6 @@ public class VoiceStepOption implements Serializable {
     private String onFinish;
     private boolean mask;
 
-    private String onKeypressGoto;
-    private String onKeypressVar;
-
     public String getDestination() {
         return destination;
     }
@@ -172,22 +169,6 @@ public class VoiceStepOption implements Serializable {
         this.mask = mask;
     }
 
-    public String getOnKeypressGoto() {
-        return onKeypressGoto;
-    }
-
-    public void setOnKeypressGoto(String onKeypressGoto) {
-        this.onKeypressGoto = onKeypressGoto;
-    }
-
-    public String getOnKeypressVar() {
-        return onKeypressVar;
-    }
-
-    public void setOnKeypressVar(String onKeypressVar) {
-        this.onKeypressVar = onKeypressVar;
-    }
-
     @Override
     public String toString() {
         return "VoiceStepOption{" +
@@ -209,8 +190,6 @@ public class VoiceStepOption implements Serializable {
                 ", machineTimeout=" + machineTimeout +
                 ", onFinish='" + onFinish + '\'' +
                 ", mask=" + mask +
-                ", onKeypressGoto='" + onKeypressGoto + '\'' +
-                ", onKeypressVar='" + onKeypressVar + '\'' +
                 '}';
     }
 }

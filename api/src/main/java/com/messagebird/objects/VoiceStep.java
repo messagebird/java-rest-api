@@ -3,6 +3,7 @@ package com.messagebird.objects;
 import com.messagebird.objects.voicecalls.VoiceCallCondition;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class VoiceStep implements Serializable {
 
@@ -13,6 +14,9 @@ public class VoiceStep implements Serializable {
     private VoiceStepOption options;
 
     private VoiceCallCondition[] conditions;
+
+    private String onKeypressGoto;
+    private String onKeypressVar;
 
     public String getId() {
         return id;
@@ -46,12 +50,35 @@ public class VoiceStep implements Serializable {
         this.conditions = conditions;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getOnKeypressGoto() {
+        return onKeypressGoto;
+    }
+
+    public void setOnKeypressGoto(String onKeypressGoto) {
+        this.onKeypressGoto = onKeypressGoto;
+    }
+
+    public String getOnKeypressVar() {
+        return onKeypressVar;
+    }
+
+    public void setOnKeypressVar(String onKeypressVar) {
+        this.onKeypressVar = onKeypressVar;
+    }
+
     @Override
     public String toString() {
         return "VoiceStep{" +
                 "id='" + id + '\'' +
                 ", action='" + action + '\'' +
                 ", options=" + options +
+                ", conditions=" + Arrays.toString(conditions) +
+                ", onKeypressGoto='" + onKeypressGoto + '\'' +
+                ", onKeypressVar='" + onKeypressVar + '\'' +
                 '}';
     }
 }

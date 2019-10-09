@@ -3,7 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.voicecalls.RecordingResponseList;
+import com.messagebird.objects.voicecalls.RecordingResponse;
 
 public class ExampleListOfRecording {
     public static void main(String[] args) {
@@ -24,15 +24,15 @@ public class ExampleListOfRecording {
             final String callId = args[1];
             final String legId = args[2];
             //Sending call id and leg id and recording id parameters to client
-            final RecordingResponseList recordings = messageBirdClient.listRecordings(callId, legId, 0, 0);
+            final RecordingResponse recordings = messageBirdClient.listRecordings(callId, legId, 0, 0);
             if (recordings.getData() == null) {
                 System.out.println("No record data found");
             }
             //Display recording responses
-            for(int i = 0; i< recordings.getData().length; i++) {
-                System.out.println(recordings.getData()[i].toString());
+            for(int i = 0; i< recordings.getData().size(); i++) {
+                System.out.println(recordings.getData().get(i).toString());
+                System.out.println();
             }
-
 
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();
