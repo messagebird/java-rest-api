@@ -8,8 +8,8 @@ import com.messagebird.objects.voicecalls.RecordingResponse;
 public class ExampleListOfRecording {
     public static void main(String[] args) {
         if (args.length < 3) {
-            System.out.println("Please specify your access key and call id and leg id and recording id example :" +
-                    " java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938");
+            System.out.println("Please specify your access key and call id and leg id example :" +
+                    " java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938");
             return;
         }
 

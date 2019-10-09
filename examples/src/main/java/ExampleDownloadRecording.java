@@ -7,9 +7,9 @@ import com.messagebird.exceptions.UnauthorizedException;
 
 public class ExampleDownloadRecording {
     public static void main(String[] args) {
-        if (args.length < 5) {
-            System.out.println("Please specify your access key and call id and leg id and recording id example :" +
-                    " java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938");
+        if (args.length < 4) {
+            System.out.println("Please specify your access key and call id and leg id and recording id and base path(optional) example :" +
+                    " java -jar <this jar file> test_accesskey e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938 e8077d803532c0b5937c639b60216938 /users/{user}/test");
             return;
         }
 
@@ -24,7 +24,10 @@ public class ExampleDownloadRecording {
             final String callId = args[1];
             final String legId = args[2];
             final String recordingId = args[3];
-            final String basePath = args[4];
+            String basePath = null;
+            if (args.length > 4) {
+                basePath = args[4];
+            }
             //Sending call id and leg id and recording id parameters to client
             final String filePath = messageBirdClient.downloadRecording(callId, legId, recordingId, basePath);
             if (filePath != null) {

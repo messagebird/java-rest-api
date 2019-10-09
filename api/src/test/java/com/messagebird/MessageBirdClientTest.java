@@ -19,6 +19,7 @@ import java.util.Map;
 import static com.messagebird.MessageBirdClient.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * Created by rvt on 1/8/15.
@@ -589,15 +590,7 @@ public class MessageBirdClientTest {
         verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, RecordingResponse.class);
         assertNotNull(response);
         for(int i = 0; i < response.getData().size() ; i++) {
-            assertEquals(response.getData().get(i).getId(), recordings.getData().get(i).getId());
-            assertEquals(response.getData().get(i).getFormat(), recordings.getData().get(i).getFormat());
-            assertEquals(response.getData().get(i).getState(), recordings.getData().get(i).getState());
-            assertEquals(response.getData().get(i).getLegId(), recordings.getData().get(i).getLegId());
-            assertEquals(response.getData().get(i).getDuration(), recordings.getData().get(i).getDuration());
-            assertEquals(response.getData().get(i).getCreatedAt(), recordings.getData().get(i).getCreatedAt());
-            assertEquals(response.getData().get(i).getUpdatedAt(), recordings.getData().get(i).getUpdatedAt());
-            assertEquals(response.getData().get(i).getLinks().get("self"), recordings.getLinks().get("self"));
-            assertEquals(response.getData().get(i).getLinks().get("file"), recordings.getLinks().get("file"));
+            assertReflectionEquals(response.getData().get(i), recordings.getData().get(i));
         }
     }
 

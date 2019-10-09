@@ -281,7 +281,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @param filePath the path where the downloaded file is going to be stored.
      * @return if it succeed, it returns filepath otherwise null or exception.
      */
-    String doGetRequestForFileAndStore(final String url, final String filePath) throws GeneralException, UnauthorizedException, NotFoundException {
+    private String doGetRequestForFileAndStore(final String url, final String filePath) throws GeneralException, UnauthorizedException, NotFoundException {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
@@ -293,6 +293,9 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 inputStream = connection.getInputStream();
             } else {
                 inputStream = connection.getErrorStream();
+                if (inputStream == null) {
+                    throw new GeneralException("Error stream was empty");
+                }
             }
             if (status == HttpURLConnection.HTTP_OK) {
                 return writeInputStreamToFile(inputStream, filePath);

@@ -98,9 +98,9 @@ public interface MessageBirdService {
      * @param basePath base path for storing directory
      * @param fileName the fileName that is going to be stored.
      * @return the path that file is stored
-     * @throws UnauthorizedException
-     * @throws GeneralException
-     * @throws NotFoundException
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     * @throws NotFoundException if the file is not found
      */
     String getBinaryData(String request, String basePath, String fileName) throws UnauthorizedException, GeneralException, NotFoundException;
 }

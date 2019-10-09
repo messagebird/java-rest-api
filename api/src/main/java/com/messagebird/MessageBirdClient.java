@@ -110,6 +110,8 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
 
+    private final String DOWNLOADS = "Downloads";
+
     private MessageBirdService messageBirdService;
     private String conversationsBaseUrl;
 
@@ -1218,16 +1220,17 @@ public class MessageBirdClient {
     }
 
     /**
-     * Downloads the record in .wav format by using callId, legId and recordId and stores to basePath
+     * Downloads the record in .wav format by using callId, legId and recordId and stores to basePath. basePath is not mandatory to set.
+     * If basePath is not set, default download will be the /Download folder in user group.
      *
      * @param callID Voice call ID
      * @param legId Leg ID
      * @param recordingId Recording ID
-     * @param basePath store location. It should be directory
+     * @param basePath store location. It should be directory. Property is Optional if $HOME is accessible
      * @return the path that file is stored
-     * @throws NotFoundException
-     * @throws GeneralException
-     * @throws UnauthorizedException
+     * @throws NotFoundException if the recording does not found
+     * @throws GeneralException general exception
+     * @throws UnauthorizedException if client is unauthorized
      */
     public String downloadRecording(String callID, String legId, String recordingId, String basePath) throws NotFoundException, GeneralException, UnauthorizedException {
 
@@ -1241,6 +1244,15 @@ public class MessageBirdClient {
 
         if (recordingId == null) {
             throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        if (basePath == null) {
+            String homePath = System.getProperty("user.home");
+            //Home path is not existing
+            if (homePath == null) {
+                throw new IllegalArgumentException("BasePath must be specified.");
+            }
+            basePath = String.format("%s/%s",homePath,DOWNLOADS);
         }
 
         String url = String.format(
@@ -1263,8 +1275,6 @@ public class MessageBirdClient {
      *
      * @param callID Voice call ID
      * @param legId Leg ID
-     * @param offset
-     * @param limit
      * @param offset Number of objects to skip.
      * @param limit  Number of objects to take.
      * @return Recordings for CallID and LegID
