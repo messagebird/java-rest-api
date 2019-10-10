@@ -622,13 +622,43 @@ public class MessageBirdClientTest {
         assertEquals(downloadPath, response);
     }
 
+    @Test
+    public void testDownloadTranscription() throws NotFoundException, GeneralException, UnauthorizedException {
+        String transcriptionId = "123123123";
+        String basePath = "test";
+        String fileName = String.format("%s%s", transcriptionId, TRANSCRIPTION_DOWNLOAD_FORMAT);
+        final String downloadPath = TestUtil.createDownloadPath(transcriptionId, basePath);
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                "ANY_RECORDING_ID",
+                TRANSCRIPTIONPATH,
+                fileName
+        );
+        when(messageBirdServiceMock.getBinaryData(url, basePath, fileName))
+                .thenReturn(downloadPath);
+        final String response = messageBirdClientInjectMock
+                .downloadTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_RECORDING_ID", transcriptionId, basePath);
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, fileName);
+        assertNotNull(response);
+        assertEquals(downloadPath, response);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionWhenLanguageIsNotSupported() throws UnauthorizedException, GeneralException {
         messageBirdClient.createTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", "tr-TR");
     }
 
     @Test
-    public void testViewTranscription() throws UnauthorizedException, GeneralException {
+    public void testViewTranscriptionDeprecated() throws UnauthorizedException, GeneralException {
         final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
@@ -652,10 +682,36 @@ public class MessageBirdClientTest {
         verify(messageBirdServiceMock, times(1))
                 .requestList(Mockito.eq(url), Mockito.isA(PagedPaging.class), Mockito.eq(TranscriptionResponse.class));
         assertNotNull(response);
-        assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());
-        assertEquals(response.getData().get(0).getRecordingId(), transcriptionResponse.getData().get(0).getRecordingId());
-        assertEquals(response.getData().get(0).getCreatedAt(), transcriptionResponse.getData().get(0).getCreatedAt());
+        assertReflectionEquals(response.getData().get(0), transcriptionResponse.getData().get(0));
+    }
 
+    @Test
+    public void testViewTranscription() throws UnauthorizedException, GeneralException, NotFoundException {
+        final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                "ANY_ID",
+                TRANSCRIPTIONPATH);
+
+        when(messageBirdServiceMock.requestByID(Mockito.eq(url), Mockito.eq("ANY_TRANSCRIPTION_ID"), Mockito.eq(TranscriptionResponse.class)))
+                .thenReturn(transcriptionResponse);
+
+        final TranscriptionResponse response = messageBirdClientInjectMock
+                .viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", "ANY_TRANSCRIPTION_ID");
+        verify(messageBirdServiceMock, times(1))
+                .requestByID(Mockito.eq(url), Mockito.eq("ANY_TRANSCRIPTION_ID"), Mockito.eq(TranscriptionResponse.class));
+        assertNotNull(response);
+        assertReflectionEquals(response.getData().get(0), transcriptionResponse.getData().get(0));
     }
 
     @Test

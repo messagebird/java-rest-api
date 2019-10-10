@@ -169,6 +169,14 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     @Override
     public String getBinaryData(String request, String basePath, String fileName) throws GeneralException, UnauthorizedException, NotFoundException {
+        if (basePath == null) {
+            String homePath = System.getProperty("user.home");
+            //Home path is not existing
+            if (homePath == null) {
+                throw new IllegalArgumentException("BasePath must be specified.");
+            }
+            basePath = String.format("%s/%s",homePath,"Downloads");
+        }
         File file = new File(basePath);
         if(!file.exists()) {
             throw new IllegalArgumentException("basePath must be existed as directory.");
