@@ -109,7 +109,12 @@ public class MessageBirdClient {
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
+  
     static final String TRANSCRIPTION_DOWNLOAD_FORMAT = ".txt";
+  
+    private static final int DEFAULT_MACHINE_TIMEOUT_VALUE = 7000;
+    private static final int MIN_MACHINE_TIMEOUT_VALUE = 400;
+    private static final int MAX_MACHINE_TIMEOUT_VALUE = 10000;
 
     private final String DOWNLOADS = "Downloads";
 
@@ -312,6 +317,8 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      */
     public VoiceMessageResponse sendVoiceMessage(final VoiceMessage voiceMessage) throws UnauthorizedException, GeneralException {
+        addDefaultMachineTimeoutValueIfNotExists(voiceMessage);
+        checkMachineTimeoutValueIsInRange(voiceMessage);
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, voiceMessage, VoiceMessageResponse.class);
     }
 
@@ -326,6 +333,8 @@ public class MessageBirdClient {
      */
     public VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients) throws UnauthorizedException, GeneralException {
         final VoiceMessage message = new VoiceMessage(body, recipients);
+        addDefaultMachineTimeoutValueIfNotExists(message);
+        checkMachineTimeoutValueIsInRange(message);
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, message, VoiceMessageResponse.class);
     }
 
@@ -342,7 +351,21 @@ public class MessageBirdClient {
     public VoiceMessageResponse sendVoiceMessage(final String body, final List<BigInteger> recipients, final String reference) throws UnauthorizedException, GeneralException {
         final VoiceMessage message = new VoiceMessage(body, recipients);
         message.setReference(reference);
+        addDefaultMachineTimeoutValueIfNotExists(message);
+        checkMachineTimeoutValueIsInRange(message);
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, message, VoiceMessageResponse.class);
+    }
+
+    private void addDefaultMachineTimeoutValueIfNotExists(final VoiceMessage voiceMessage){
+        if (voiceMessage.getMachineTimeout() == 0){
+            voiceMessage.setMachineTimeout(DEFAULT_MACHINE_TIMEOUT_VALUE); //default machine timeout value
+        }
+    }
+
+    private void checkMachineTimeoutValueIsInRange(final VoiceMessage voiceMessage){
+        if (voiceMessage.getMachineTimeout() < MIN_MACHINE_TIMEOUT_VALUE ||  voiceMessage.getMachineTimeout() > MAX_MACHINE_TIMEOUT_VALUE){
+            throw new IllegalArgumentException("Please define machine timeout value between " + MIN_MACHINE_TIMEOUT_VALUE + " and " + MAX_MACHINE_TIMEOUT_VALUE);
+        }
     }
 
     /**
