@@ -665,14 +665,15 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-                "%s%s/%s%s/%s%s/%s",
+                "%s%s/%s%s/%s%s/%s%s",
                 VOICE_CALLS_BASE_URL,
                 VOICECALLSPATH,
                 "ANY_CALL_ID",
                 LEGSPATH,
                 "ANY_LEG_ID",
                 RECORDINGPATH,
-                "ANY_ID");
+                "ANY_ID",
+                TRANSCRIPTIONPATH);
 
         when(messageBirdServiceMock.requestList(Mockito.eq(url), Mockito.isA(PagedPaging.class), Mockito.eq(TranscriptionResponse.class)))
                 .thenReturn(transcriptionResponse);
