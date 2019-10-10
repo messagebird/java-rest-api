@@ -21,6 +21,7 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
     private VoiceType voice;
     private Integer repeat;
     private IfMachineType ifMachine;
+    private int machineTimeout;
     private Date scheduledDatetime;
     private Date createdDatetime;
     private MessageResponse.Recipients recipients;
@@ -40,6 +41,7 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
                 ", voice=" + voice +
                 ", repeat=" + repeat +
                 ", ifMachine=" + ifMachine +
+                ", machineTimeout=" + machineTimeout +
                 ", scheduledDatetime=" + scheduledDatetime +
                 ", createdDatetime=" + createdDatetime +
                 ", recipients=" + recipients +
@@ -113,6 +115,14 @@ public class VoiceMessageResponse implements MessageResponseBase, Serializable {
     public IfMachineType getIfMachine() {
         return ifMachine;
     }
+
+    /**
+     * The time (in milliseconds) to analyze if a machine has picked up the phone.
+     * Used in combination with the delay and hangup values of the ifMachine attribute.
+     * Minimum: 400, maximum: 10000. Default: 7000
+     * @return value of machine timeout
+     */
+    public int getMachineTimeout() { return machineTimeout; }
 
     /**
      * The scheduled date and time of the message
