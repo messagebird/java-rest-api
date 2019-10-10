@@ -22,6 +22,7 @@ public class VoiceMessage implements MessageBase, Serializable {
     private VoiceType voice;
     private Integer repeat;
     private IfMachineType ifMachine;
+    private int machineTimeout;
     private Date scheduledDatetime;
 
     public VoiceMessage(String body, List<BigInteger> recipients) {
@@ -170,6 +171,22 @@ public class VoiceMessage implements MessageBase, Serializable {
     public void setIfMachine(IfMachineType ifMachine) {
         this.ifMachine = ifMachine;
     }
+
+    /**
+     * The time (in milliseconds) to analyze if a machine has picked up the phone.
+     * Used in combination with the delay and hangup values of the ifMachine attribute.
+     * Minimum: 400, maximum: 10000. Default: 7000
+     * @return value of machine timeout
+     */
+    public int getMachineTimeout() { return machineTimeout; }
+
+    /**
+     * The time (in milliseconds) to analyze if a machine has picked up the phone.
+     * Used in combination with the delay and hangup values of the ifMachine attribute.
+     * Minimum: 400, maximum: 10000. Default: 7000
+     * @param machineTimeout value of machine timeout
+     */
+    public void setMachineTimeout(int machineTimeout) { this.machineTimeout = machineTimeout; }
 
     @Override
     public Date getScheduledDatetime() {
