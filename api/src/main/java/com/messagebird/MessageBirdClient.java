@@ -1413,7 +1413,7 @@ public class MessageBirdClient {
      * @param legId       Leg ID
      * @param recordingId Recording ID
      * @param transcriptionId Transcription ID
-     * @return TranscriptionResponseList
+     * @return Transcription
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      * @throws NotFoundException If transcription is not found
@@ -1446,15 +1446,16 @@ public class MessageBirdClient {
     }
 
     /**
+     * Lists the Transcription of callId, legId and recordId
      *
-     * @param callID
-     * @param legId
-     * @param recordingId
-     * @param page
-     * @param pageSize
-     * @return
-     * @throws UnauthorizedException
-     * @throws GeneralException
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param recordingId Recording ID
+     * @param page     page to fetch (can be null - will return first page), number of first page is 1
+     * @param pageSize page size
+     * @return List of Transcription
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
      */
     public TranscriptionResponse listTranscriptions(String callID, String legId, String recordingId, Integer page, Integer pageSize) throws UnauthorizedException, GeneralException {
         if (callID == null) {
@@ -1483,6 +1484,20 @@ public class MessageBirdClient {
         return messageBirdService.requestList(url, new PagedPaging(page, pageSize), TranscriptionResponse.class);
     }
 
+    /**
+     * Downloads the transcription in .txt format by using callId, legId, recordId and transcriptionId and stores to basePath. basePath is not mandatory to set.
+     * If basePath is not set, default download will be the /Download folder in user group.
+     *
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param recordingId Recording ID
+     * @param transcriptionId Transcription ID
+     * @param basePath store location. It should be directory. Property is Optional if $HOME is accessible
+     * @return the path that file is stored
+     * @throws NotFoundException if the recording does not found
+     * @throws GeneralException general exception
+     * @throws UnauthorizedException if client is unauthorized
+     */
     public String downloadTranscription(String callID, String legId, String recordingId, String transcriptionId, String basePath)
             throws UnauthorizedException, GeneralException, NotFoundException {
         if (callID == null) {
