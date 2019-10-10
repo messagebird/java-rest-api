@@ -90,4 +90,17 @@ public interface MessageBirdService {
      * @throws GeneralException general exception
      */
     <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException;
+
+    /**
+     * Gets the data from the request URL and stores it to basePath/fileName
+     *
+     * @param request  path to the request, for example "/messages"
+     * @param basePath base path for storing directory
+     * @param fileName the fileName that is going to be stored.
+     * @return the path that file is stored
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     * @throws NotFoundException if the file is not found
+     */
+    String getBinaryData(String request, String basePath, String fileName) throws UnauthorizedException, GeneralException, NotFoundException;
 }

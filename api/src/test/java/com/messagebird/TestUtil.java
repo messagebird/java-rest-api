@@ -83,6 +83,20 @@ class TestUtil {
         return new RecordingResponse(Collections.singletonList(createRecording()), links, new Pagination());
     }
 
+    static RecordingResponse createRecordingResponseList() {
+        Map<String, String> links = new LinkedHashMap<>();
+        links.put("self", "ANY_SELF");
+        links.put("file", "ANY_FILE");
+        List<Recording> recordingList = new ArrayList<>();
+        recordingList.add(createRecording());
+        recordingList.add(createRecording());
+        return new RecordingResponse(recordingList, links, new Pagination());
+    }
+
+    static String createDownloadPath(String recordId , String basePath)  {
+        return String.format("%s/%s%s",basePath, recordId, MessageBirdClient.RECORDING_DOWNLOAD_FORMAT);
+    }
+
     static TranscriptionResponse createTranscriptionResponse() {
         final TranscriptionResponse transcriptionResponse = new TranscriptionResponse();
         final Transcription transcription = new Transcription();

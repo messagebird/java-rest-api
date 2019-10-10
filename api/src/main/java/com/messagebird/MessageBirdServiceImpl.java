@@ -56,6 +56,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     // allow PATCH requests yet. Also see docs on allowPatchRequestsIfNeeded().
     private static boolean isPatchRequestAllowed = false;
 
+    private static final int BUFFER_SIZE = 4096;
+
     private final String accessKey;
     private final String serviceUrl;
     private final String clientVersion = "3.0.2";
@@ -165,6 +167,20 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         }
     }
 
+    @Override
+    public String getBinaryData(String request, String basePath, String fileName) throws GeneralException, UnauthorizedException, NotFoundException {
+        File file = new File(basePath);
+        if(!file.exists()) {
+            throw new IllegalArgumentException("basePath must be existed as directory.");
+        }
+
+        if(!file.isDirectory()) {
+            throw new IllegalArgumentException("basePath must be a directory.");
+        }
+        String filePath = String.format("%s/%s", basePath, fileName);
+        return doGetRequestForFileAndStore(request, filePath);
+    }
+
 
     public <T, P> T getJsonData(final String request, final P payload, final String requestType, final Class<T> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
         if (request == null) {
@@ -194,7 +210,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             }
         } else if (status == HttpURLConnection.HTTP_NO_CONTENT) {
             return null; // no content doesn't mean an error
-        } else if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
+        }
+        handleHttpFailStatuses(status, body);
+        return null;
+    }
+
+    private void handleHttpFailStatuses(final int status, String body) throws UnauthorizedException, NotFoundException, GeneralException {
+        if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
             final List<ErrorReport> errorReport = getErrorReportOrNull(body);
             throw new UnauthorizedException(NOT_AUTHORISED_MSG, errorReport);
         } else if (status >= 400 && status < 500) { // Any code in the 400 range will have a list of error codes attached
@@ -207,7 +229,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             throw new GeneralException(FAILED_DATA_RESPONSE_CODE + status, status);
         }
     }
-
     /**
      * Actually sends a HTTP request and returns its body and HTTP status code.
      *
@@ -251,6 +272,66 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 connection.disconnect();
             }
         }
+    }
+
+    /**
+     *
+     * Do get request for file from input url and stores the file in filepath.
+     * @param url     Absolute URL.
+     * @param filePath the path where the downloaded file is going to be stored.
+     * @return if it succeed, it returns filepath otherwise null or exception.
+     */
+    private String doGetRequestForFileAndStore(final String url, final String filePath) throws GeneralException, UnauthorizedException, NotFoundException {
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
+
+        try {
+            connection = getConnection(url, null, METHOD_GET);
+            int status = connection.getResponseCode();
+
+            if (APIResponse.isSuccessStatus(status)) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+                if (inputStream == null) {
+                    throw new GeneralException("Error stream was empty");
+                }
+            }
+            if (status == HttpURLConnection.HTTP_OK) {
+                return writeInputStreamToFile(inputStream, filePath);
+            }
+            String body = readToEnd(inputStream);
+            handleHttpFailStatuses(status, body);
+        } catch (IOException ioe) {
+            throw new GeneralException(ioe);
+        } finally {
+            saveClose(inputStream);
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Writes input stream from IO to filepath.
+     * @param inputStream stream that has been collected file input
+     * @param filepath the storage path for the file
+     * @return if it succeed, it returns filepath otherwise null or exception.
+     * @throws IOException
+     */
+    private String writeInputStreamToFile(InputStream inputStream, String filepath) throws IOException {
+        // opens an output stream to save into file
+        FileOutputStream outputStream = new FileOutputStream(filepath);
+
+        int bytesRead = -1;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        outputStream.close();
+        return filepath;
     }
 
     /**
@@ -431,7 +512,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     /**
      * Get the MessageBird error report data.
      *
-     * @param body Raw request body.
+     * @param body Raw response body.
      * @return Error report, or null if the body can not be deserialized.
      */
     private List<ErrorReport> getErrorReportOrNull(final String body) {

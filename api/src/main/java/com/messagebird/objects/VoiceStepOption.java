@@ -189,7 +189,7 @@ public class VoiceStepOption implements Serializable {
                 ", ifMachine='" + ifMachine + '\'' +
                 ", machineTimeout=" + machineTimeout +
                 ", onFinish='" + onFinish + '\'' +
-                ", mask='" + mask + '\'' +
+                ", mask=" + mask +
                 '}';
     }
 }

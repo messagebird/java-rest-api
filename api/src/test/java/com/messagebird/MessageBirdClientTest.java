@@ -19,6 +19,7 @@ import java.util.Map;
 import static com.messagebird.MessageBirdClient.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * Created by rvt on 1/8/15.
@@ -563,6 +564,62 @@ public class MessageBirdClientTest {
         assertEquals(response.getData().get(0).getId(), transcriptionResponse.getData().get(0).getId());
         assertEquals(response.getData().get(0).getRecordingId(), transcriptionResponse.getData().get(0).getRecordingId());
         assertEquals(response.getData().get(0).getCreatedAt(), transcriptionResponse.getData().get(0).getCreatedAt());
+    }
+
+    @Test
+    public void testListRecordings() throws UnauthorizedException, GeneralException {
+        final RecordingResponse recordings = TestUtil.createRecordingResponseList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH
+        );
+        when(messageBirdServiceMock.requestList(url, 0, 0, RecordingResponse.class))
+                .thenReturn(recordings);
+
+        final RecordingResponse response = messageBirdClientInjectMock
+                .listRecordings("ANY_CALL_ID", "ANY_LEG_ID", 0, 0);
+        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, RecordingResponse.class);
+        assertNotNull(response);
+        for(int i = 0; i < response.getData().size() ; i++) {
+            assertReflectionEquals(response.getData().get(i), recordings.getData().get(i));
+        }
+    }
+
+    @Test
+    public void testDownloadRecording() throws NotFoundException, GeneralException, UnauthorizedException {
+        String recordId = "123123123";
+        String basePath = "test";
+        String fileName = String.format("%s%s", recordId, RECORDING_DOWNLOAD_FORMAT);
+        final String downloadPath = TestUtil.createDownloadPath(recordId, basePath);
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH,
+                fileName
+        );
+        when(messageBirdServiceMock.getBinaryData(url, basePath, fileName))
+                .thenReturn(downloadPath);
+        final String response = messageBirdClientInjectMock
+                .downloadRecording("ANY_CALL_ID", "ANY_LEG_ID", recordId, basePath);
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, fileName);
+        assertNotNull(response);
+        assertEquals(downloadPath, response);
     }
 
     @Test(expected = IllegalArgumentException.class)
