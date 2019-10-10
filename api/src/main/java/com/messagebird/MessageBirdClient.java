@@ -311,6 +311,10 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      */
     public VoiceMessageResponse sendVoiceMessage(final VoiceMessage voiceMessage) throws UnauthorizedException, GeneralException {
+        if (voiceMessage.getMachineTimeout() == 0){
+            voiceMessage.setMachineTimeout(7000); //default machine timeout value
+        }
+
         return messageBirdService.sendPayLoad(VOICEMESSAGESPATH, voiceMessage, VoiceMessageResponse.class);
     }
 
