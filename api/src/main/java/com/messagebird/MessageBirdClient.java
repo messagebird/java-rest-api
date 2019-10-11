@@ -109,6 +109,9 @@ public class MessageBirdClient {
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
+  
+    static final String TRANSCRIPTION_DOWNLOAD_FORMAT = ".txt";
+  
     private static final int DEFAULT_MACHINE_TIMEOUT_VALUE = 7000;
     private static final int MIN_MACHINE_TIMEOUT_VALUE = 400;
     private static final int MAX_MACHINE_TIMEOUT_VALUE = 10000;
@@ -1267,15 +1270,6 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Recording ID must be specified.");
         }
 
-        if (basePath == null) {
-            String homePath = System.getProperty("user.home");
-            //Home path is not existing
-            if (homePath == null) {
-                throw new IllegalArgumentException("BasePath must be specified.");
-            }
-            basePath = String.format("%s/%s",homePath,DOWNLOADS);
-        }
-
         String url = String.format(
                 "%s%s/%s%s/%s%s/%s%s",
                 VOICE_CALLS_BASE_URL,
@@ -1378,11 +1372,56 @@ public class MessageBirdClient {
      * @param callID      Voice call ID
      * @param legId       Leg ID
      * @param recordingId Recording ID
-     * @return TranscriptionResponseList
+     * @param transcriptionId Transcription ID
+     * @return Transcription
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
+     * @throws NotFoundException If transcription is not found
      */
-    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId, Integer page, Integer pageSize) throws UnauthorizedException, GeneralException {
+    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId, String transcriptionId) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        if(transcriptionId == null) {
+            throw new IllegalArgumentException("Transcription ID must be specified.");
+        }
+
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH,
+                recordingId,
+                TRANSCRIPTIONPATH);
+
+        return messageBirdService.requestByID(url, transcriptionId, TranscriptionResponse.class);
+    }
+
+    /**
+     * Lists the Transcription of callId, legId and recordId
+     *
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param recordingId Recording ID
+     * @param page     page to fetch (can be null - will return first page), number of first page is 1
+     * @param pageSize page size
+     * @return List of Transcription
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     */
+    public TranscriptionResponse listTranscriptions(String callID, String legId, String recordingId, Integer page, Integer pageSize) throws UnauthorizedException, GeneralException {
         if (callID == null) {
             throw new IllegalArgumentException("Voice call ID must be specified.");
         }
@@ -1396,16 +1435,64 @@ public class MessageBirdClient {
         }
 
         String url = String.format(
-                "%s%s/%s%s/%s%s/%s",
+                "%s%s/%s%s/%s%s/%s%s",
                 VOICE_CALLS_BASE_URL,
                 VOICECALLSPATH,
                 callID,
                 LEGSPATH,
                 legId,
                 RECORDINGPATH,
-                recordingId);
+                recordingId,
+                TRANSCRIPTIONPATH);
 
         return messageBirdService.requestList(url, new PagedPaging(page, pageSize), TranscriptionResponse.class);
+    }
+
+    /**
+     * Downloads the transcription in .txt format by using callId, legId, recordId and transcriptionId and stores to basePath. basePath is not mandatory to set.
+     * If basePath is not set, default download will be the /Download folder in user group.
+     *
+     * @param callID Voice call ID
+     * @param legId Leg ID
+     * @param recordingId Recording ID
+     * @param transcriptionId Transcription ID
+     * @param basePath store location. It should be directory. Property is Optional if $HOME is accessible
+     * @return the path that file is stored
+     * @throws NotFoundException if the recording does not found
+     * @throws GeneralException general exception
+     * @throws UnauthorizedException if client is unauthorized
+     */
+    public String downloadTranscription(String callID, String legId, String recordingId, String transcriptionId, String basePath)
+            throws UnauthorizedException, GeneralException, NotFoundException {
+        if (callID == null) {
+            throw new IllegalArgumentException("Voice call ID must be specified.");
+        }
+
+        if (legId == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+
+        if (recordingId == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+
+        if (transcriptionId == null) {
+            throw new IllegalArgumentException("Transcription ID must be specified.");
+        }
+        String fileName = String.format("%s%s", transcriptionId, TRANSCRIPTION_DOWNLOAD_FORMAT);
+        String url = String.format(
+                "%s%s/%s%s/%s%s/%s%s/%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legId,
+                RECORDINGPATH,
+                recordingId,
+                TRANSCRIPTIONPATH,
+                fileName);
+
+        return messageBirdService.getBinaryData(url, basePath, fileName);
     }
 
     /**

@@ -12,6 +12,8 @@ public class Transcription implements Serializable {
     private String id;
     private String recordingId;
     private String error;
+    private String status;
+    private String legId;
     private Date createdAt;
     private Date updatedAt;
     @JsonProperty("_links")
@@ -45,6 +47,10 @@ public class Transcription implements Serializable {
         return createdAt;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
@@ -65,15 +71,33 @@ public class Transcription implements Serializable {
         this.links = links;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getLegId() {
+        return legId;
+    }
+
+    public void setLegId(String legId) {
+        this.legId = legId;
+    }
+
     @Override
     public String toString() {
         return "Transcription{" +
                 "id='" + id + '\'' +
                 ", recordingId='" + recordingId + '\'' +
                 ", error='" + error + '\'' +
+                ", status='" + status + '\'' +
+                ", legId='" + legId + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", links='" + links + '\'' +
+                ", links=" + links +
                 '}';
     }
 }
