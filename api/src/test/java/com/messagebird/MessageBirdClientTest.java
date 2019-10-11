@@ -658,35 +658,6 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testViewTranscriptionDeprecated() throws UnauthorizedException, GeneralException {
-        final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
-
-        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
-        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
-
-        String url = String.format(
-                "%s%s/%s%s/%s%s/%s%s",
-                VOICE_CALLS_BASE_URL,
-                VOICECALLSPATH,
-                "ANY_CALL_ID",
-                LEGSPATH,
-                "ANY_LEG_ID",
-                RECORDINGPATH,
-                "ANY_ID",
-                TRANSCRIPTIONPATH);
-
-        when(messageBirdServiceMock.requestList(Mockito.eq(url), Mockito.isA(PagedPaging.class), Mockito.eq(TranscriptionResponse.class)))
-                .thenReturn(transcriptionResponse);
-
-        final TranscriptionResponse response = messageBirdClientInjectMock
-                .viewTranscription("ANY_CALL_ID", "ANY_LEG_ID", "ANY_ID", 1, 2);
-        verify(messageBirdServiceMock, times(1))
-                .requestList(Mockito.eq(url), Mockito.isA(PagedPaging.class), Mockito.eq(TranscriptionResponse.class));
-        assertNotNull(response);
-        assertReflectionEquals(response.getData().get(0), transcriptionResponse.getData().get(0));
-    }
-
-    @Test
     public void testViewTranscription() throws UnauthorizedException, GeneralException, NotFoundException {
         final TranscriptionResponse transcriptionResponse = TestUtil.createTranscriptionResponse();
 

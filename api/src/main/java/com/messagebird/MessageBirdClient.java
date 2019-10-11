@@ -1372,46 +1372,6 @@ public class MessageBirdClient {
      * @param callID      Voice call ID
      * @param legId       Leg ID
      * @param recordingId Recording ID
-     * @return TranscriptionResponseList
-     * @throws UnauthorizedException if client is unauthorized
-     * @throws GeneralException      general exception
-     *
-     * @deprecated use {@link #listTranscriptions} instead.
-     */
-    @Deprecated
-    public TranscriptionResponse viewTranscription(String callID, String legId, String recordingId, Integer page, Integer pageSize) throws UnauthorizedException, GeneralException {
-        if (callID == null) {
-            throw new IllegalArgumentException("Voice call ID must be specified.");
-        }
-
-        if (legId == null) {
-            throw new IllegalArgumentException("Leg ID must be specified.");
-        }
-
-        if (recordingId == null) {
-            throw new IllegalArgumentException("Recording ID must be specified.");
-        }
-
-        String url = String.format(
-                "%s%s/%s%s/%s%s/%s%s",
-                VOICE_CALLS_BASE_URL,
-                VOICECALLSPATH,
-                callID,
-                LEGSPATH,
-                legId,
-                RECORDINGPATH,
-                recordingId,
-                TRANSCRIPTIONPATH);
-
-        return messageBirdService.requestList(url, new PagedPaging(page, pageSize), TranscriptionResponse.class);
-    }
-
-    /**
-     * Function to view recording by call id, leg id and recording id
-     *
-     * @param callID      Voice call ID
-     * @param legId       Leg ID
-     * @param recordingId Recording ID
      * @param transcriptionId Transcription ID
      * @return Transcription
      * @throws UnauthorizedException if client is unauthorized
