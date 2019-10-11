@@ -1391,6 +1391,10 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Recording ID must be specified.");
         }
 
+        if(transcriptionId == null) {
+            throw new IllegalArgumentException("Transcription ID must be specified.");
+        }
+
         String url = String.format(
                 "%s%s/%s%s/%s%s/%s%s",
                 VOICE_CALLS_BASE_URL,
