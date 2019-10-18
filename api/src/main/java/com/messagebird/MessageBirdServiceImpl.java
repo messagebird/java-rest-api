@@ -15,6 +15,7 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
@@ -209,7 +210,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             final ObjectMapper mapper = new ObjectMapper();
 
             // If we as new properties, we don't want the system to fail, we rather want to ignore them
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
+            mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
+            mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
 
             try {
                 return mapper.readValue(body, clazz);
