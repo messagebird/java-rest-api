@@ -28,4 +28,8 @@ public class ConversationWebhookCreateRequest extends ConversationWebhookBaseReq
     protected String getStringRepresentationOfExtraParameters() {
         return "channelId='" + channelId;
     }
+
+    public String getChannelId() {
+        return channelId;
+    }
 }
