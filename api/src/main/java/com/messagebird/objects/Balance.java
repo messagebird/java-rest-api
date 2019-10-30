@@ -14,7 +14,7 @@ public class Balance implements Serializable{
 
     private String payment;
     private String type;
-    private Integer amount;
+    private float amount;
 
     public Balance() {
     }
@@ -48,7 +48,7 @@ public class Balance implements Serializable{
      * The amount of balance of the payment type. When postpaid is your payment method, the amount will be 0.
      * @return
      */
-    public Integer getAmount() {
+    public float getAmount() {
         return amount;
     }
 }
