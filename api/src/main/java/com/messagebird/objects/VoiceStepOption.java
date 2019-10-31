@@ -10,7 +10,7 @@ public class VoiceStepOption implements Serializable {
     private String payload;
     private String language;
     private String voice;
-    private String repeat;
+    private int repeat;
     private String media;
     private int length;
     private int maxLength;
@@ -57,11 +57,11 @@ public class VoiceStepOption implements Serializable {
         this.voice = voice;
     }
 
-    public String getRepeat() {
+    public int getRepeat() {
         return repeat;
     }
 
-    public void setRepeat(String repeat) {
+    public void setRepeat(int repeat) {
         this.repeat = repeat;
     }
 
