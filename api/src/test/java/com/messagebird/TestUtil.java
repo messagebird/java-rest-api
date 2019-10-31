@@ -173,7 +173,7 @@ class TestUtil {
         voiceStepOption.setPayload("Test payload Update");
         voiceStepOption.setLanguage("en-US");
         voiceStepOption.setVoice("female");
-        voiceStepOption.setRepeat("5");
+        voiceStepOption.setRepeat(5);
         voiceStepOption.setMedia("test.wav");
         voiceStepOption.setLength(10);
         voiceStepOption.setMaxLength(20);

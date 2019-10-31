@@ -236,7 +236,7 @@ public class VoiceCallFlowTest {
         assertEquals(voiceStepOption.getPayload(), "Test payload");
         assertEquals(voiceStepOption.getLanguage(), "en-GB");
         assertEquals(voiceStepOption.getVoice(), "male");
-        assertEquals(voiceStepOption.getRepeat(), "1");
+        assertEquals(voiceStepOption.getRepeat(), 1);
         assertEquals(voiceStepOption.getMedia(), "test.mp3");
         assertEquals(voiceStepOption.getFinishOnKey(), "1");
         assertEquals(voiceStepOption.getTranscribeLanguage(), "en-GB");
