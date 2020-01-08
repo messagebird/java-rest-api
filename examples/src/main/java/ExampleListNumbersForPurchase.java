@@ -32,11 +32,7 @@ public class ExampleListNumbersForPurchase {
                 options.setNumber(562);
                 options.setSearchPattern(PhoneNumberSearchPattern.START);
                 System.out.print(options.toString());
-                try {
-                    System.out.println(String.format("Request Made With Params: %s", messageBirdClient.listNumbersForPurchase("US", options)));
-                } catch (IllegalAccessException exception) {
-                    System.out.println(exception.toString());
-                }
+                System.out.println(String.format("Request Made With Params: %s", messageBirdClient.listNumbersForPurchase("US", options)));
             } else {
                 System.out.println(String.format("Request Made Without Params: %s", messageBirdClient.listNumbersForPurchase("NL")));
             }
