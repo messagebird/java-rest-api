@@ -4,14 +4,14 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.PurchasedPhoneNumber;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-public class ExampleListNumbersForPurchase {
+public class ExamplePurchaseNumber {
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Please specify your access key.");
+        if (args.length < 4) {
+            System.out.println("Please specify your access key, number, country code and billing interval months, eg: ExamplePurchaseNumber test_accesskey 3197010240563 NL 1");
             return;
         }
         // First create your service object
@@ -21,9 +21,11 @@ public class ExampleListNumbersForPurchase {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
         try {
-            System.out.println(messageBirdClient.listNumbersForPurchase(args[1]));
+            PurchasedPhoneNumber purchasedPhoneNumber = messageBirdClient.purchaseNumber(args[1], args[2], Integer.parseInt(args[3]));
+
+            System.out.println(purchasedPhoneNumber);
             return;
-        } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
+        } catch (UnauthorizedException | GeneralException exception) {
             if (exception.getErrors() != null) {
                 System.out.println(exception.getErrors().toString());
             }
