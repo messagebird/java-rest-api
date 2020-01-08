@@ -19,6 +19,9 @@ import com.messagebird.objects.MessageList;
 import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.MsgType;
 import com.messagebird.objects.PagedPaging;
+import com.messagebird.objects.PhoneNumber;
+import com.messagebird.objects.PhoneNumberFeature;
+import com.messagebird.objects.PhoneNumbersResponse;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
@@ -58,6 +61,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.EnumSet;
 
 /**
  * Message bird general client
@@ -87,6 +91,7 @@ public class MessageBirdClient {
     private static final String BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX = "https://whatsapp-sandbox.messagebird.com/v1";
     
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
+    static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
     private static final String BALANCEPATH = "/balance";
@@ -1587,4 +1592,21 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Limit must be > 0");
         }
     }
-}
+
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        if (countryCode == null) {
+            throw new IllegalArgumentException("Country Code must be specified.");
+        }
+        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
+    }
+
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode, LinkedHashMap<String, Object> params) throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        if (countryCode == null) {
+            throw new IllegalArgumentException("Country Code must be specified.");
+        }
+        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, countryCode, params, PhoneNumbersResponse.class);
+    }
+
+} 
