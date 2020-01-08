@@ -19,6 +19,8 @@ import com.messagebird.objects.MessageList;
 import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.MsgType;
 import com.messagebird.objects.PagedPaging;
+import com.messagebird.objects.PhoneNumber;
+import com.messagebird.objects.PhoneNumberFeature;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
@@ -58,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.EnumSet;
 
 /**
  * Message bird general client
@@ -1587,4 +1590,14 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Limit must be > 0");
         }
     }
-}
+
+    public void listNumbersForPurchase(String countryCode) throws IllegalArgumentException {
+        if (countryCode == null) {
+            throw new IllegalArgumentException("Country Code must be specified.");
+        }
+        final EnumSet<PhoneNumberFeature> features = EnumSet.of(PhoneNumberFeature.SMS);
+        PhoneNumber phoneNumber = new PhoneNumber("31627132365", "NL", "", features, "mobile");
+        System.out.println(String.format("Received Country Code: %s", phoneNumber.toString()));
+        return;
+    }
+} 
