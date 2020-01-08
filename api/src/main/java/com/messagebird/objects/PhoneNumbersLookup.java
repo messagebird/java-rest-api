@@ -1,5 +1,6 @@
 package com.messagebird.objects;
 
+import com.messagebird.exceptions.GeneralException;
 import com.messagebird.objects.PhoneNumberFeature;
 import com.messagebird.objects.PhoneNumberType;
 import com.messagebird.objects.PhoneNumberSearchPattern;;
@@ -56,13 +57,17 @@ public class PhoneNumbersLookup {
         this.searchPattern = searchPattern;
     }
 
-    public HashMap<String, Object> toHashMap() throws IllegalAccessException {
+    public HashMap<String, Object> toHashMap() throws GeneralException {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         for (Field f: getClass().getDeclaredFields()) {
-            Object value = f.get(this);
-            String key = f.getName();
-            if (value != null) {
-                map.put(key, value);
+            try {
+                Object value = f.get(this);
+                String key = f.getName();
+                if (value != null) {
+                    map.put(key, value);
+                }
+            } catch (IllegalAccessException exception) {
+                throw new GeneralException("Error Converting PhoneNumbersLookup Class to HashMap.");
             }
         }
         return map;
