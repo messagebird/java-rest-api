@@ -5,7 +5,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 
-public class ExampleListPurchaseableNumbers {
+public class ExampleListNumbersForPurchase {
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Please specify your access key.");
