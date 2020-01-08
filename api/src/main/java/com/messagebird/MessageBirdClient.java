@@ -1592,17 +1592,11 @@ public class MessageBirdClient {
     }
 
     public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
-        if (countryCode == null) {
-            throw new IllegalArgumentException("Country Code must be specified.");
-        }
         final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
     }
 
     public PhoneNumbersResponse listNumbersForPurchase(String countryCode, PhoneNumbersLookup params) throws IllegalArgumentException, IllegalAccessException, GeneralException, UnauthorizedException, NotFoundException {
-        if (countryCode == null) {
-            throw new IllegalArgumentException("Country Code must be specified.");
-        }
         final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
     }
