@@ -21,6 +21,7 @@ import com.messagebird.objects.MsgType;
 import com.messagebird.objects.PagedPaging;
 import com.messagebird.objects.PhoneNumber;
 import com.messagebird.objects.PhoneNumberFeature;
+import com.messagebird.objects.PhoneNumbersResponse;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
@@ -90,6 +91,7 @@ public class MessageBirdClient {
     private static final String BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX = "https://whatsapp-sandbox.messagebird.com/v1";
     
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
+    static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
     private static final String BALANCEPATH = "/balance";
@@ -1591,13 +1593,12 @@ public class MessageBirdClient {
         }
     }
 
-    public void listNumbersForPurchase(String countryCode) throws IllegalArgumentException {
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
         if (countryCode == null) {
             throw new IllegalArgumentException("Country Code must be specified.");
         }
-        final EnumSet<PhoneNumberFeature> features = EnumSet.of(PhoneNumberFeature.SMS);
-        PhoneNumber phoneNumber = new PhoneNumber("31627132365", "NL", "", features, "mobile");
-        System.out.println(String.format("Received Country Code: %s", phoneNumber.toString()));
-        return;
+        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
     }
+
 } 
