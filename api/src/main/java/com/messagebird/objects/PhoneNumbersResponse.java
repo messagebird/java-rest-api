@@ -8,7 +8,7 @@ import java.util.List;
 class PhoneNumbersResponse implements Serializable {
     private Number limit;
     private Number offset;
-    private List<PhoneNumber> items;
+    private PhoneNumber[] items;
 
     @Override
     public String toString() {
