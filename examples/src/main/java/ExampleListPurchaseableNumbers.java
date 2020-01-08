@@ -2,6 +2,7 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 
 public class ExampleListPurchaseableNumbers {
@@ -11,19 +12,19 @@ public class ExampleListPurchaseableNumbers {
             return;
         }
         // First create your service object
-        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
+        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0], "https://numbers.messagebird.com");
 
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
-        messageBirdClient.listNumbersForPurchase(args[1]);
-        return;
-        // try {
-        // } catch (UnauthorizedException | GeneralException exception) {
-        //     if (exception.getErrors() != null) {
-        //         System.out.println(exception.getErrors().toString());
-        //     }
-        //     exception.printStackTrace();
-        // }
+        try {
+            System.out.println(messageBirdClient.listNumbersForPurchase(args[1]));
+            return;
+        } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
+            if (exception.getErrors() != null) {
+                System.out.println(exception.getErrors().toString());
+            }
+            exception.printStackTrace();
+        }
     }
 }
