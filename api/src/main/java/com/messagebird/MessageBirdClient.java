@@ -22,6 +22,7 @@ import com.messagebird.objects.PagedPaging;
 import com.messagebird.objects.PhoneNumber;
 import com.messagebird.objects.PhoneNumberFeature;
 import com.messagebird.objects.PhoneNumbersResponse;
+import com.messagebird.objects.PurchasedPhoneNumber;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
@@ -1609,4 +1610,14 @@ public class MessageBirdClient {
         return messageBirdService.requestByID(url, countryCode, params, PhoneNumbersResponse.class);
     }
 
+    public PurchasedPhoneNumber purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+
+        final Map<String, Object> payload = new LinkedHashMap<String, Object>();
+        payload.put("number", number);
+        payload.put("countryCode", countryCode);
+        payload.put("billingIntervalMonths", billingIntervalMonths);
+
+        return messageBirdService.sendPayLoad(url, payload, PurchasedPhoneNumber.class);
+    }
 } 
