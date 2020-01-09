@@ -1607,4 +1607,9 @@ public class MessageBirdClient {
         payload.put("tags", Arrays.asList(tags));
         return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumbersResponse.class);
     }
+
+    public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        messageBirdService.deleteByID(url, number);
+    }
 } 
