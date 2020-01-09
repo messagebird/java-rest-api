@@ -19,6 +19,7 @@ import com.messagebird.objects.MessageList;
 import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.MsgType;
 import com.messagebird.objects.PagedPaging;
+import com.messagebird.objects.PhoneNumber;
 import com.messagebird.objects.PhoneNumbersLookup;
 import com.messagebird.objects.PhoneNumbersResponse;
 import com.messagebird.objects.PurchasedPhoneNumber;
@@ -57,6 +58,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1611,5 +1613,13 @@ public class MessageBirdClient {
         payload.put("billingIntervalMonths", billingIntervalMonths);
 
         return messageBirdService.sendPayLoad(url, payload, PurchasedPhoneNumber.class);
+    }
+
+    public PhoneNumber updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
+        final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
+        final Map<String, List<String>> payload = new HashMap<String, List<String>>();
+        payload.put("tags", Arrays.asList(tags));
+        System.out.println(String.format("Payload: %s", payload.toString()));
+        return messageBirdService.sendPayLoad("PATCH", url, payload, PhoneNumber.class);
     }
 } 
