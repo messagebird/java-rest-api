@@ -6,8 +6,8 @@ import com.messagebird.exceptions.UnauthorizedException;
 
 public class ExampleUpdateNumber {
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Please specify your access key.");
+        if (args.length < 3) {
+            System.out.println("Please specify your access key, phone number, and the tags you wish to apply to it.");
             return;
         }
         // First create your service object
