@@ -34,6 +34,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1598,5 +1599,12 @@ public class MessageBirdClient {
     public PurchasedNumber viewPurchasedNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, number, PurchasedNumber.class);
+    }
+
+    public PurchasedNumbersResponse updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
+        final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
+        final Map<String, List<String>> payload = new HashMap<String, List<String>>();
+        payload.put("tags", Arrays.asList(tags));
+        return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumbersResponse.class);
     }
 } 

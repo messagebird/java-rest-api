@@ -27,7 +27,7 @@ public class ExampleListNumbersForPurchase {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
         try {
-            if (args[1].equalsIgnoreCase("--params")) {
+            if (args.length > 1) {
                 PhoneNumbersLookup options = new PhoneNumbersLookup();
                 options.setFeatures(EnumSet.of(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS));
                 options.setType(PhoneNumberType.MOBILE);
