@@ -101,7 +101,7 @@ public class PurchasedNumbersFilter implements Serializable {
                         map.put(key, value);
                     }
                 } catch (IllegalAccessException exception) {
-                    throw new GeneralException("Error converting to HashMap. This should never happen.");
+                    throw new GeneralException("Error converting to HashMap.");
                 }
             }
         }
