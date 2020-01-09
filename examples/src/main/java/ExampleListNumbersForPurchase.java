@@ -4,6 +4,12 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.PhoneNumberFeature;
+import com.messagebird.objects.PhoneNumberType;
+import com.messagebird.objects.PhoneNumberSearchPattern;
+import com.messagebird.objects.PhoneNumbersLookup;
+
+import java.util.EnumSet;;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,17 +21,27 @@ public class ExampleListNumbersForPurchase {
             return;
         }
         // First create your service object
-        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0], "https://numbers.messagebird.com");
+        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
 
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
         try {
-            System.out.println(messageBirdClient.listNumbersForPurchase(args[1]));
-            return;
+            if (args[1].equalsIgnoreCase("--params")) {
+                PhoneNumbersLookup options = new PhoneNumbersLookup();
+                options.setFeatures(EnumSet.of(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS));
+                options.setType(PhoneNumberType.MOBILE);
+                options.setLimit(10);
+                options.setNumber(562);
+                options.setSearchPattern(PhoneNumberSearchPattern.START);
+                System.out.print(options.toString());
+                System.out.println(String.format("Request Made With Params: %s", messageBirdClient.listNumbersForPurchase("US", options)));
+            } else {
+                System.out.println(String.format("Request Made Without Params: %s", messageBirdClient.listNumbersForPurchase("NL")));
+            }
         } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
             if (exception.getErrors() != null) {
-                System.out.println(exception.getErrors().toString());
+               System.out.println(exception.getErrors().toString());
             }
             exception.printStackTrace();
         }
