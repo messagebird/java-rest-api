@@ -3,11 +3,9 @@ package com.messagebird.objects;
 import java.util.Date;
 import java.util.List;
 
-public class PurchasedPhoneNumber extends PhoneNumber {
+public class PurchasedNumber extends PhoneNumber {
     private List<String> tags;
     private String status;
-    private Date createdAt;
-    private Date renewalAt;
 
     public List<String> getTags() {
         return tags;
@@ -15,14 +13,6 @@ public class PurchasedPhoneNumber extends PhoneNumber {
 
     public String getStatus() {
         return status;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getRenewalAt() {
-        return renewalAt;
     }
 
     @Override
@@ -36,8 +26,6 @@ public class PurchasedPhoneNumber extends PhoneNumber {
             ", type='" + this.getType() + "\'" +
             ", tags='" + tags + "\'" +
             ", status='" + status + "\'" +
-            ", createdAt='" + createdAt + "\'" +
-            ", renewalAt='" + renewalAt + "\'" +
             "}";
     }
 }

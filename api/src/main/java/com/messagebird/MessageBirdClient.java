@@ -1579,7 +1579,7 @@ public class MessageBirdClient {
         return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
     }
 
-    public PurchasedPhoneNumber purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
+    public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
 
         final Map<String, Object> payload = new LinkedHashMap<String, Object>();
@@ -1587,6 +1587,6 @@ public class MessageBirdClient {
         payload.put("countryCode", countryCode);
         payload.put("billingIntervalMonths", billingIntervalMonths);
 
-        return messageBirdService.sendPayLoad(url, payload, PurchasedPhoneNumber.class);
+        return messageBirdService.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
     }
 } 

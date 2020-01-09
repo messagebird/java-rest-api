@@ -2,11 +2,8 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.PurchasedPhoneNumber;
-
-import java.util.LinkedHashMap;
+import com.messagebird.objects.PurchasedNumberCreatedResponse;
 
 public class ExamplePurchaseNumber {
     public static void main(String[] args) {
@@ -21,9 +18,9 @@ public class ExamplePurchaseNumber {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
         try {
-            PurchasedPhoneNumber purchasedPhoneNumber = messageBirdClient.purchaseNumber(args[1], args[2], Integer.parseInt(args[3]));
+            PurchasedNumberCreatedResponse purchasedNumberCreatedResponse = messageBirdClient.purchaseNumber(args[1], args[2], Integer.parseInt(args[3]));
 
-            System.out.println(purchasedPhoneNumber);
+            System.out.println(purchasedNumberCreatedResponse);
             return;
         } catch (UnauthorizedException | GeneralException exception) {
             if (exception.getErrors() != null) {
