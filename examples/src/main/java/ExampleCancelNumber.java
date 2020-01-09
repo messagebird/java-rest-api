@@ -12,7 +12,7 @@ public class ExampleCancelNumber {
             return;
         }
         // First create your service object
-        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0], "https://numbers.messagebird.com");
+        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
 
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
