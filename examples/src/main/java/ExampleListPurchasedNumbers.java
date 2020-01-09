@@ -2,13 +2,16 @@ import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.PurchasedNumberCreatedResponse;
+import com.messagebird.objects.PhoneNumberFeature;
+import com.messagebird.objects.PhoneNumberType;
+import com.messagebird.objects.PurchasedNumbersFilter;
 
-public class ExamplePurchaseNumber {
+public class ExampleListPurchasedNumbers {
     public static void main(String[] args) {
-        if (args.length < 4) {
-            System.out.println("Please specify your access key, number, country code and billing interval months, eg: ExamplePurchaseNumber test_accesskey 3197010240563 NL 1");
+        if (args.length < 1) {
+            System.out.println("Please specify your access key.");
             return;
         }
         // First create your service object
@@ -16,13 +19,18 @@ public class ExamplePurchaseNumber {
 
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
-        
-        try {
-            PurchasedNumberCreatedResponse purchasedNumberCreatedResponse = messageBirdClient.purchaseNumber(args[1], args[2], Integer.parseInt(args[3]));
 
-            System.out.println(purchasedNumberCreatedResponse);
+        PurchasedNumbersFilter filter = new PurchasedNumbersFilter();
+
+        filter.addFeature(PhoneNumberFeature.SMS);
+        filter.setType(PhoneNumberType.MOBILE);
+
+        filter.setLimit(25);
+
+        try {
+            System.out.println(messageBirdClient.listPurchasedNumbers(filter));
             return;
-        } catch (UnauthorizedException | GeneralException exception) {
+        } catch (UnauthorizedException | NotFoundException | GeneralException exception) {
             if (exception.getErrors() != null) {
                 System.out.println(exception.getErrors().toString());
             }

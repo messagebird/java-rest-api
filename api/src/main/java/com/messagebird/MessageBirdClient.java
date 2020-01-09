@@ -3,31 +3,7 @@ package com.messagebird;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.Balance;
-import com.messagebird.objects.Contact;
-import com.messagebird.objects.ContactList;
-import com.messagebird.objects.ContactRequest;
-import com.messagebird.objects.ErrorReport;
-import com.messagebird.objects.Group;
-import com.messagebird.objects.GroupList;
-import com.messagebird.objects.GroupRequest;
-import com.messagebird.objects.Hlr;
-import com.messagebird.objects.Lookup;
-import com.messagebird.objects.LookupHlr;
-import com.messagebird.objects.Message;
-import com.messagebird.objects.MessageList;
-import com.messagebird.objects.MessageResponse;
-import com.messagebird.objects.MsgType;
-import com.messagebird.objects.PagedPaging;
-import com.messagebird.objects.PhoneNumber;
-import com.messagebird.objects.PhoneNumbersLookup;
-import com.messagebird.objects.PhoneNumbersResponse;
-import com.messagebird.objects.PurchasedPhoneNumber;
-import com.messagebird.objects.Verify;
-import com.messagebird.objects.VerifyRequest;
-import com.messagebird.objects.VoiceMessage;
-import com.messagebird.objects.VoiceMessageList;
-import com.messagebird.objects.VoiceMessageResponse;
+import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.Conversation;
 import com.messagebird.objects.conversations.ConversationList;
 import com.messagebird.objects.conversations.ConversationMessage;
@@ -1604,7 +1580,7 @@ public class MessageBirdClient {
         return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
     }
 
-    public PurchasedPhoneNumber purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
+    public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
 
         final Map<String, Object> payload = new LinkedHashMap<String, Object>();
@@ -1612,13 +1588,23 @@ public class MessageBirdClient {
         payload.put("countryCode", countryCode);
         payload.put("billingIntervalMonths", billingIntervalMonths);
 
-        return messageBirdService.sendPayLoad(url, payload, PurchasedPhoneNumber.class);
+        return messageBirdService.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
     }
 
-    public PhoneNumber updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
+    public PurchasedNumbersResponse listPurchasedNumbers(PurchasedNumbersFilter filter) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class);
+    }
+
+    public PurchasedNumber viewPurchasedNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, number, PurchasedNumber.class);
+    }
+
+    public PurchasedNumbersResponse updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
         final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
         payload.put("tags", Arrays.asList(tags));
-        return messageBirdService.sendPayLoad("PATCH", url, payload, PhoneNumber.class);
+        return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumbersResponse.class);
     }
 } 
