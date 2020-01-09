@@ -1619,7 +1619,6 @@ public class MessageBirdClient {
         final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
         payload.put("tags", Arrays.asList(tags));
-        System.out.println(String.format("Payload: %s", payload.toString()));
         return messageBirdService.sendPayLoad("PATCH", url, payload, PhoneNumber.class);
     }
 } 
