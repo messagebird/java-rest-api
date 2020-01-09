@@ -3,6 +3,7 @@ package com.messagebird.objects;
 import com.messagebird.objects.PhoneNumberFeature;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class PhoneNumber {
     private String number;
@@ -11,6 +12,7 @@ public class PhoneNumber {
     private String locality;
     private EnumSet<PhoneNumberFeature> features;
     private String type;
+    private List<String> tags;
 
     public String getNumber() {
         return this.number;
@@ -36,6 +38,10 @@ public class PhoneNumber {
         return this.type;
     }
 
+    public List<String> getTags() {
+        return this.tags;
+    }
+
     @Override
     public String toString() {
         return "PhoneNumber{" +
@@ -44,6 +50,7 @@ public class PhoneNumber {
             ", region='" + region + "\'" +
             ", locality='" + locality + "\'" +
             ", features=" + features +
+            ", tags=" + tags +
             ", type='" + type + "\'" +
             "}";
     }
