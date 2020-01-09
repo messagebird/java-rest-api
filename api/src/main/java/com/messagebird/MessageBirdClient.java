@@ -1612,4 +1612,9 @@ public class MessageBirdClient {
 
         return messageBirdService.sendPayLoad(url, payload, PurchasedPhoneNumber.class);
     }
+
+    public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        messageBirdService.deleteByID(url, number);
+    }
 } 
