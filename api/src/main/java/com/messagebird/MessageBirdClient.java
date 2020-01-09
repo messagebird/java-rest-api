@@ -1589,4 +1589,9 @@ public class MessageBirdClient {
 
         return messageBirdService.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
     }
+
+    public PurchasedNumbersResponse listPurchasedNumbers(PurchasedNumbersFilter filter) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class);
+    }
 } 
