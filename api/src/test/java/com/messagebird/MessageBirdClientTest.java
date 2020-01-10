@@ -769,4 +769,47 @@ public class MessageBirdClientTest {
         messageBirdClientMock.deleteWebhook("id");
         verify(messageBirdServiceMock, times(1)).deleteByID(VOICE_CALLS_BASE_URL + WEBHOOKS, "id");
     }
+
+    @Test
+    public void testListNumbersForPurchase() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final PhoneNumbersResponse mockedResponse = TestUtil.createPhoneNumbersResponseData();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestByID(url, "NL", PhoneNumbersResponse.class))
+            .thenReturn(mockedResponse);
+
+        final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("NL");
+        verify(messageBirdServiceMock, times(1)).requestByID(url, "NL", PhoneNumbersResponse.class);
+        
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
+    }
+
+    @Test
+    public void testListNumbersForPurchaseWithParams() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final PhoneNumbersResponse mockedResponse = TestUtil.createPhoneNumbersResponseDataWithParams();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        PhoneNumbersLookup options = new PhoneNumbersLookup();
+        options.setFeatures(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS);
+        options.setType(PhoneNumberType.MOBILE);
+        options.setLimit(1);
+        options.setNumber(562);
+        options.setSearchPattern(PhoneNumberSearchPattern.START);
+    
+        when(messageBirdServiceMock.requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class))
+            .thenReturn(mockedResponse);
+
+        final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("US", options);
+        verify(messageBirdServiceMock, times(1)).requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class);
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
+    }
+
 }
