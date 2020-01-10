@@ -26,6 +26,15 @@ public class PhoneNumbersResponse implements Serializable {
     public List<PhoneNumber> getItems() {
         return this.items;
     }
+	public void setLimit(Number limit) {
+        this.limit = limit;
+    }
+    public void setOffset(Number offset) {
+        this.offset = offset;
+    }
+    public void setItems(List<PhoneNumber> items) {
+        this.items = items;
+    }
     
     @Override
     public String toString() {
