@@ -3,7 +3,6 @@ package com.messagebird.objects;
 import java.util.List;
 
 public class PurchasedNumber extends PhoneNumber {
-
     private List<String> tags;
     private String status;
 
