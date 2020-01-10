@@ -3,8 +3,9 @@ package com.messagebird.objects;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.objects.PhoneNumberFeature;
 import com.messagebird.objects.PhoneNumberType;
-import com.messagebird.objects.PhoneNumberSearchPattern;;
+import com.messagebird.objects.PhoneNumberSearchPattern;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.lang.reflect.Field;
@@ -43,6 +44,12 @@ public class PhoneNumbersLookup {
     
     public void setFeatures(EnumSet<PhoneNumberFeature> features) {
         this.features = features;
+    }
+
+    public void setFeatures(PhoneNumberFeature... features) {
+        EnumSet<PhoneNumberFeature> featuresEnum = EnumSet.noneOf(PhoneNumberFeature.class);
+        featuresEnum.addAll(Arrays.asList(features));
+        this.features = featuresEnum;
     }
     
     public void setType(PhoneNumberType type) {
