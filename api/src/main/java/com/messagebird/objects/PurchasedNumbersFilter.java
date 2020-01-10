@@ -114,11 +114,11 @@ public class PurchasedNumbersFilter implements Serializable {
                 "limit=" + limit +
                 ", offset=" + offset +
                 ", features=" + features +
-                ", tags=" + tags.toString() +
+                ", tags=" + tags +
                 ", number='" + number + '\'' +
                 ", region='" + region + '\'' +
                 ", locality='" + locality + '\'' +
-                ", type='" + type + '\'' +
+                ", type=" + type +
                 '}';
     }
 }
