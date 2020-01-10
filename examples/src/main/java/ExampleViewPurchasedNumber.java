@@ -4,9 +4,6 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.PhoneNumberFeature;
-import com.messagebird.objects.PhoneNumberType;
-import com.messagebird.objects.PurchasedNumbersFilter;
 
 public class ExampleViewPurchasedNumber {
     public static void main(String[] args) {

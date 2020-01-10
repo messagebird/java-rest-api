@@ -9,11 +9,6 @@ import com.messagebird.objects.PhoneNumberType;
 import com.messagebird.objects.PhoneNumberSearchPattern;
 import com.messagebird.objects.PhoneNumbersLookup;
 
-import java.util.EnumSet;;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class ExampleListNumbersForPurchase {
     public static void main(String[] args) {
         if (args.length < 1) {
@@ -29,7 +24,7 @@ public class ExampleListNumbersForPurchase {
         try {
             if (args.length > 1) {
                 PhoneNumbersLookup options = new PhoneNumbersLookup();
-                options.setFeatures(EnumSet.of(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS));
+                options.setFeatures(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS);
                 options.setType(PhoneNumberType.MOBILE);
                 options.setLimit(10);
                 options.setNumber(562);

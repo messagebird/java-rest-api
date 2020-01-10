@@ -3,7 +3,6 @@ package com.messagebird.objects;
 import com.messagebird.objects.PhoneNumberFeature;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class PhoneNumber {
     private String number;

@@ -1,6 +1,5 @@
 package com.messagebird.objects;
 
-import java.util.Date;
 import java.util.List;
 
 public class PurchasedNumber extends PhoneNumber {
