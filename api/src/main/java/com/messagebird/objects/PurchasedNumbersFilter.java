@@ -38,20 +38,34 @@ public class PurchasedNumbersFilter implements Serializable {
         return features;
     }
 
-    public void addFeature(PhoneNumberFeature feature) {
-        this.features.add(feature);
+    public void addFeature(PhoneNumberFeature... features) {
+        for (PhoneNumberFeature feature: features) {
+            this.features.add(feature);
+        }
     }
 
-    public void removeFeature(PhoneNumberFeature feature) {
-        this.features.remove(feature);
+    public void removeFeature(PhoneNumberFeature... features) {
+        for (PhoneNumberFeature feature: features) {
+            this.features.remove(feature);
+        }
     }
 
     public ArrayList<String> getTags() {
         return tags;
     }
 
-    public void addTag(String tag) {
-        this.tags.add(tag);
+    public void addTag(String... tags) {
+        for (String tag: tags) {
+            if (!this.tags.contains(tag)) {
+                this.tags.add(tag);
+            }
+        }
+    }
+
+    public void removeTag(String... tags) {
+        for (String tag: tags) {
+            this.tags.remove(tag);
+        }
     }
 
     public void clearTags() {
@@ -114,11 +128,11 @@ public class PurchasedNumbersFilter implements Serializable {
                 "limit=" + limit +
                 ", offset=" + offset +
                 ", features=" + features +
-                ", tags=" + tags.toString() +
+                ", tags=" + tags +
                 ", number='" + number + '\'' +
                 ", region='" + region + '\'' +
                 ", locality='" + locality + '\'' +
-                ", type='" + type + '\'' +
+                ", type=" + type +
                 '}';
     }
 }
