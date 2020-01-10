@@ -1601,11 +1601,11 @@ public class MessageBirdClient {
         return messageBirdService.requestByID(url, number, PurchasedNumber.class);
     }
 
-    public PurchasedNumbersResponse updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
+    public PurchasedNumber updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
         final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
         payload.put("tags", Arrays.asList(tags));
-        return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumbersResponse.class);
+        return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumber.class);
     }
 
     public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
