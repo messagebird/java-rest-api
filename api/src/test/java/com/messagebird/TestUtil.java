@@ -240,4 +240,24 @@ class TestUtil {
                 )
         );
     }
+
+    static PhoneNumbersResponse createPhoneNumbersResponseData() {
+        final PhoneNumber number = new PhoneNumber("31102005195", "NL", "", "Rotterdam", EnumSet.of(PhoneNumberFeature.VOICE), "unknown");
+        final List<PhoneNumber> numbers = List.of(number);
+        final PhoneNumbersResponse phoneNumbersResponseData = new PhoneNumbersResponse();
+        phoneNumbersResponseData.setLimit(1);
+        phoneNumbersResponseData.setOffset(0);
+        phoneNumbersResponseData.setItems(numbers);
+        return phoneNumbersResponseData;
+    }
+
+    static PhoneNumbersResponse createPhoneNumbersResponseDataWithParams() {
+        final PhoneNumber number = new PhoneNumber("15625267429", "US", "", "", EnumSet.of(PhoneNumberFeature.SMS, PhoneNumberFeature.MMS, PhoneNumberFeature.VOICE), "landline_or_mobile");
+        final List<PhoneNumber> numbers = List.of(number);
+        final PhoneNumbersResponse phoneNumbersResponseData = new PhoneNumbersResponse();
+        phoneNumbersResponseData.setLimit(1);
+        phoneNumbersResponseData.setOffset(0);
+        phoneNumbersResponseData.setItems(numbers);
+        return phoneNumbersResponseData;
+    }
 }
