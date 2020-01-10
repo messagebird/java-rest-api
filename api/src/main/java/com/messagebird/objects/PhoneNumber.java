@@ -36,15 +36,6 @@ public class PhoneNumber {
         return this.type;
     }
 
-    public PhoneNumber(String number, String country, String region, String locality, EnumSet<PhoneNumberFeature> features, String type) {
-        this.number = number;
-        this.country = country;
-        this.region = region;
-        this.locality = locality;
-        this.features = features;
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         return "PhoneNumber{" +

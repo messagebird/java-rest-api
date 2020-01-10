@@ -776,7 +776,7 @@ public class MessageBirdClientTest {
     @Test
     public void testListNumbersForPurchase() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
         final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
-        final PhoneNumbersResponse mockedResponse = TestUtil.createPhoneNumbersResponseData();
+        final PhoneNumbersResponse mockedResponse = new PhoneNumbersResponse();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
@@ -794,7 +794,7 @@ public class MessageBirdClientTest {
     @Test
     public void testListNumbersForPurchaseWithParams() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
         final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
-        final PhoneNumbersResponse mockedResponse = TestUtil.createPhoneNumbersResponseDataWithParams();
+        final PhoneNumbersResponse mockedResponse = new PhoneNumbersResponse();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
@@ -819,7 +819,7 @@ public class MessageBirdClientTest {
     public void testPurchaseNumber() throws UnauthorizedException, GeneralException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
 
-        PurchasedNumberCreatedResponse purchasedNumberMockData = TestUtil.createPurchaseNumberResponse();
+        PurchasedNumberCreatedResponse purchasedNumberMockData = new PurchasedNumberCreatedResponse();
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
@@ -841,7 +841,7 @@ public class MessageBirdClientTest {
     public void testListPurchasedNumbers() throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
     
-        PurchasedNumbersResponse purchasedNumbersMockData = TestUtil.createPurchasedNumbersResponse();
+        PurchasedNumbersResponse purchasedNumbersMockData = new PurchasedNumbersResponse();
     
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
@@ -866,7 +866,7 @@ public class MessageBirdClientTest {
     public void testViewPurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
     
-        PurchasedNumber purchasedNumberMockData = TestUtil.createPurchasedNumberResponse();
+        PurchasedNumber purchasedNumberMockData = new PurchasedNumber();
     
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
@@ -884,7 +884,7 @@ public class MessageBirdClientTest {
         final String phoneNumber = "15625267429";
         final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, phoneNumber);
     
-        PurchasedNumber updatedNumberMock = TestUtil.createPurchasedNumberResponse();
+        PurchasedNumber updatedNumberMock = new PurchasedNumber();
     
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
