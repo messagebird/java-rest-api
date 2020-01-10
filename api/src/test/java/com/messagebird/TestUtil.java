@@ -260,4 +260,35 @@ class TestUtil {
         phoneNumbersResponseData.setItems(numbers);
         return phoneNumbersResponseData;
     }
+
+    static PurchasedNumberCreatedResponse createPurchaseNumberResponse() {
+        final PurchasedNumberCreatedResponse response = new PurchasedNumberCreatedResponse("15625267429",
+            "US", "", "", EnumSet.of(PhoneNumberFeature.SMS, PhoneNumberFeature.MMS, PhoneNumberFeature.VOICE), "landline_or_mobile");
+        response.setCreatedAt(new Date());
+        response.setRenewalAt(new Date());
+        return response;
+    }
+
+    static PurchasedNumbersResponse createPurchasedNumbersResponse() {
+        final PurchasedNumber number = new PurchasedNumber("15625267429", "US",
+            "", "", EnumSet.of(PhoneNumberFeature.SMS, PhoneNumberFeature.MMS, PhoneNumberFeature.VOICE), "landline_or_mobile");
+        number.setTags("tag");
+        number.setStatus("active");
+        PurchasedNumbersResponse response = new PurchasedNumbersResponse();
+        response.setItems(number);
+        response.setCount(1);
+        response.setLimit(1);
+        response.setTotalCount(1);
+        response.setOffset(0);
+        return response;
+    }
+
+    static PurchasedNumber createPurchasedNumberResponse() {
+        final PurchasedNumber number = new PurchasedNumber("15625267429", "US",
+            "", "", EnumSet.of(PhoneNumberFeature.SMS, PhoneNumberFeature.MMS, PhoneNumberFeature.VOICE), "landline_or_mobile");
+        number.setTags("tag");
+        number.setStatus("active");
+        return number;
+    }
+
 }
