@@ -29,7 +29,7 @@ public class ExampleListNumbersForPurchase {
         try {
             if (args.length > 1) {
                 PhoneNumbersLookup options = new PhoneNumbersLookup();
-                options.setFeatures(EnumSet.of(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS));
+                options.setFeatures(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS);
                 options.setType(PhoneNumberType.MOBILE);
                 options.setLimit(10);
                 options.setNumber(562);
