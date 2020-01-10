@@ -9,11 +9,6 @@ import com.messagebird.objects.PhoneNumberType;
 import com.messagebird.objects.PhoneNumberSearchPattern;
 import com.messagebird.objects.PhoneNumbersLookup;
 
-import java.util.EnumSet;;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class ExampleListNumbersForPurchase {
     public static void main(String[] args) {
         if (args.length < 1) {
