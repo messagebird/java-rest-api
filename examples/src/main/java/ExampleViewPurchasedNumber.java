@@ -19,7 +19,6 @@ public class ExampleViewPurchasedNumber {
 
         try {
             System.out.println(messageBirdClient.viewPurchasedNumber(args[1]));
-            return;
         } catch (UnauthorizedException | NotFoundException | GeneralException exception) {
             if (exception.getErrors() != null) {
                 System.out.println(exception.getErrors().toString());

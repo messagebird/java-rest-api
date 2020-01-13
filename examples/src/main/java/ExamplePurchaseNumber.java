@@ -21,7 +21,6 @@ public class ExamplePurchaseNumber {
             PurchasedNumberCreatedResponse purchasedNumberCreatedResponse = messageBirdClient.purchaseNumber(args[1], args[2], Integer.parseInt(args[3]));
 
             System.out.println(purchasedNumberCreatedResponse);
-            return;
         } catch (UnauthorizedException | GeneralException exception) {
             if (exception.getErrors() != null) {
                 System.out.println(exception.getErrors().toString());

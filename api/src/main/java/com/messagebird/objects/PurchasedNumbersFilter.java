@@ -5,6 +5,7 @@ import com.messagebird.exceptions.GeneralException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -39,9 +40,7 @@ public class PurchasedNumbersFilter implements Serializable {
     }
 
     public void addFeature(PhoneNumberFeature... features) {
-        for (PhoneNumberFeature feature: features) {
-            this.features.add(feature);
-        }
+        Collections.addAll(this.features, features);
     }
 
     public void removeFeature(PhoneNumberFeature... features) {

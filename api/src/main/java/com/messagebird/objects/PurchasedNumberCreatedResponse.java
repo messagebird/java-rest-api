@@ -1,7 +1,6 @@
 package com.messagebird.objects;
 
 import java.util.Date;
-import java.util.EnumSet;
 
 public class PurchasedNumberCreatedResponse extends PurchasedNumber {
     private Date createdAt;
