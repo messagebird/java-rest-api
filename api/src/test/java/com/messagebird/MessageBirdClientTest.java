@@ -890,7 +890,7 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
         
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
-        payload.put("tags", Arrays.asList("tag"));
+        payload.put("tags", Collections.singletonList("tag"));
         
         when(messageBirdServiceMock.sendPayLoad("PATCH", url, payload, PurchasedNumber.class))
             .thenReturn(updatedNumberMock);
