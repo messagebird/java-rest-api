@@ -620,8 +620,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     /**
      * Encodes a key/value pair with percent encoding.
      *
-     * @param String key
-     * @param Object value
+     * @param key the key name to be used
+     * @param value the value to be assigned to that key
      * @return String
      */
     private String encodeKeyValuePair(String key, Object value) throws UnsupportedEncodingException {
