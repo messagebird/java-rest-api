@@ -880,7 +880,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void updatePurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
+    public void updatePurchasedNumber()  throws UnauthorizedException, GeneralException {
         final String phoneNumber = "15625267429";
         final String url = String.format("%s/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, phoneNumber);
     
