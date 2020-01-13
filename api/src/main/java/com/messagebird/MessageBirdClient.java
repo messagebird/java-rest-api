@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -1597,14 +1598,30 @@ public class MessageBirdClient {
     }
 
     /**
+     * Checks whether a particular country code is a recognized ISO Country.
+     *
+     * @param countryCode The country code in which the Number should be purchased.
+     * @throws IllegalArgumentException
+     */
+    private Boolean countryCodeIsValid(String countryCode) throws IllegalArgumentException {
+        final Boolean isValid = Arrays.asList(Locale.getISOCountries()).contains(countryCode);
+        if (!isValid) {
+            throw new IllegalArgumentException("Invalid Country Code Provided.");
+        }
+        return true;
+    }
+
+    /**
      * Lists Numbers that are available to purchase in a particular country code, without any filters.
      *
      * @param countryCode The country code in which the Number should be purchased.
      * @throws GeneralException             general exception
      * @throws UnauthorizedException        if client is unauthorized
      * @throws NotFoundException            if the resource is missing
+     * @throws IllegalArgumentException     if the country code provided is invalid
      */
-    public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws GeneralException, UnauthorizedException, NotFoundException {
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
         final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
     }
@@ -1617,8 +1634,10 @@ public class MessageBirdClient {
      * @throws GeneralException             general exception
      * @throws UnauthorizedException        if client is unauthorized
      * @throws NotFoundException            if the resource is missing
+     * @throws IllegalArgumentException     if the country code provided is invalid
      */
-    public PhoneNumbersResponse listNumbersForPurchase(String countryCode, PhoneNumbersLookup params) throws GeneralException, UnauthorizedException, NotFoundException {
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode, PhoneNumbersLookup params) throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
         final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
     }
@@ -1630,13 +1649,17 @@ public class MessageBirdClient {
      * @param countryCode   The country code in which the Number should be purchased.
      * @throws GeneralException             general exception
      * @throws UnauthorizedException        if client is unauthorized
+     * @throws IllegalArgumentException     if the country code provided is invalid
      */
-    public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
+    public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
         final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
-
         final Map<String, Object> payload = new LinkedHashMap<String, Object>();
         payload.put("number", number);
         payload.put("countryCode", countryCode);
+        if (!Arrays.asList(1, 3, 6, 9).contains(billingIntervalMonths)) {
+            throw new IllegalArgumentException("Billing Interval Must Be Either 1, 3, 6, or 9.");
+        }
         payload.put("billingIntervalMonths", billingIntervalMonths);
 
         return messageBirdService.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
