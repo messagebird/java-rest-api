@@ -11,8 +11,8 @@ import com.messagebird.objects.PhoneNumbersLookup;
 
 public class ExampleListNumbersForPurchase {
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Please specify your access key.");
+        if (args.length < 2) {
+            System.out.println("Please specify your access key and a country code to test.");
             return;
         }
         // First create your service object
@@ -22,7 +22,7 @@ public class ExampleListNumbersForPurchase {
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
         
         try {
-            if (args.length > 1) {
+            if (args.length > 2) {
                 PhoneNumbersLookup options = new PhoneNumbersLookup();
                 options.setFeatures(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS);
                 options.setType(PhoneNumberType.MOBILE);
@@ -32,7 +32,7 @@ public class ExampleListNumbersForPurchase {
                 System.out.print(options.toString());
                 System.out.println(String.format("Request Made With Params: %s", messageBirdClient.listNumbersForPurchase("US", options)));
             } else {
-                System.out.println(String.format("Request Made Without Params: %s", messageBirdClient.listNumbersForPurchase("NL")));
+                System.out.println(String.format("Request Made Without Params: %s", messageBirdClient.listNumbersForPurchase(args[1])));
             }
         } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
             if (exception.getErrors() != null) {

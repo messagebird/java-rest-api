@@ -5,7 +5,6 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.PhoneNumberFeature;
-import com.messagebird.objects.PhoneNumberType;
 import com.messagebird.objects.PurchasedNumbersFilter;
 
 public class ExampleListPurchasedNumbers {
@@ -15,16 +14,12 @@ public class ExampleListPurchasedNumbers {
             return;
         }
         // First create your service object
-        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0], "https://numbers.messagebird.com");
+        final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
 
         // Add the service to the client
         final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
         PurchasedNumbersFilter filter = new PurchasedNumbersFilter();
-
-        filter.addFeature(PhoneNumberFeature.SMS);
-        filter.setType(PhoneNumberType.MOBILE);
-
         filter.setLimit(25);
 
         try {
