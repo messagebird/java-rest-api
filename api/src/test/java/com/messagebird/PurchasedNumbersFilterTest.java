@@ -1,11 +1,9 @@
 package com.messagebird;
 
 import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.Assert.*;
