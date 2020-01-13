@@ -29,7 +29,6 @@ public class ExampleListPurchasedNumbers {
 
         try {
             System.out.println(messageBirdClient.listPurchasedNumbers(filter));
-            return;
         } catch (UnauthorizedException | NotFoundException | GeneralException exception) {
             if (exception.getErrors() != null) {
                 System.out.println(exception.getErrors().toString());
