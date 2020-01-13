@@ -94,7 +94,7 @@ public class MessageBirdClient {
     private static final String BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX = "https://whatsapp-sandbox.messagebird.com/v1";
     
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
-    static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com";
+    static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
     private static final String BALANCEPATH = "/balance";
@@ -1605,7 +1605,7 @@ public class MessageBirdClient {
      * @throws NotFoundException            if the resource is missing
      */
     public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws GeneralException, UnauthorizedException, NotFoundException {
-        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
     }
 
@@ -1619,7 +1619,7 @@ public class MessageBirdClient {
      * @throws NotFoundException            if the resource is missing
      */
     public PhoneNumbersResponse listNumbersForPurchase(String countryCode, PhoneNumbersLookup params) throws GeneralException, UnauthorizedException, NotFoundException {
-        final String url = String.format("%s/v1/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
     }
 
@@ -1632,7 +1632,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException        if client is unauthorized
      */
     public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException {
-        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
 
         final Map<String, Object> payload = new LinkedHashMap<String, Object>();
         payload.put("number", number);
@@ -1651,7 +1651,7 @@ public class MessageBirdClient {
      * @throws NotFoundException            if the resource is missing
      */
     public PurchasedNumbersResponse listPurchasedNumbers(PurchasedNumbersFilter filter) throws UnauthorizedException, GeneralException, NotFoundException {
-        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class);
     }
 
@@ -1664,7 +1664,7 @@ public class MessageBirdClient {
      * @throws NotFoundException            if the Number is missing
      */
     public PurchasedNumber viewPurchasedNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
-        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
         return messageBirdService.requestByID(url, number, PurchasedNumber.class);
     }
 
@@ -1677,7 +1677,7 @@ public class MessageBirdClient {
      * @throws GeneralException             general exception
      */
     public PurchasedNumber updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
-        final String url = String.format("%s/v1/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
+        final String url = String.format("%s/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
         payload.put("tags", Arrays.asList(tags));
         return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumber.class);
@@ -1692,7 +1692,7 @@ public class MessageBirdClient {
      * @throws NotFoundException            if the resource is missing
      */
     public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
-        final String url = String.format("%s/v1/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
         messageBirdService.deleteByID(url, number);
     }
 } 
