@@ -7,6 +7,7 @@ package com.messagebird.objects;
  */
 public enum MsgType {
     sms("sms"),
+    mms("mms"),
     binary("binary"),
     premium("premium"),
     flash("flash");

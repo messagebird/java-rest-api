@@ -12,8 +12,11 @@ import org.mockito.Mockito;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.messagebird.MessageBirdClient.*;
@@ -769,4 +772,144 @@ public class MessageBirdClientTest {
         messageBirdClientMock.deleteWebhook("id");
         verify(messageBirdServiceMock, times(1)).deleteByID(VOICE_CALLS_BASE_URL + WEBHOOKS, "id");
     }
+
+    @Test
+    public void testListNumbersForPurchase() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final PhoneNumbersResponse mockedResponse = new PhoneNumbersResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.requestByID(url, "NL", PhoneNumbersResponse.class))
+            .thenReturn(mockedResponse);
+
+        final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("NL");
+        verify(messageBirdServiceMock, times(1)).requestByID(url, "NL", PhoneNumbersResponse.class);
+        
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
+    }
+
+    @Test
+    public void testListNumbersForPurchaseWithParams() throws IllegalArgumentException, GeneralException, UnauthorizedException, NotFoundException {
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final PhoneNumbersResponse mockedResponse = new PhoneNumbersResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        PhoneNumbersLookup options = new PhoneNumbersLookup();
+        options.setFeatures(PhoneNumberFeature.VOICE, PhoneNumberFeature.SMS);
+        options.setType(PhoneNumberType.MOBILE);
+        options.setLimit(1);
+        options.setNumber(562);
+        options.setSearchPattern(PhoneNumberSearchPattern.START);
+    
+        when(messageBirdServiceMock.requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class))
+            .thenReturn(mockedResponse);
+
+        final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("US", options);
+        verify(messageBirdServiceMock, times(1)).requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class);
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
+    }
+
+    @Test
+    public void testPurchaseNumber() throws UnauthorizedException, GeneralException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+
+        PurchasedNumberCreatedResponse purchasedNumberMockData = new PurchasedNumberCreatedResponse();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        
+        final Map<String, Object> payload = new LinkedHashMap<String, Object>();
+        payload.put("number", "15625267429");
+        payload.put("countryCode", "US");
+        payload.put("billingIntervalMonths", 1);
+        
+        when(messageBirdServiceMock.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class))
+            .thenReturn(purchasedNumberMockData);
+        final PurchasedNumberCreatedResponse response = messageBirdClientMock.purchaseNumber("15625267429", "US", 1);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
+        assertNotNull(response);
+        assertEquals(response, purchasedNumberMockData);
+    }
+    
+    @Test
+    public void testListPurchasedNumbers() throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+    
+        PurchasedNumbersResponse purchasedNumbersMockData = new PurchasedNumbersResponse();
+    
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        PurchasedNumbersFilter filter = new PurchasedNumbersFilter();
+        filter.setLimit(1);
+        filter.addFeature(PhoneNumberFeature.SMS);
+        filter.setType(PhoneNumberType.MOBILE);
+        filter.addTag("tag");
+
+        when(messageBirdServiceMock.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class))
+            .thenReturn(purchasedNumbersMockData);
+
+        final PurchasedNumbersResponse response = messageBirdClientMock.listPurchasedNumbers(filter);
+
+        verify(messageBirdServiceMock, times(1)).requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class);
+        assertNotNull(response);
+        assertEquals(response, purchasedNumbersMockData);
+    }
+
+    @Test
+    public void testViewPurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+    
+        PurchasedNumber purchasedNumberMockData = new PurchasedNumber();
+    
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        when(messageBirdServiceMock.requestByID(url, "15625267429", PurchasedNumber.class))
+            .thenReturn(purchasedNumberMockData);
+        final PurchasedNumber response = messageBirdClientMock.viewPurchasedNumber("15625267429");
+
+        verify(messageBirdServiceMock, times(1)).requestByID(url, "15625267429", PurchasedNumber.class);
+        assertNotNull(response);
+        assertEquals(response, purchasedNumberMockData);
+    }
+
+    @Test
+    public void updatePurchasedNumber()  throws UnauthorizedException, GeneralException {
+        final String phoneNumber = "15625267429";
+        final String url = String.format("%s/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, phoneNumber);
+    
+        PurchasedNumber updatedNumberMock = new PurchasedNumber();
+    
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        
+        final Map<String, List<String>> payload = new HashMap<String, List<String>>();
+        payload.put("tags", Collections.singletonList("tag"));
+        
+        when(messageBirdServiceMock.sendPayLoad("PATCH", url, payload, PurchasedNumber.class))
+            .thenReturn(updatedNumberMock);
+        final PurchasedNumber response = messageBirdClientMock.updateNumber(phoneNumber, "tag");
+        verify(messageBirdServiceMock, times(1)).sendPayLoad("PATCH", url, payload, PurchasedNumber.class);
+        assertNotNull(response);
+        assertEquals(response, updatedNumberMock);
+    }
+
+    @Test
+    public void deletePurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
+        final String phoneNumber = "15625267429";
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+    
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        
+        messageBirdClientMock.cancelNumber(phoneNumber);
+        verify(messageBirdServiceMock, times(1)).deleteByID(url, phoneNumber);
+    }
+
 }

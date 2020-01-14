@@ -200,7 +200,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         if (!isURLAbsolute(url)) {
             url = serviceUrl + url;
         }
-
         final APIResponse apiResponse = doRequest(requestType, url, payload);
 
         final String body = apiResponse.getBody();
@@ -366,13 +365,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
-
+            
             Object noInstanceBecauseStaticField = null;
-
+            
             // Determine what methods should be allowed.
             String[] existingMethods = (String[]) methodsField.get(noInstanceBecauseStaticField);
             String[] allowedMethods = getAllowedMethods(existingMethods);
-
+            
             // Override the actual field to allow PATCH.
             methodsField.set(noInstanceBecauseStaticField, allowedMethods);
 
@@ -619,6 +618,17 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     /**
+     * Encodes a key/value pair with percent encoding.
+     *
+     * @param key the key name to be used
+     * @param value the value to be assigned to that key
+     * @return String
+     */
+    private String encodeKeyValuePair(String key, Object value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(key, String.valueOf(StandardCharsets.UTF_8)) + "=" + URLEncoder.encode(String.valueOf(value), String.valueOf(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Build a path variable for GET requests
      *
      * @param map map for getting path variables
@@ -631,7 +641,30 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 bpath.append("&");
             }
             try {
-                bpath.append(URLEncoder.encode(param.getKey(), String.valueOf(StandardCharsets.UTF_8))).append("=").append(URLEncoder.encode(String.valueOf(param.getValue()), String.valueOf(StandardCharsets.UTF_8)));
+                // Check to see if the value is a Collection
+                if (param.getValue() instanceof Collection) {
+                    // If it is, cast the value as a Collection explicitly
+                    // so it can be iterated over. Its values should be
+                    // appended to the querystring parameters using the
+                    // original key provided (e.g., ?features=sms&features=mms)
+                    Collection<?> col =  (Collection<?>) param.getValue();
+                    Iterator<?> iterator = col.iterator();
+                    int count = 0;
+                    // While there are still remaining iterables
+                    while (iterator.hasNext()) {
+                        // Append & if not the first iterable
+                        if (count > 0) {
+                            bpath.append("&");
+                        }
+                        // Append the encoded querystring key/value pair.
+                        // the value is returned from the next() call
+                        bpath.append(encodeKeyValuePair(param.getKey(), iterator.next()));
+                        count++;
+                    }   
+                } else {
+                    // If the value is not a collection, create the querystring value directly.
+                    bpath.append(encodeKeyValuePair(param.getKey(), param.getValue()));
+                }
             } catch (UnsupportedEncodingException exception) {
                 // Do nothing
             }

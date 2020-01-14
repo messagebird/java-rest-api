@@ -19,6 +19,12 @@ import com.messagebird.objects.MessageList;
 import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.MsgType;
 import com.messagebird.objects.PagedPaging;
+import com.messagebird.objects.PhoneNumbersLookup;
+import com.messagebird.objects.PhoneNumbersResponse;
+import com.messagebird.objects.PurchasedNumber;
+import com.messagebird.objects.PurchasedNumberCreatedResponse;
+import com.messagebird.objects.PurchasedNumbersResponse;
+import com.messagebird.objects.PurchasedNumbersFilter;
 import com.messagebird.objects.Verify;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
@@ -54,9 +60,11 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -87,6 +95,7 @@ public class MessageBirdClient {
     private static final String BASE_URL_CONVERSATIONS_WHATSAPP_SANDBOX = "https://whatsapp-sandbox.messagebird.com/v1";
     
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
+    static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
     private static final String BALANCEPATH = "/balance";
@@ -1587,4 +1596,125 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Limit must be > 0");
         }
     }
-}
+
+    /**
+     * Checks whether a particular country code is a recognized ISO Country.
+     *
+     * @param countryCode The country code in which the Number should be purchased.
+     * @throws IllegalArgumentException for invalid country code
+     */
+    private void countryCodeIsValid(String countryCode) throws IllegalArgumentException {
+        final boolean isValid = Arrays.asList(Locale.getISOCountries()).contains(countryCode);
+        if (!isValid) {
+            throw new IllegalArgumentException("Invalid Country Code Provided.");
+        }
+    }
+
+    /**
+     * Lists Numbers that are available to purchase in a particular country code, without any filters.
+     *
+     * @param countryCode The country code in which the Number should be purchased.
+     * @throws GeneralException             general exception
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws NotFoundException            if the resource is missing
+     * @throws IllegalArgumentException     if the country code provided is invalid
+     */
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode) throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, countryCode, PhoneNumbersResponse.class);
+    }
+
+    /**
+     * Lists Numbers that are available to purchase in a particular country code, according to specified search criteria.
+     *
+     * @param countryCode   The country code in which the Number should be purchased.
+     * @param params        Parameters to filter the resulting phone numbers returned.
+     * @throws GeneralException             general exception
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws NotFoundException            if the resource is missing
+     * @throws IllegalArgumentException     if the country code provided is invalid
+     */
+    public PhoneNumbersResponse listNumbersForPurchase(String countryCode, PhoneNumbersLookup params) throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
+        final String url = String.format("%s/available-phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, countryCode, params.toHashMap(), PhoneNumbersResponse.class);
+    }
+
+    /**
+     * Purchases a phone number. To be used in conjunction with listNumbersForPurchase to identify available numbers.
+     *
+     * @param number        The number to purchase.
+     * @param countryCode   The country code in which the Number should be purchased.
+     * @throws GeneralException             general exception
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws IllegalArgumentException     if the country code provided is invalid
+     */
+    public PurchasedNumberCreatedResponse purchaseNumber(String number, String countryCode, int billingIntervalMonths) throws UnauthorizedException, GeneralException, IllegalArgumentException {
+        countryCodeIsValid(countryCode);
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        final Map<String, Object> payload = new LinkedHashMap<String, Object>();
+        payload.put("number", number);
+        payload.put("countryCode", countryCode);
+        if (!Arrays.asList(1, 3, 6, 9).contains(billingIntervalMonths)) {
+            throw new IllegalArgumentException("Billing Interval Must Be Either 1, 3, 6, or 9.");
+        }
+        payload.put("billingIntervalMonths", billingIntervalMonths);
+
+        return messageBirdService.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
+    }
+
+    /**
+     * Lists Numbers that were purchased using the account credentials that the client was initialized with.
+     *
+     * @param filter Filters the list of purchased numbers according to search criteria.
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws GeneralException             general exception
+     * @throws NotFoundException            if the resource is missing
+     */
+    public PurchasedNumbersResponse listPurchasedNumbers(PurchasedNumbersFilter filter) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class);
+    }
+
+    /**
+     * Returns a Number that has already been purchased on the initialized account.
+     *
+     * @param number The number whose data should be returned.
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws GeneralException             general exception
+     * @throws NotFoundException            if the Number is missing
+     */
+    public PurchasedNumber viewPurchasedNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        return messageBirdService.requestByID(url, number, PurchasedNumber.class);
+    }
+
+    /**
+     * Updates tags on a particular existing Number. Any number of parameters after the number can be given to apply multiple tags.
+     *
+     * @param number    The number to update.
+     * @param tags      A tag to apply to the number.
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws GeneralException             general exception
+     */
+    public PurchasedNumber updateNumber(String number, String... tags) throws UnauthorizedException, GeneralException {
+        final String url = String.format("%s/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, number);
+        final Map<String, List<String>> payload = new HashMap<String, List<String>>();
+        payload.put("tags", Arrays.asList(tags));
+        return messageBirdService.sendPayLoad("PATCH", url, payload, PurchasedNumber.class);
+    }
+
+    /**
+     * Cancels a particular number.
+     *
+     * @param number The number to cancel.
+     * @throws GeneralException             general exception
+     * @throws UnauthorizedException        if client is unauthorized
+     * @throws NotFoundException            if the resource is missing
+     */
+    public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
+        final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
+        messageBirdService.deleteByID(url, number);
+    }
+} 
