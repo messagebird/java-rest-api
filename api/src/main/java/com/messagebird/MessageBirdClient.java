@@ -1601,14 +1601,13 @@ public class MessageBirdClient {
      * Checks whether a particular country code is a recognized ISO Country.
      *
      * @param countryCode The country code in which the Number should be purchased.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException for invalid country code
      */
-    private Boolean countryCodeIsValid(String countryCode) throws IllegalArgumentException {
-        final Boolean isValid = Arrays.asList(Locale.getISOCountries()).contains(countryCode);
+    private void countryCodeIsValid(String countryCode) throws IllegalArgumentException {
+        final boolean isValid = Arrays.asList(Locale.getISOCountries()).contains(countryCode);
         if (!isValid) {
             throw new IllegalArgumentException("Invalid Country Code Provided.");
         }
-        return true;
     }
 
     /**
@@ -1709,7 +1708,7 @@ public class MessageBirdClient {
     /**
      * Cancels a particular number.
      *
-     * @param nummber The number to cancel.
+     * @param number The number to cancel.
      * @throws GeneralException             general exception
      * @throws UnauthorizedException        if client is unauthorized
      * @throws NotFoundException            if the resource is missing
