@@ -1,5 +1,6 @@
 package com.messagebird.objects.voicecalls;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.messagebird.objects.MessageBase;
 
 import java.io.Serializable;
@@ -12,9 +13,7 @@ public class VoiceCall implements MessageBase, Serializable {
     private String source;
     private String destination;
     private VoiceCallFlow callFlow;
-
-    private String webhookUrl;
-    private String webhookToken;
+    private Webhook webhook = new Webhook();
 
     @Override
     public String getBody() {
@@ -60,20 +59,41 @@ public class VoiceCall implements MessageBase, Serializable {
         this.callFlow = callFlow;
     }
 
+    public Webhook getWebhook() {
+        return webhook;
+    }
+
+    public void setWebhook(String url) {
+        this.setWebhook(url, null);
+    }
+
+    public void setWebhook(String url, String token) {
+        this.webhook.setUrl(url);
+        this.webhook.setToken(token);
+    }
+
+    @JsonIgnore
+    @Deprecated
     public String getWebhookUrl() {
-        return webhookUrl;
+        return webhook.getUrl();
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setWebhookUrl(String webhookUrl) {
-        this.webhookUrl = webhookUrl;
+        this.webhook.setUrl(webhookUrl);
     }
 
+    @JsonIgnore
+    @Deprecated
     public String getWebhookToken() {
-        return webhookToken;
+        return webhook.getToken();
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setWebhookToken(String webhookToken) {
-        this.webhookToken = webhookToken;
+        this.webhook.setToken(webhookToken);
     }
 
     @Override
@@ -82,8 +102,7 @@ public class VoiceCall implements MessageBase, Serializable {
                 "source='" + source + '\'' +
                 ", destination='" + destination + '\'' +
                 ", callFlow=" + callFlow +
-                ", webhookUrl='" + webhookUrl + '\'' +
-                ", webhookToken='" + webhookToken + '\'' +
+                ", webhook=" + webhook +
                 '}';
     }
 }
