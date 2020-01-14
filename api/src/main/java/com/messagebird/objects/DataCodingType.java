@@ -7,7 +7,8 @@ package com.messagebird.objects;
  */
 public enum DataCodingType {
     plain("plain"),
-    unicode("unicode");
+    unicode("unicode"),
+    auto("auto");
 
     final String value;
 
