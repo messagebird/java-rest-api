@@ -30,7 +30,7 @@ public class ErrorReport {
         if (message != null) {
             str = str.concat(", message='" + message + "'");
         } else {
-            str = str.concat(", description=''" + description + "'");
+            str = str.concat(", description='" + description + "'");
             str = str.concat(", parameter='" + parameter + "'");
         }
         str = str.concat("}");
