@@ -27,7 +27,7 @@ public class ErrorReport {
     @Override
     public String toString() {
         String str =  "ErrorReport{code=" + code;
-        if (message != null) {
+        if (message != null && !message.isEmpty()) {
             str = str.concat(", message='" + message + "'");
         } else {
             str = str.concat(", description='" + description + "'");
