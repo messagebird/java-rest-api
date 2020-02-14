@@ -5,7 +5,10 @@ public enum VoiceCallStatus {
     queued("queued"),
     starting("starting"),
     ongoing("ongoing"),
-    ended("ended");
+    ended("ended"),
+    failed("failed"),
+    busy("busy"),
+    no_answer("no_answer");
 
     final String value;
 
