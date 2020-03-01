@@ -106,16 +106,14 @@ public class PurchasedNumbersFilter implements Serializable {
     public HashMap<String, Object> toHashMap() throws GeneralException {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         for (Field f: getClass().getDeclaredFields()) {
-            if (f.canAccess(this)) {
-                try {
-                    Object value = f.get(this);
-                    String key = f.getName();
-                    if (value != null) {
-                        map.put(key, value);
-                    }
-                } catch (IllegalAccessException exception) {
-                    throw new GeneralException("Error converting to HashMap.");
+            try {
+                Object value = f.get(this);
+                String key = f.getName();
+                if (value != null) {
+                    map.put(key, value);
                 }
+            } catch (IllegalAccessException exception) {
+                throw new GeneralException("Error converting to HashMap.");
             }
         }
         return map;
