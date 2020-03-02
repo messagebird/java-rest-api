@@ -67,7 +67,7 @@
         <profile>
             <id>disable-doclint</id>
             <activation>
-                <jdk>[11,)</jdk>
+                <jdk>[1.8,11,)</jdk>
             </activation>
             <properties>
                 <doclint>none</doclint>
@@ -149,6 +149,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
                 <dependencies>
                     <!-- https://issues.apache.org/jira/browse/MJAVADOC-517 -->
                     <dependency>
@@ -177,8 +180,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
