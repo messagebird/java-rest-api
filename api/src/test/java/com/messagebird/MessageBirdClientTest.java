@@ -110,7 +110,9 @@ public class MessageBirdClientTest {
 
     @Test
     public void testListScheduledMessages() throws Exception {
-        final MessageList list = messageBirdClient.listScheduledMessages(null, null);
+        Map<String, Object> filters = new LinkedHashMap<>();
+        filters.put("status", "scheduled");
+        final MessageList list = messageBirdClient.listMessagesFiltered(null, null, filters);
         assertNotNull(list.getOffset());
         assertNotNull(list.getLinks());
         assertNotNull(list.getTotalCount());
