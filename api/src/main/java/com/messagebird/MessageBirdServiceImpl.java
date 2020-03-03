@@ -138,6 +138,17 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     @Override
+    public <R> R requestList(String request, Map<String, Object> params, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        if (offset != null) params.put("offset", String.valueOf(offset));
+        if (limit != null) params.put("limit", String.valueOf(limit));
+        try {
+            return getJsonData(request + "?" + getPathVariables(params), null, "GET", clazz);
+        } catch (NotFoundException e) {
+            throw new GeneralException(e);
+        }
+    }
+
+    @Override
     public <R> R requestList(String request, PagedPaging pagedPaging, Class<R> clazz) throws UnauthorizedException, GeneralException {
         Map<String, Object> map = new LinkedHashMap<>();
         if (pagedPaging.getPage() != null) map.put("page", String.valueOf(pagedPaging.getPage()));

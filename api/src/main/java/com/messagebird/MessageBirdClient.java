@@ -118,6 +118,8 @@ public class MessageBirdClient {
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
+    private static final String MESSAGE_STATUS = "status";
+    private static final String MESSAGE_STATUS_SCHEDULED = "scheduled";
   
     static final String TRANSCRIPTION_DOWNLOAD_FORMAT = ".txt";
   
@@ -282,6 +284,13 @@ public class MessageBirdClient {
     public MessageList listMessages(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
         verifyOffsetAndLimit(offset, limit);
         return messageBirdService.requestList(MESSAGESPATH, offset, limit, MessageList.class);
+    }
+
+    public MessageList listScheduledMessages(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
+        verifyOffsetAndLimit(offset, limit);
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(MESSAGE_STATUS, MESSAGE_STATUS_SCHEDULED);
+        return messageBirdService.requestList(MESSAGESPATH, params, offset, limit, MessageList.class);
     }
 
     /**

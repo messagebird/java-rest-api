@@ -108,6 +108,15 @@ public class MessageBirdClientTest {
         messageBirdClient.deleteMessage("Foo");
     }
 
+    @Test
+    public void testListScheduledMessages() throws Exception {
+        final MessageList list = messageBirdClient.listScheduledMessages(null, null);
+        assertNotNull(list.getOffset());
+        assertNotNull(list.getLinks());
+        assertNotNull(list.getTotalCount());
+        assertNotNull(list.getLinks());
+    }
+
     /*********************************************************************/
     /** Test message system                                                    **/
     /*********************************************************************/
