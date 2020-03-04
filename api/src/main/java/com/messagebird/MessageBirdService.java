@@ -57,6 +57,22 @@ public interface MessageBirdService {
      * @see com.messagebird.objects.MessageList
      *
      * @param request request from client
+     * @param params additional query params
+     * @param offset offset of data to return
+     * @param limit limit number of objects, incase you notice you pass in '1' a lot, please consider using requestByID if you know the ID of the message
+     * @param clazz object type to return
+     * @return base class
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     */
+    <R> R requestList(String request, Map<String, Object> params, Integer offset, Integer limit, Class<R> clazz) throws UnauthorizedException, GeneralException;
+
+    /**
+     * Request a List 'of' object.
+     * Allow to request a listMessage or listViewMessages objects.
+     * @see com.messagebird.objects.MessageList
+     *
+     * @param request request from client
      * @param pagedPaging includes page and page size
      * @param clazz object type to return
      * @return base class

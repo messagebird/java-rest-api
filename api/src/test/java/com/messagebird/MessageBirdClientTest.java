@@ -108,6 +108,32 @@ public class MessageBirdClientTest {
         messageBirdClient.deleteMessage("Foo");
     }
 
+    @Test
+    public void testListScheduledMessages() throws Exception {
+        final MessageList mockedResponse = new MessageList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
+        Map<String, Object> filters = new LinkedHashMap<>();
+        filters.put("status", "scheduled");
+
+        when(messageBirdServiceMock.requestList("/messages", filters, null, null, MessageList.class))
+        .thenReturn(mockedResponse);
+
+        final MessageList response = messageBirdClientMock.listMessagesFiltered(null, null, filters);
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testListScheduledMessagesWrongFilter() throws Exception {
+        Map<String, Object> filters = new LinkedHashMap<>();
+        filters.put("does not exist", null);
+        
+        messageBirdClient.listMessagesFiltered(null, null, filters);
+    }
+
     /*********************************************************************/
     /** Test message system                                                    **/
     /*********************************************************************/
