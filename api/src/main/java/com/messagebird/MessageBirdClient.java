@@ -66,6 +66,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Message bird general client
@@ -124,6 +126,9 @@ public class MessageBirdClient {
     private static final int DEFAULT_MACHINE_TIMEOUT_VALUE = 7000;
     private static final int MIN_MACHINE_TIMEOUT_VALUE = 400;
     private static final int MAX_MACHINE_TIMEOUT_VALUE = 10000;
+
+    private static final String[] MESSAGE_LIST_FILTERS_VALS = {"originator", "recipient", "direction", "limit", "offset", "searchterm", "type", "contact_id", "status", "from", "until"};
+    private static final Set<String> MESSAGE_LIST_FILTERS = new HashSet<>(Arrays.asList(MESSAGE_LIST_FILTERS_VALS));
 
     private final String DOWNLOADS = "Downloads";
 
@@ -286,6 +291,13 @@ public class MessageBirdClient {
 
     public MessageList listMessagesFiltered(final Integer offset, final Integer limit, final Map<String, Object> filters) throws UnauthorizedException, GeneralException {
         verifyOffsetAndLimit(offset, limit);
+
+        for (String filter : filters.keySet()) {
+            if (!MESSAGE_LIST_FILTERS.contains(filter)) {
+                throw new IllegalArgumentException("Invalid filter name: " + filter);
+            }
+        }
+
         return messageBirdService.requestList(MESSAGESPATH, filters, offset, limit, MessageList.class);
     }
 

@@ -126,6 +126,14 @@ public class MessageBirdClientTest {
         assertEquals(response, mockedResponse);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testListScheduledMessagesWrongFilter() throws Exception {
+        Map<String, Object> filters = new LinkedHashMap<>();
+        filters.put("does not exist", null);
+        
+        messageBirdClient.listMessagesFiltered(null, null, filters);
+    }
+
     /*********************************************************************/
     /** Test message system                                                    **/
     /*********************************************************************/
