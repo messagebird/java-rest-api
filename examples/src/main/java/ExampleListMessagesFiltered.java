@@ -4,6 +4,8 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.MessageList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 public class ExampleListMessagesFiltered {
