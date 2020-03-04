@@ -110,13 +110,20 @@ public class MessageBirdClientTest {
 
     @Test
     public void testListScheduledMessages() throws Exception {
+        final MessageList mockedResponse = new MessageList();
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+
         Map<String, Object> filters = new LinkedHashMap<>();
         filters.put("status", "scheduled");
-        final MessageList list = messageBirdClient.listMessagesFiltered(null, null, filters);
-        assertNotNull(list.getOffset());
-        assertNotNull(list.getLinks());
-        assertNotNull(list.getTotalCount());
-        assertNotNull(list.getLinks());
+
+        when(messageBirdServiceMock.requestList("/messages", filters, null, null, MessageList.class))
+        .thenReturn(mockedResponse);
+
+        final MessageList response = messageBirdClientMock.listMessagesFiltered(null, null, filters);
+        assertNotNull(response);
+        assertEquals(response, mockedResponse);
     }
 
     /*********************************************************************/
