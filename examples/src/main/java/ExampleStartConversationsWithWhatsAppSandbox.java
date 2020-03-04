@@ -4,6 +4,8 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.conversations.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExampleStartConversationsWithWhatsAppSandbox {
@@ -17,9 +19,11 @@ public class ExampleStartConversationsWithWhatsAppSandbox {
 
         //First create your service object
         final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
+        List<MessageBirdClient.Feature> features = new ArrayList<>();
+        features.add(MessageBirdClient.Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX);
 
         //Add the service to the client
-        final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr, List.of(MessageBirdClient.Feature.ENABLE_CONVERSATION_API_WHATSAPP_SANDBOX)); //Create client with WhatsApp Sandbox enabled
+        final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr, features); //Create client with WhatsApp Sandbox enabled
 
         ConversationContent conversationContent = new ConversationContent();
         conversationContent.setText("Hello world from java sdk");
