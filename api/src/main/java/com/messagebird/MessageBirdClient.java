@@ -127,7 +127,7 @@ public class MessageBirdClient {
     private static final int MIN_MACHINE_TIMEOUT_VALUE = 400;
     private static final int MAX_MACHINE_TIMEOUT_VALUE = 10000;
 
-    private static final String[] MESSAGE_LIST_FILTERS_VALS = {"originator", "recipient", "direction", "limit", "offset", "searchterm", "type", "contact_id", "status", "from", "until"};
+    private static final String[] MESSAGE_LIST_FILTERS_VALS = {"originator", "recipient", "direction", "searchterm", "type", "contact_id", "status", "from", "until"};
     private static final Set<String> MESSAGE_LIST_FILTERS = new HashSet<>(Arrays.asList(MESSAGE_LIST_FILTERS_VALS));
 
     private final String DOWNLOADS = "Downloads";
