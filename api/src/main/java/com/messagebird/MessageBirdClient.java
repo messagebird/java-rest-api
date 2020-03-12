@@ -1344,7 +1344,29 @@ public class MessageBirdClient {
 
         return messageBirdService.requestList(url, offset, limit, RecordingResponse.class);
     }
+    /**
+     * Deletes a voice recording
+     *
+     * @param callID Voice call ID
+     * @param legID Leg ID
+     * @param recordingID
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+    */
+    public void deleteRecording(final String callID, final String legID, final String recordingID)
+            throws NotFoundException, GeneralException, UnauthorizedException {
 
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legID,
+                RECORDINGPATH
+                );
+        messageBirdService.deleteByID(url, recordingID);
+    }
     /**
      * Function to view recording by call id , leg id and recording id
      *
