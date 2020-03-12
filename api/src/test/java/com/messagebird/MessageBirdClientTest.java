@@ -534,6 +534,24 @@ public class MessageBirdClientTest {
 
     }
 
+
+    @Test
+    public void testDeleteRecording() throws NotFoundException, GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH
+        );
+        messageBirdClientMock.deleteRecording("callID", "legID","recordingID");
+        verify(messageBirdServiceMock, times(1)).deleteByID(url , "recordingID");
+    }
+
     @Test
     public void testViewRecording() throws UnauthorizedException, GeneralException, NotFoundException {
         final RecordingResponse recordingResponse = TestUtil.createRecordingResponse();
