@@ -548,7 +548,7 @@ public class MessageBirdClientTest {
                 "ANY_LEG_ID",
                 RECORDINGPATH
         );
-        messageBirdClientMock.deleteRecording("callID", "legID","recordingID");
+        messageBirdClientMock.deleteRecording("ANY_CALL_ID", "ANY_LEG_ID","recordingID");
         verify(messageBirdServiceMock, times(1)).deleteByID(url , "recordingID");
     }
 
