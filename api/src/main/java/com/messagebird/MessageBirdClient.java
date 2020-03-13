@@ -706,12 +706,12 @@ public class MessageBirdClient {
      * Convenient function to delete call flow 
      *
      * @param id String
-     * @return void
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
+     * @throws NotFoundException 
      */
     public void deleteVoiceCallFlow(final String id) throws NotFoundException, GeneralException, UnauthorizedException {
-        if (id == null) {
+       if (id == null) {
             throw new IllegalArgumentException("Voice Call Flow ID must be specified.");
         }
         String url = String.format("%s%s", VOICE_CALLS_BASE_URL, VOICECALLFLOWPATH);
@@ -1157,6 +1157,7 @@ public class MessageBirdClient {
      * Function to delete voice call by id
      *
      * @param id Voice call ID
+     * @throws NotFoundException
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
@@ -1355,16 +1356,24 @@ public class MessageBirdClient {
     */
     public void deleteRecording(final String callID, final String legID, final String recordingID)
             throws NotFoundException, GeneralException, UnauthorizedException {
-
+        if (callID == null) {
+             throw new IllegalArgumentException("Call ID must be specified.");
+        }
+        if (legID == null) {
+              throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+        if (recordingID == null) {
+              throw new IllegalArgumentException("Recording ID must be specified.");
+        }
         String url = String.format(
-                "%s%s/%s%s/%s%s",
-                VOICE_CALLS_BASE_URL,
-                VOICECALLSPATH,
-                callID,
-                LEGSPATH,
-                legID,
-                RECORDINGPATH
-                );
+            "%s%s/%s%s/%s%s",
+            VOICE_CALLS_BASE_URL,
+            VOICECALLSPATH,
+            callID,
+            LEGSPATH,
+            legID,
+            RECORDINGPATH
+            );
         messageBirdService.deleteByID(url, recordingID);
     }
     /**
