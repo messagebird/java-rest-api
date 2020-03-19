@@ -50,6 +50,7 @@ public class ConversationsTest {
                 conversationContent,
                 "chanid"
         );
+        request.setReportUrl("https://example.com/reportUrl");
 
         MessageBirdService messageBirdService = SpyService
                 .expects("POST", "conversations/start", request)

@@ -52,6 +52,7 @@ public class ConversationMessagesTest {
         conversationMessageRequest.setChannelId("aChannelIdentifier");
         conversationMessageRequest.setType(ConversationContentType.VIDEO);
         conversationMessageRequest.setContent(conversationContent);
+        conversationMessageRequest.setReportUrl("https://example.com/reportUrl");
 
         MessageBirdService messageBirdService = SpyService
                 .expects("POST", "conversations/convid/messages", conversationMessageRequest)

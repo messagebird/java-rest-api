@@ -9,6 +9,7 @@ public class ConversationStartRequest {
     private ConversationContentType type;
     private ConversationContent content;
     private String channelId;
+    private String reportUrl;
 
     public ConversationStartRequest(
             final String to,
@@ -58,6 +59,14 @@ public class ConversationStartRequest {
         this.channelId = channelId;
     }
 
+    public String getReportUrl() {
+        return reportUrl;
+    }
+
+    public void setReportUrl(final String reportUrl) {
+        this.reportUrl = reportUrl;
+    }
+
     @Override
     public String toString() {
         return "ConversationStartRequest{" +
@@ -65,6 +74,7 @@ public class ConversationStartRequest {
                 ", type=" + type +
                 ", content=" + content +
                 ", channelId='" + channelId + '\'' +
+                ", reportUrl='" + reportUrl + '\'' +
                 '}';
     }
 }
