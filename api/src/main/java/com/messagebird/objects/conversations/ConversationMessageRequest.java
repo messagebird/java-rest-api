@@ -8,6 +8,7 @@ public class ConversationMessageRequest {
     private ConversationContentType type;
     private ConversationContent content;
     private String channelId;
+    private String reportUrl;
 
     public ConversationContentType getType() {
         return type;
@@ -33,12 +34,21 @@ public class ConversationMessageRequest {
         this.channelId = channelId;
     }
 
+    public String getReportUrl() {
+        return reportUrl;
+    }
+
+    public void setReportUrl(String reportUrl) {
+        this.reportUrl = reportUrl;
+    }
+
     @Override
     public String toString() {
         return "ConversationMessageRequest{" +
                 "type=" + type +
                 ", content=" + content +
                 ", channelId='" + channelId + '\'' +
+                ", reportUrl='" + reportUrl + '\'' +
                 '}';
     }
 }
