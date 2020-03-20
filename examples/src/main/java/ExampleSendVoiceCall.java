@@ -31,6 +31,7 @@ public class ExampleSendVoiceCall {
             final VoiceCall voiceCall = new VoiceCall();
             voiceCall.setSource("31644556677");
             voiceCall.setDestination(args[1]);
+            voiceCall.setWebhook("https://example.com/","foobar");
 
             //Title and steps are required fields for creating callFlow
             final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();

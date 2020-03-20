@@ -938,4 +938,20 @@ public class MessageBirdClientTest {
         verify(messageBirdServiceMock, times(1)).deleteByID(url, phoneNumber);
     }
 
+    @Test
+    public void testDeleteRecording() throws NotFoundException, GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                "ANY_CALL_ID",
+                LEGSPATH,
+                "ANY_LEG_ID",
+                RECORDINGPATH
+        );
+        messageBirdClientMock.deleteRecording("ANY_CALL_ID", "ANY_LEG_ID","recordingID");
+        verify(messageBirdServiceMock, times(1)).deleteByID(url , "recordingID");
+    }
 }
