@@ -1346,6 +1346,38 @@ public class MessageBirdClient {
     }
 
     /**
+     * Deletes a voice recording
+     *
+     * @param callID Voice call ID
+     * @param legID Leg ID
+     * @param recordingID Recording ID
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public void deleteRecording(final String callID, final String legID, final String recordingID)
+            throws NotFoundException, GeneralException, UnauthorizedException {
+        if (callID == null) {
+            throw new IllegalArgumentException("Call ID must be specified.");
+        }
+        if (legID == null) {
+            throw new IllegalArgumentException("Leg ID must be specified.");
+        }
+        if (recordingID == null) {
+            throw new IllegalArgumentException("Recording ID must be specified.");
+        }
+        String url = String.format(
+                "%s%s/%s%s/%s%s",
+                VOICE_CALLS_BASE_URL,
+                VOICECALLSPATH,
+                callID,
+                LEGSPATH,
+                legID,
+                RECORDINGPATH
+        );
+        messageBirdService.deleteByID(url, recordingID);
+    }
+
+    /**
      * Function to view recording by call id , leg id and recording id
      *
      * @param callID      Voice call ID
