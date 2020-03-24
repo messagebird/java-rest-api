@@ -1,17 +1,11 @@
 import com.messagebird.MessageBirdClient;
-import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.MessageResponse;
 import com.messagebird.objects.conversations.*;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by rvt on 1/7/15.
+ * Created by olimpias on 24/3/20.
  */
 public class ExampleSendConversationMessage {
 
