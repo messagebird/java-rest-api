@@ -7,6 +7,12 @@ package com.messagebird.objects.conversations;
 public class ConversationContentMedia {
 
     private String url;
+    private String caption;
+
+    public ConversationContentMedia(final String url, final String caption) {
+        this.url = url;
+        this.caption = caption;
+    }
 
     public ConversationContentMedia(final String url) {
         this.url = url;
@@ -24,10 +30,19 @@ public class ConversationContentMedia {
         this.url = url;
     }
 
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
     @Override
     public String toString() {
         return "ConversationContentMedia{" +
                 "url='" + url + '\'' +
+                ", caption='" + caption + '\'' +
                 '}';
     }
 }
