@@ -30,7 +30,6 @@ public enum MClassType {
         return getValue();
     }
 
-    @JsonCreator
     public static MClassType forValue(String value) {
         if ("0".equals(value)) {
             return flash;
