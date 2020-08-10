@@ -537,6 +537,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private List<ErrorReport> getErrorReportOrNull(final String body) {
         try {
             JsonNode jsonNode = mapper.readValue(body, JsonNode.class);
+            if(!jsonNode.has("errors")) {
+                return null;
+            }
+
             ErrorReport[] errors = mapper.readValue(jsonNode.get("errors").toString(), ErrorReport[].class);
 
             List<ErrorReport> result = Arrays.asList(errors);
