@@ -61,7 +61,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     private final String accessKey;
     private final String serviceUrl;
-    private final String clientVersion = "3.0.13";
+    private final String clientVersion = "3.0.14";
     private final String userAgentString;
     private Proxy proxy = null;
 
