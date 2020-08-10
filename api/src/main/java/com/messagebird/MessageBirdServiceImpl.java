@@ -65,6 +65,8 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private final String userAgentString;
     private Proxy proxy = null;
 
+    private final ObjectMapper mapper;
+
     public MessageBirdServiceImpl(final String accessKey, final String serviceUrl) {
         if (accessKey == null) {
             throw new IllegalArgumentException(ACCESS_KEY_MUST_BE_SPECIFIED);
@@ -75,6 +77,17 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         this.accessKey = accessKey;
         this.serviceUrl = serviceUrl;
         this.userAgentString = determineUserAgentString();
+
+        this.mapper = new ObjectMapper()
+            // If we as new properties, we don't want the system to fail, we rather want to ignore them
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
+            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+            .setSerializationInclusion(Include.NON_NULL)
+            // Specifically set the date format for POST requests so scheduled
+            // messages and other things relying on specific date formats don't
+            // fail when sending.
+            .setDateFormat(getDateFormat());
     }
 
     private String determineUserAgentString() {
@@ -217,14 +230,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         final int status = apiResponse.getStatus();
 
         if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED) {
-            final ObjectMapper mapper = new ObjectMapper();
-
-            // If we as new properties, we don't want the system to fail, we rather want to ignore them
-            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
-            mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-            mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-
             try {
                 return mapper.readValue(body, clazz);
             } catch (IOException ioe) {
@@ -477,14 +482,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection.setRequestMethod(requestType);
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(Include.NON_NULL);
-
-            // Specifically set the date format for POST requests so scheduled
-            // messages and other things relying on specific date formats don't
-            // fail when sending.
-            DateFormat df = getDateFormat();
-            mapper.setDateFormat(df);
 
             final String json = mapper.writeValueAsString(body);
             connection.getOutputStream().write(json.getBytes(String.valueOf(StandardCharsets.UTF_8)));
@@ -538,15 +535,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @return Error report, or null if the body can not be deserialized.
      */
     private List<ErrorReport> getErrorReportOrNull(final String body) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
         try {
-            JsonNode jsonNode = objectMapper.readValue(body, JsonNode.class);
+            JsonNode jsonNode = mapper.readValue(body, JsonNode.class);
             if(!jsonNode.has("errors")) {
                 return null;
             }
 
-            ErrorReport[] errors = objectMapper.readValue(jsonNode.get("errors").toString(), ErrorReport[].class);
+            ErrorReport[] errors = mapper.readValue(jsonNode.get("errors").toString(), ErrorReport[].class);
 
             List<ErrorReport> result = Arrays.asList(errors);
 
