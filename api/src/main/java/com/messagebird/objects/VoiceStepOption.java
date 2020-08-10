@@ -24,6 +24,9 @@ public class VoiceStepOption implements Serializable {
     private int machineTimeout;
     private String onFinish;
     private boolean mask;
+    private String keys;
+    private int duration;
+    private int interval;
 
     public String getDestination() {
         return destination;
@@ -169,6 +172,18 @@ public class VoiceStepOption implements Serializable {
         this.mask = mask;
     }
 
+    public String getKeys() { return keys; }
+
+    public void setKeys(String keys) { this.keys = keys; }
+
+    public int getDuration() { return duration; }
+
+    public void setDuration(int duration) { this.duration = duration; }
+
+    public int getInterval() { return interval; }
+
+    public void setInterval(int interval) { this.interval = interval; }
+
     @Override
     public String toString() {
         return "VoiceStepOption{" +
@@ -189,7 +204,10 @@ public class VoiceStepOption implements Serializable {
                 ", ifMachine='" + ifMachine + '\'' +
                 ", machineTimeout=" + machineTimeout +
                 ", onFinish='" + onFinish + '\'' +
-                ", mask=" + mask +
+                ", mask=" + mask + '\'' +
+                ", keys='" + keys + '\'' +
+                ", interval='" + interval + '\'' +
+                ", duration='" + duration +
                 '}';
     }
 }
