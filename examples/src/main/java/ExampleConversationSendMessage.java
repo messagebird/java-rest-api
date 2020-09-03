@@ -12,7 +12,7 @@ import com.messagebird.objects.conversations.ConversationSendResponse;
 public class ExampleConversationSendMessage {
 
     public static void main(String[] args) {
-        if (args.length < 4) {
+        if (args.length < 3) {
             System.out.println("Please at least specify your access key, the channel id and destination address.\n" +
                     "Usage : java -jar <this jar file> test_accesskey(Required) channel_id(Required) to(Required) fallback_channel_id(optional)");
             return;
@@ -42,7 +42,7 @@ public class ExampleConversationSendMessage {
 
         try {
             ConversationSendResponse sendResponse = messageBirdClient.sendMessage(request);
-            System.out.println(sendResponse.toString());//Prints messageID
+            System.out.println(sendResponse.toString());
 
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();
