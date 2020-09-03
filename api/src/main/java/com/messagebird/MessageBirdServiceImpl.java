@@ -217,7 +217,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         final String body = apiResponse.getBody();
         final int status = apiResponse.getStatus();
 
-        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED) {
+        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED || status == HttpURLConnection.HTTP_ACCEPTED) {
             try {
                 final ObjectMapper mapper = new ObjectMapper();
                 // If we as new properties, we don't want the system to fail, we rather want to ignore them
