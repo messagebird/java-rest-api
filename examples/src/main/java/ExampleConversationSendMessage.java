@@ -21,7 +21,7 @@ public class ExampleConversationSendMessage {
         //First create your service object
         final MessageBirdService wsr = new MessageBirdServiceImpl(args[0]);
         //Add the service to the client
-        final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr); //Create client with WhatsApp Sandbox enabled
+        final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
 
 
