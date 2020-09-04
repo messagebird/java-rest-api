@@ -35,6 +35,8 @@ import com.messagebird.objects.conversations.ConversationList;
 import com.messagebird.objects.conversations.ConversationMessage;
 import com.messagebird.objects.conversations.ConversationMessageList;
 import com.messagebird.objects.conversations.ConversationMessageRequest;
+import com.messagebird.objects.conversations.ConversationSendRequest;
+import com.messagebird.objects.conversations.ConversationSendResponse;
 import com.messagebird.objects.conversations.ConversationStartRequest;
 import com.messagebird.objects.conversations.ConversationStatus;
 import com.messagebird.objects.conversations.ConversationWebhook;
@@ -110,6 +112,7 @@ public class MessageBirdClient {
     private static final String VERIFYPATH = "/verify";
     private static final String VOICEMESSAGESPATH = "/voicemessages";
     private static final String CONVERSATION_PATH = "/conversations";
+    private static final String CONVERSATION_SEND_PATH = "/send";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
     static final String VOICECALLSPATH = "/calls";
@@ -949,6 +952,18 @@ public class MessageBirdClient {
             throws UnauthorizedException, GeneralException {
         String url = String.format("%s%s/start", this.conversationsBaseUrl, CONVERSATION_PATH);
         return messageBirdService.sendPayLoad(url, request, Conversation.class);
+    }
+
+    /**
+     * sendMessage allows you to send message to users over any communication platform supported by Programmable Conversations
+     *
+     * @param request Data for this request.
+     * @return The created Message in ConversationSendResponse object.
+     */
+    public ConversationSendResponse sendMessage(ConversationSendRequest request)
+            throws UnauthorizedException, GeneralException {
+        String url = String.format("%s%s", this.conversationsBaseUrl, CONVERSATION_SEND_PATH);
+        return messageBirdService.sendPayLoad(url, request, ConversationSendResponse.class);
     }
 
     /**
