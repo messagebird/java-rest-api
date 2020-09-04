@@ -79,7 +79,7 @@ public class ConversationMessagesTest {
         sendRequest.setReportUrl("https://example.com/reportUrl");
 
         MessageBirdService messageBirdService = SpyService
-                .expects("POST", "conversations/send", sendRequest)
+                .expects("POST", "/send", sendRequest)
                 .withConversationsAPIBaseURL()
                 .andReturns(new APIResponse(JSON_CONVERSATION_SEND_MESSAGE_RESPONSE));
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
