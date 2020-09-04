@@ -22,6 +22,7 @@ public class ConversationMessagesTest {
     private static final String JSON_CONVERSATION_MESSAGE_LOCATION = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"location\",\"direction\": \"received\",\"content\": {\"location\": { \"latitude\": 52.344263, \"longitude\": 4.911627 } },\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_MESSAGE_TEXT = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_MESSAGE_VIDEO = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"video\",\"direction\": \"received\",\"content\": {\"video\": { \"url\": \"https://example.com/video.mp4\" } },\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
+    private static final String JSON_CONVERSATION_SEND_MESSAGE_RESPONSE = "{\"id\":\"mesid\",\"status\":\"accepted\",\"fallback\":{\"id\":\"mesid\"}}";
 
     /**
      * Epsilon to use when checking two latitudes or longitudes for equality.
@@ -64,6 +65,31 @@ public class ConversationMessagesTest {
                 = messageBirdClient.sendConversationMessage("convid", conversationMessageRequest);
 
         assertEquals(ConversationContentType.VIDEO, conversationMessage.getType());
+    }
+
+    @Test
+    public void testSendMessage() throws GeneralException, UnauthorizedException {
+        ConversationContent conversationContent = new ConversationContent();
+        conversationContent.setText("test");
+
+        ConversationSendRequest sendRequest = new ConversationSendRequest();
+        sendRequest.setChannelId("aChannelIdentifier");
+        sendRequest.setType(ConversationContentType.TEXT);
+        sendRequest.setContent(conversationContent);
+        sendRequest.setReportUrl("https://example.com/reportUrl");
+
+        MessageBirdService messageBirdService = SpyService
+                .expects("POST", "conversations/send", sendRequest)
+                .withConversationsAPIBaseURL()
+                .andReturns(new APIResponse(JSON_CONVERSATION_SEND_MESSAGE_RESPONSE));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+
+        ConversationSendResponse conversationMessage
+                = messageBirdClient.sendMessage(sendRequest);
+
+        assertEquals("mesid", conversationMessage.getId());
+        assertEquals("accepted", conversationMessage.getStatus());
+        assertEquals("mesid", conversationMessage.getFallback().getId());
     }
 
     @Test
