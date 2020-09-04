@@ -73,7 +73,7 @@ public class ConversationMessagesTest {
         conversationContent.setText("test");
 
         ConversationSendRequest sendRequest = new ConversationSendRequest();
-        sendRequest.setChannelId("aChannelIdentifier");
+        sendRequest.setFrom("aChannelIdentifier");
         sendRequest.setType(ConversationContentType.TEXT);
         sendRequest.setContent(conversationContent);
         sendRequest.setReportUrl("https://example.com/reportUrl");
