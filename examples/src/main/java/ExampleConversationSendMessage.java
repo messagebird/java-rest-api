@@ -9,6 +9,10 @@ import com.messagebird.objects.conversations.ConversationFallbackOption;
 import com.messagebird.objects.conversations.ConversationSendRequest;
 import com.messagebird.objects.conversations.ConversationSendResponse;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ExampleConversationSendMessage {
 
     public static void main(String[] args) {
@@ -32,13 +36,19 @@ public class ExampleConversationSendMessage {
         ConversationContent conversationContent = new ConversationContent();
         conversationContent.setText("Hello world from java sdk");
 
+        // Optional source parameter, that identifies the actor making the request.
+        Map<String, Object> source = new HashMap<>();
+        source.put("Salesman", "Sir. John Doe");
+
         ConversationSendRequest request = new ConversationSendRequest(
                 args[1],
                 ConversationContentType.TEXT,
                 conversationContent,
                 args[2],
                 "",
-                fallbackOption);
+                fallbackOption,
+                source,
+                null);
 
         try {
             ConversationSendResponse sendResponse = messageBirdClient.sendMessage(request);

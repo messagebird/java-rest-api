@@ -11,6 +11,8 @@ public class ConversationChannel {
 
     private String id;
     private String name;
+    // See: ConversationPlatformConstants
+    private String platformId;
     private ConversationChannelStatus status;
     private Date createdDatetime;
     private Date updatedDatetime;
@@ -55,11 +57,20 @@ public class ConversationChannel {
         this.updatedDatetime = updatedDatetime;
     }
 
+    public String getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
+    }
+
     @Override
     public String toString() {
         return "ConversationChannel{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", platformId=" + platformId +
                 ", status=" + status +
                 ", createdDatetime=" + createdDatetime +
                 ", updatedDatetime=" + updatedDatetime +

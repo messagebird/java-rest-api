@@ -52,26 +52,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <skipTests>true</skipTests>
-                <messageBirdAccessKey />
-                <messageBirdMSISDN />
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <skipTests>false</skipTests>
-            </properties>
-        </profile>
-        <profile>
-            <id>disable-doclint</id>
-            <activation>
-                <jdk>[8,11,)</jdk>
-            </activation>
-            <properties>
-                <doclint>none</doclint>
-                <skipTests>true</skipTests>
                 <messageBirdAccessKey />
                 <messageBirdMSISDN />
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -203,7 +183,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <skipTests>${skipTests}</skipTests>
+                    <skipTests>false</skipTests>
                     <systemPropertyVariables>
                         <messageBirdAccessKey>${messageBirdAccessKey}</messageBirdAccessKey>
                         <messageBirdMSISDN>${messageBirdMSISDN}</messageBirdMSISDN>

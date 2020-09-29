@@ -1,6 +1,7 @@
 package com.messagebird.objects.conversations;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Response object that represents a conversation's message. Messages can be
@@ -18,6 +19,7 @@ public class ConversationMessage {
     private ConversationContent content;
     private Date createdDatetime;
     private Date updatedDatetime;
+    private Map<String, Object> source;
 
     public String getId() {
         return id;
@@ -91,6 +93,14 @@ public class ConversationMessage {
         this.updatedDatetime = updatedDatetime;
     }
 
+    public Map<String, Object> getSource() {
+        return source;
+    }
+
+    public void setSource(Map<String, Object> source) {
+        this.source = source;
+    }
+
     @Override
     public String toString() {
         return "ConversationMessage{" +
@@ -103,6 +113,7 @@ public class ConversationMessage {
                 ", content=" + content +
                 ", createdDatetime=" + createdDatetime +
                 ", updatedDatetime=" + updatedDatetime +
+                ", source=" + source +
                 '}';
     }
 }
