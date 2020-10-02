@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import java.util.Map;
+
 /**
  * Request object that is used to send new messages over a channel.
  */
@@ -9,6 +11,7 @@ public class ConversationMessageRequest {
     private ConversationContent content;
     private String channelId;
     private String reportUrl;
+    private Map<String, Object> source;
 
     public ConversationContentType getType() {
         return type;
@@ -42,6 +45,14 @@ public class ConversationMessageRequest {
         this.reportUrl = reportUrl;
     }
 
+    public Map<String, Object> getSource() {
+        return source;
+    }
+
+    public void setSource(Map<String, Object> source) {
+        this.source = source;
+    }
+
     @Override
     public String toString() {
         return "ConversationMessageRequest{" +
@@ -49,6 +60,7 @@ public class ConversationMessageRequest {
                 ", content=" + content +
                 ", channelId='" + channelId + '\'' +
                 ", reportUrl='" + reportUrl + '\'' +
+                ", source=" + source +
                 '}';
     }
 }

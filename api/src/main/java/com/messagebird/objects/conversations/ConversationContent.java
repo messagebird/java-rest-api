@@ -11,6 +11,7 @@ public class ConversationContent {
     private ConversationContentHsm hsm;
     private ConversationContentMedia image;
     private ConversationContentLocation location;
+    private ConversationContentEmail email;
     private String text;
     private ConversationContentMedia video;
 
@@ -70,6 +71,14 @@ public class ConversationContent {
         this.video = video;
     }
 
+    public ConversationContentEmail getEmail() {
+        return email;
+    }
+
+    public void setEmail(ConversationContentEmail email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "ConversationContent{" +
@@ -78,6 +87,7 @@ public class ConversationContent {
                 ", hsm=" + hsm +
                 ", image=" + image +
                 ", location=" + location +
+                ", email=" + email +
                 ", text='" + text + '\'' +
                 ", video=" + video +
                 '}';

@@ -20,6 +20,11 @@ public class ConversationMessage {
     private Date createdDatetime;
     private Date updatedDatetime;
     private Map<String, Object> source;
+    private ConversationMessageTag tag;
+    /**
+     * See: {@link ConversationPlatformConstants}
+     */
+    private String platform;
 
     public String getId() {
         return id;
@@ -101,6 +106,22 @@ public class ConversationMessage {
         this.source = source;
     }
 
+    public ConversationMessageTag getTag() {
+        return tag;
+    }
+
+    public void setTag(ConversationMessageTag tag) {
+        this.tag = tag;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
     @Override
     public String toString() {
         return "ConversationMessage{" +
@@ -114,6 +135,8 @@ public class ConversationMessage {
                 ", createdDatetime=" + createdDatetime +
                 ", updatedDatetime=" + updatedDatetime +
                 ", source=" + source +
+                ", tag=" + tag +
+                ", platform='" + platform + '\'' +
                 '}';
     }
 }
