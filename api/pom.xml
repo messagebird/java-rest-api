@@ -42,7 +42,7 @@
         <connection>scm:git:git@github.com:messagebird/java-rest-api.git</connection>
         <developerConnection>scm:git:git@github.com:messagebird/java-rest-api.git</developerConnection>
         <url>git@github.com:messagebird/java-rest-api.git</url>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
@@ -52,6 +52,26 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <skipTests>true</skipTests>
+                <messageBirdAccessKey />
+                <messageBirdMSISDN />
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <skipTests>false</skipTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>disable-doclint</id>
+            <activation>
+                <jdk>[8,11,)</jdk>
+            </activation>
+            <properties>
+                <doclint>none</doclint>
+                <skipTests>true</skipTests>
                 <messageBirdAccessKey />
                 <messageBirdMSISDN />
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -183,7 +203,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                     <systemPropertyVariables>
                         <messageBirdAccessKey>${messageBirdAccessKey}</messageBirdAccessKey>
                         <messageBirdMSISDN>${messageBirdMSISDN}</messageBirdMSISDN>
