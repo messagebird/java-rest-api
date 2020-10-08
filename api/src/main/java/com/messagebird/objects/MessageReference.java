@@ -1,7 +1,5 @@
 package com.messagebird.objects;
 
-import com.sun.istack.internal.Nullable;
-
 public class MessageReference {
 
     private String href;
