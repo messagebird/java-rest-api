@@ -42,7 +42,7 @@
         <connection>scm:git:git@github.com:messagebird/java-rest-api.git</connection>
         <developerConnection>scm:git:git@github.com:messagebird/java-rest-api.git</developerConnection>
         <url>git@github.com:messagebird/java-rest-api.git</url>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>

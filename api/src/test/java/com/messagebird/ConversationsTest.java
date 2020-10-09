@@ -6,6 +6,10 @@ import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.conversations.*;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public class ConversationsTest {
@@ -44,11 +48,17 @@ public class ConversationsTest {
         ConversationContent conversationContent = new ConversationContent();
         conversationContent.setText("Hello world");
 
+        Map<String, Object> source = new HashMap<>();
+        source.put("agentId", "abc123");
+        source.put("userId", Arrays.asList(1, 2, 3));
+
         ConversationStartRequest request = new ConversationStartRequest(
                 "31612345678",
                 ConversationContentType.TEXT,
                 conversationContent,
-                "chanid"
+                "chanid",
+                source,
+                ConversationMessageTag.AccountUpdate
         );
         request.setReportUrl("https://example.com/reportUrl");
 

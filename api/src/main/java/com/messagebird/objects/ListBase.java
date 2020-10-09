@@ -13,6 +13,7 @@ public class ListBase<T> {
     private Integer limit;
     private Integer totalCount;
     private Links links;
+    private List<T> items;
 
     public ListBase() {
     }
@@ -28,7 +29,6 @@ public class ListBase<T> {
                 '}';
     }
 
-    private List<T> items;
 
     public Integer getOffset() {
         return offset;

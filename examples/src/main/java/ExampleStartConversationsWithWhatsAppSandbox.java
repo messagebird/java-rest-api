@@ -5,8 +5,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.conversations.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ExampleStartConversationsWithWhatsAppSandbox {
 
@@ -28,11 +27,17 @@ public class ExampleStartConversationsWithWhatsAppSandbox {
         ConversationContent conversationContent = new ConversationContent();
         conversationContent.setText("Hello world from java sdk");
 
+        // Optional source parameter, that identifies the actor making the request.
+        Map<String, Object> source = new HashMap<>();
+        source.put("agentId", "abc123");
+
         ConversationStartRequest request = new ConversationStartRequest(
                 args[2],
                 ConversationContentType.TEXT,
                 conversationContent,
-                args[1]
+                args[1],
+                source,
+                null
         );
         try {
             Conversation conversation = messageBirdClient.startConversation(request);
