@@ -3,16 +3,16 @@ package com.messagebird.objects.conversations;
 import java.util.Map;
 
 public class ConversationEmailRecipient {
-    private String email;
+    private String address;
     private String name;
     private Map<String, String> variables;
 
-    public String getEmail() {
-        return email;
+    public String getAddress() {
+        return address;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getName() {
@@ -34,7 +34,7 @@ public class ConversationEmailRecipient {
     @Override
     public String toString() {
         return "ConversationEmailRecipient{" +
-                "email='" + email + '\'' +
+                "address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", variables=" + variables +
                 '}';

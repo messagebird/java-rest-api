@@ -3,7 +3,11 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.conversations.*;
+import com.messagebird.objects.conversations.ConversationContent;
+import com.messagebird.objects.conversations.ConversationContentMedia;
+import com.messagebird.objects.conversations.ConversationContentType;
+import com.messagebird.objects.conversations.ConversationMessage;
+import com.messagebird.objects.conversations.ConversationMessageRequest;
 
 /**
  * Created by olimpias on 24/3/20.
