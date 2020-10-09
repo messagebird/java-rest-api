@@ -15,7 +15,8 @@ public enum ConversationContentType {
     IMAGE("image"),
     LOCATION("location"),
     TEXT("text"),
-    VIDEO("video");
+    VIDEO("video"),
+    EMAIL("email");
 
     private final String type;
 
