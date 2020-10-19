@@ -139,11 +139,11 @@ class TestUtil {
         customDetails.setCustom1("ANY_DETAIL");
 
         final MessageReference messageReference =  new MessageReference();
-        messageReference.setHREF("ANY_HREF");
+        messageReference.setHref("ANY_HREF");
         messageReference.setTotalCount(30);
 
         final GroupReference groupReference = new GroupReference();
-        groupReference.setHREF("ANY_HREF");
+        groupReference.setHref("ANY_HREF");
         groupReference.setTotalCount(30);
 
         final Contact contact = new Contact();
