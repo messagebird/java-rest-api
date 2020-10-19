@@ -1,5 +1,10 @@
 package com.messagebird.objects;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -7,50 +12,15 @@ import java.util.List;
  *
  * @param <T> Type of the items, e.g. Contact or Message.
  */
+@ToString
+@Getter
+@NoArgsConstructor
 public class ListBase<T> {
 
     private Integer offset;
     private Integer limit;
     private Integer totalCount;
     private Links links;
+    @Setter
     private List<T> items;
-
-    public ListBase() {
-    }
-
-    @Override
-    public String toString() {
-        return "ListBase{" +
-                "offset=" + offset +
-                ", limit=" + limit +
-                ", totalCount=" + totalCount +
-                ", links=" + links +
-                ", items=" + items +
-                '}';
-    }
-
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public Integer getTotalCount() {
-        return totalCount;
-    }
-
-    public Links getLinks() {
-        return links;
-    }
-
-    public List<T> getItems() {
-        return items;
-    }
-
-    public void setItems(List<T> items) {
-        this.items = items;
-    }
 }

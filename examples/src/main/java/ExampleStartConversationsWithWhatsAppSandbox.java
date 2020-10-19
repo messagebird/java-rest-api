@@ -31,14 +31,14 @@ public class ExampleStartConversationsWithWhatsAppSandbox {
         Map<String, Object> source = new HashMap<>();
         source.put("agentId", "abc123");
 
-        ConversationStartRequest request = new ConversationStartRequest(
-                args[2],
-                ConversationContentType.TEXT,
-                conversationContent,
-                args[1],
-                source,
-                null
-        );
+        ConversationStartRequest request = ConversationStartRequest.builder()
+                .to(args[2])
+                .type(ConversationContentType.TEXT)
+                .content(conversationContent)
+                .channelId(args[1])
+                .source(source)
+                .build();
+
         try {
             Conversation conversation = messageBirdClient.startConversation(request);
             // assertEquals("convid", conversation.getId());

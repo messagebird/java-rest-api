@@ -1,10 +1,16 @@
 package com.messagebird.objects;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Determines which type the message will be.
  */
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum VerifyType {
 
     FLASH("flash"),
@@ -13,10 +19,6 @@ public enum VerifyType {
 
     final String value;
 
-    VerifyType(String type) {
-        this.value = type;
-    }
-
     @JsonValue
     public String getValue() {
         return value;
@@ -24,8 +26,6 @@ public enum VerifyType {
 
     @Override
     public String toString() {
-        return "VerifyType{" +
-                "value='" + value + '\'' +
-                '}';
+        return value;
     }
 }

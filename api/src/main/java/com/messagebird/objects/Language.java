@@ -1,8 +1,14 @@
 package com.messagebird.objects;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * Created by faizan on 09/12/15.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum Language {
 
     NL_NL("nl-nl"),
@@ -25,13 +31,11 @@ public enum Language {
     PT_BR("pt-br"),
     RO_RO("ro-ro");
 
+    @Getter
     private String code;
 
-    Language(String code) {
-       this.code = code;
-    }
-
-    public String toString() {
-        return this.code;
+    @Override
+    public String toString(){
+        return code;
     }
 }

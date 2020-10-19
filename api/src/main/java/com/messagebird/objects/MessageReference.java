@@ -1,37 +1,18 @@
 package com.messagebird.objects;
 
-public class MessageReference {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@ToString
+public class MessageReference {
+    @Setter
     private String href;
+
+    @Setter
     private int totalCount;
+
     private String lastMessageId;
 
-    public String getHREF() {
-        return href;
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setHREF(String href) {
-        this.href = href;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public String getLastMessageId() {
-        return lastMessageId;
-    }
-
-    @Override
-    public String toString() {
-        return "MessageReference{" +
-                "href='" + href + '\'' +
-                ", totalCount=" + totalCount +
-                ", lastMessageId='" + lastMessageId + '\'' +
-                '}';
-    }
 }

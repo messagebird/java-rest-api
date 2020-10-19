@@ -1,8 +1,14 @@
 package com.messagebird;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Represents a raw response received from the API.
  */
+@Getter
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class APIResponse {
 
     /**
@@ -17,11 +23,6 @@ public class APIResponse {
 
     private final String body;
     private final int status;
-
-    APIResponse(final String body, final int status) {
-        this.body = body;
-        this.status = status;
-    }
 
     /**
      * Initializes an APIResponse object and sets the HTTP status code to 200.
@@ -63,13 +64,5 @@ public class APIResponse {
         return status == STATUS_NO_CONTENT
                 || body == null
                 || body.isEmpty();
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public int getStatus() {
-        return status;
     }
 }

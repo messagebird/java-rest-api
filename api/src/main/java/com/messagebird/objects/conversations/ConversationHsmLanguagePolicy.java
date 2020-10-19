@@ -2,10 +2,16 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Determines the lanuage policy for a HSM.
  */
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationHsmLanguagePolicy {
 
     /**
@@ -19,11 +25,8 @@ public enum ConversationHsmLanguagePolicy {
      */
     FALLBACK("fallback");
 
+    @Getter
     private final String policy;
-
-    ConversationHsmLanguagePolicy(final String policy) {
-        this.policy = policy;
-    }
 
     @JsonCreator
     public static ConversationHsmLanguagePolicy forValue(String value) {
@@ -41,12 +44,8 @@ public enum ConversationHsmLanguagePolicy {
         return policy;
     }
 
-    public String getPolicy() {
-        return policy;
-    }
-
     @Override
     public String toString() {
-        return getPolicy();
+        return policy;
     }
 }

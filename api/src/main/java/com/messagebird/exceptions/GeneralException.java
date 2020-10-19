@@ -1,6 +1,7 @@
 package com.messagebird.exceptions;
 
 import com.messagebird.objects.ErrorReport;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -10,7 +11,9 @@ import java.util.List;
  * Created by rvt on 1/5/15.
  */
 public class GeneralException extends MessageBirdException {
+    @Getter
     private Integer responseCode=null;
+
     public GeneralException(List<ErrorReport> errors) {
         super(errors);
     }
@@ -41,9 +44,5 @@ public class GeneralException extends MessageBirdException {
     public GeneralException(String s, int responseCode, List<ErrorReport> errorReport) {
         super(s, errorReport);
         this.responseCode = responseCode;
-    }
-
-    public Integer getResponseCode() {
-        return responseCode;
     }
 }

@@ -2,10 +2,15 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Response object for a message's status, e.g. delivered or failed.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationMessageStatus {
 
     DELETED("deleted"),
@@ -17,15 +22,8 @@ public enum ConversationMessageStatus {
     SENT("sent"),
     UNSUPPORTED("unsupported");
 
+    @Getter
     private final String status;
-
-    ConversationMessageStatus(final String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
 
     @JsonCreator
     public static ConversationMessageStatus forValue(final String value) {
@@ -42,6 +40,7 @@ public enum ConversationMessageStatus {
     public String toJson() {
         return getStatus();
     }
+
 
     @Override
     public String toString() {

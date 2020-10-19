@@ -2,10 +2,15 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Represents events that webhooks can subscribe to.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationWebhookEvent {
 
     /**
@@ -29,11 +34,7 @@ public enum ConversationWebhookEvent {
      */
     MESSAGE_UPDATED("message.updated");
 
-    private final String event;
-
-    ConversationWebhookEvent(final String event) {
-        this.event = event;
-    }
+    @Getter private final String event;
 
     @JsonCreator
     public static ConversationWebhookEvent forValue(final String value) {
@@ -49,10 +50,6 @@ public enum ConversationWebhookEvent {
     @JsonValue
     public String toJson() {
         return getEvent();
-    }
-
-    public String getEvent() {
-        return event;
     }
 
     @Override

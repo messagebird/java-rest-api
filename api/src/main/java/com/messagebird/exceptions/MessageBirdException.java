@@ -1,6 +1,8 @@
 package com.messagebird.exceptions;
 
 import com.messagebird.objects.ErrorReport;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -9,12 +11,10 @@ import java.util.List;
  *
  * Created by rvt on 1/6/15.
  */
+@AllArgsConstructor
 public class MessageBirdException extends Exception {
+    @Getter
     private List<ErrorReport> errors;
-
-    public MessageBirdException(List<ErrorReport> errors) {
-        this.errors = errors;
-    }
 
     public MessageBirdException(String s, List<ErrorReport> errors) {
         super(s);
@@ -31,7 +31,4 @@ public class MessageBirdException extends Exception {
         this.errors = errors;
     }
 
-    public List<ErrorReport> getErrors() {
-        return errors;
-    }
 }

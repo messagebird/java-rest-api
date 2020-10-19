@@ -1,10 +1,13 @@
 package com.messagebird.objects.voicecalls;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a listing of VoiceCallFlow objects, along with pagination details.
@@ -13,12 +16,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class VoiceCallFlowList implements Serializable {
 
-    @JsonProperty("_links")
-    private Map<String, String> links;
-
+    @Setter
     private Pagination pagination;
 
+    @Getter
+    @Setter
     private List<VoiceCallFlow> items;
+
+    @JsonProperty("_links")
+    private Map<String, String> links;
 
     @JsonCreator
     public VoiceCallFlowList(@JsonProperty("data") List<VoiceCallFlow> data) {
@@ -28,10 +34,6 @@ public class VoiceCallFlowList implements Serializable {
     @Override
     public String toString() {
         return pagination.toString();
-    }
-
-    public void setPagination(Pagination pagination) {
-        this.pagination = pagination;
     }
 
     public Integer getTotalCount() {
@@ -50,14 +52,6 @@ public class VoiceCallFlowList implements Serializable {
         return this.pagination.getPerPage();
     }
 
-
-    public List<VoiceCallFlow> getItems() {
-        return items;
-    }
-
-    public void setItems(List<VoiceCallFlow> items) {
-        this.items = items;
-    }
 }
 
 

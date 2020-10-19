@@ -1,5 +1,8 @@
 package com.messagebird.objects.conversations;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import java.util.List;
 
 /**
@@ -7,16 +10,16 @@ import java.util.List;
  */
 public class ConversationWebhookCreateRequest extends ConversationWebhookBaseRequest{
 
-    private String channelId;
+    @Getter private String channelId;
 
+    @Builder
     public ConversationWebhookCreateRequest(
             final String channelId,
             final String url,
             final List<ConversationWebhookEvent> events
     ) {
+        super(url, events);
         this.channelId = channelId;
-        this.url = url;
-        this.events = events;
     }
 
     @Override
@@ -27,9 +30,5 @@ public class ConversationWebhookCreateRequest extends ConversationWebhookBaseReq
     @Override
     protected String getStringRepresentationOfExtraParameters() {
         return "channelId='" + channelId;
-    }
-
-    public String getChannelId() {
-        return channelId;
     }
 }

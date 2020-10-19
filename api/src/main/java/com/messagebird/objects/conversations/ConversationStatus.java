@@ -2,20 +2,21 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Indicates whether a conversation is active or if it has been archived.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationStatus {
 
     ACTIVE("active"),
     ARCHIVED("archived");
 
-    private final String status;
-
-    ConversationStatus(final String status) {
-        this.status = status;
-    }
+    @Getter private final String status;
 
     @JsonCreator
     public static ConversationStatus forValue(final String value) {
@@ -33,9 +34,6 @@ public enum ConversationStatus {
         return getStatus();
     }
 
-    public String getStatus() {
-        return status;
-    }
 
     @Override
     public String toString() {

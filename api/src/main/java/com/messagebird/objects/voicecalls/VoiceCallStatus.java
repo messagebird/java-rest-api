@@ -1,5 +1,10 @@
 package com.messagebird.objects.voicecalls;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum VoiceCallStatus {
 
     queued("queued"),
@@ -10,14 +15,6 @@ public enum VoiceCallStatus {
     busy("busy"),
     no_answer("no_answer");
 
+    @Getter
     final String value;
-
-    VoiceCallStatus(String type) {
-        this.value = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
 }

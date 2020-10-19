@@ -2,32 +2,27 @@ package com.messagebird.objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * IfMachine class for Voice Messages
  * Created by rvt on 1/7/15.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum IfMachineType {
     cont("continue"),
     delay("delay"),
     hangup("hangup");
 
+    @Getter
     final String value;
-
-    IfMachineType(String type) {
-        this.value = type;
-    }
-
-    @Override
-    public String toString() {
-        return "IfMachine{" +
-                "value='" + value + '\'' +
-                '}';
-    }
 
     @JsonValue
     public String toJson() {
-        return getValue();
+        return value;
     }
 
     @JsonCreator
@@ -41,8 +36,8 @@ public enum IfMachineType {
         }
         return null;
     }
-
-    public String getValue() {
+    @Override
+    public String toString() {
         return value;
     }
 }

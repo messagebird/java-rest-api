@@ -2,11 +2,16 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * The type of content that the message holds. Indicates what field is set on a
  * ConversationContent object.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationContentType {
 
     AUDIO("audio"),
@@ -18,11 +23,8 @@ public enum ConversationContentType {
     VIDEO("video"),
     EMAIL("email");
 
+    @Getter
     private final String type;
-
-    ConversationContentType(final String type) {
-        this.type = type;
-    }
 
     @JsonCreator
     public static ConversationContentType forValue(String value) {
@@ -38,10 +40,6 @@ public enum ConversationContentType {
     @JsonValue
     public String toJson() {
         return getType();
-    }
-
-    public String getType() {
-        return type;
     }
 
     @Override
