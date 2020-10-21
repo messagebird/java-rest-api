@@ -1,0 +1,4 @@
+VerifyRequest request = new VerifyRequest("recipient");
+request.setOriginator("0616995552");
+request.setType("tts");
+Verify verify = messageBirdClient.sendVerifyToken(request);
