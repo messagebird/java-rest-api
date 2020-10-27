@@ -1,17 +1,14 @@
 package com.messagebird.objects;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigInteger;
 
 public class LookupHlr extends Hlr {
+    @Getter
+    @Setter
     private String countryCode;
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
 
     public BigInteger getPhoneNumber() {
         return msisdn;

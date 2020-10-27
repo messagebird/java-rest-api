@@ -1,5 +1,9 @@
 package com.messagebird.objects.conversations;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
@@ -7,6 +11,9 @@ import java.util.Date;
  * can be sent and received on. A conversation can take place over multiple
  * channels simultaneously.
  */
+@Getter
+@Setter
+@ToString
 public class ConversationChannel {
 
     private String id;
@@ -17,63 +24,4 @@ public class ConversationChannel {
     private Date createdDatetime;
     private Date updatedDatetime;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public ConversationChannelStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ConversationChannelStatus status) {
-        this.status = status;
-    }
-
-    public Date getCreatedDatetime() {
-        return createdDatetime;
-    }
-
-    public void setCreatedDatetime(final Date createdDatetime) {
-        this.createdDatetime = createdDatetime;
-    }
-
-    public Date getUpdatedDatetime() {
-        return updatedDatetime;
-    }
-
-    public void setUpdatedDatetime(final Date updatedDatetime) {
-        this.updatedDatetime = updatedDatetime;
-    }
-
-    public String getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(String platformId) {
-        this.platformId = platformId;
-    }
-
-    @Override
-    public String toString() {
-        return "ConversationChannel{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", platformId=" + platformId +
-                ", status=" + status +
-                ", createdDatetime=" + createdDatetime +
-                ", updatedDatetime=" + updatedDatetime +
-                '}';
-    }
 }

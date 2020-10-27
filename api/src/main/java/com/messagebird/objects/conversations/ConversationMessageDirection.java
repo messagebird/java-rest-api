@@ -2,10 +2,16 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Indicates the direction of a message.
  */
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationMessageDirection {
 
     /**
@@ -18,15 +24,8 @@ public enum ConversationMessageDirection {
      */
     SENT("sent");
 
+    @Getter
     private final String direction;
-
-    ConversationMessageDirection(final String direction) {
-        this.direction = direction;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
 
     @JsonCreator
     public static ConversationMessageDirection forValue(String value) {

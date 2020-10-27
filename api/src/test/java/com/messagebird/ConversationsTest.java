@@ -52,14 +52,14 @@ public class ConversationsTest {
         source.put("agentId", "abc123");
         source.put("userId", Arrays.asList(1, 2, 3));
 
-        ConversationStartRequest request = new ConversationStartRequest(
-                "31612345678",
-                ConversationContentType.TEXT,
-                conversationContent,
-                "chanid",
-                source,
-                ConversationMessageTag.AccountUpdate
-        );
+        ConversationStartRequest request = ConversationStartRequest.builder()
+                .to("31612345678")
+                .type(ConversationContentType.TEXT)
+                .content(conversationContent)
+                .channelId("chanid")
+                .source(source)
+                .tag(ConversationMessageTag.AccountUpdate)
+                .build();
         request.setReportUrl("https://example.com/reportUrl");
 
         MessageBirdService messageBirdService = SpyService

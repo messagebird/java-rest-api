@@ -1,6 +1,9 @@
 package com.messagebird.objects.conversations;
 
 import com.messagebird.objects.MessageReference;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -8,6 +11,9 @@ import java.util.List;
 /**
  * Response object for the Conversation type.
  */
+@Getter
+@Setter
+@ToString
 public class Conversation {
 
     private String id;
@@ -21,99 +27,4 @@ public class Conversation {
     private Date lastReceivedDatetime;
     private String lastUsedChannelId;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getContactId() {
-        return contactId;
-    }
-
-    public void setContactId(String contactId) {
-        this.contactId = contactId;
-    }
-
-    public ConversationContact getContact() {
-        return contact;
-    }
-
-    public void setContact(ConversationContact contact) {
-        this.contact = contact;
-    }
-
-    public List<ConversationChannel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<ConversationChannel> channels) {
-        this.channels = channels;
-    }
-
-    public MessageReference getMessages() {
-        return messages;
-    }
-
-    public void setMessages(MessageReference messages) {
-        this.messages = messages;
-    }
-
-    public ConversationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ConversationStatus status) {
-        this.status = status;
-    }
-
-    public Date getCreatedDatetime() {
-        return createdDatetime;
-    }
-
-    public void setCreatedDatetime(Date createdDatetime) {
-        this.createdDatetime = createdDatetime;
-    }
-
-    public Date getUpdatedDatetime() {
-        return updatedDatetime;
-    }
-
-    public void setUpdatedDatetime(Date updatedDatetime) {
-        this.updatedDatetime = updatedDatetime;
-    }
-
-    public Date getLastReceivedDatetime() {
-        return lastReceivedDatetime;
-    }
-
-    public void setLastReceivedDatetime(Date lastReceivedDatetime) {
-        this.lastReceivedDatetime = lastReceivedDatetime;
-    }
-
-    public String getLastUsedChannelId() {
-        return lastUsedChannelId;
-    }
-
-    public void setLastUsedChannelId(String lastUsedChannelId) {
-        this.lastUsedChannelId = lastUsedChannelId;
-    }
-
-    @Override
-    public String toString() {
-        return "Conversation{" +
-                "id='" + id + '\'' +
-                ", contactId='" + contactId + '\'' +
-                ", contact=" + contact +
-                ", channels=" + channels +
-                ", messages=" + messages +
-                ", status=" + status +
-                ", createdDatetime=" + createdDatetime +
-                ", updatedDatetime=" + updatedDatetime +
-                ", lastReceivedDatetime=" + lastReceivedDatetime +
-                ", lastUsedChannelId='" + lastUsedChannelId + '\'' +
-                '}';
-    }
 }

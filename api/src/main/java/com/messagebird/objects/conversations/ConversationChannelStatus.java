@@ -2,11 +2,17 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Status for a Conversation channel. Only ACTIVE channels can be used for
  * messaging.
  */
+
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationChannelStatus {
 
     ACTIVATING("activating"),
@@ -17,15 +23,8 @@ public enum ConversationChannelStatus {
     INACTIVE("inactive"),
     PENDING("pending");
 
+    @Getter
     private final String status;
-
-    ConversationChannelStatus(final String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
 
     @JsonCreator
     public static ConversationChannelStatus forValue(final String value) {

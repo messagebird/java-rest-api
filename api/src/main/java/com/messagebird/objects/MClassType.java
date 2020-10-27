@@ -1,29 +1,24 @@
 package com.messagebird.objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * MClass type
  *
  * Created by rvt on 1/7/15.
  */
+@ToString
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum MClassType {
     flash(0),
     normal(1);
 
+    @Getter
     final Integer value;
-
-    MClassType(Integer type) {
-        this.value = type;
-    }
-
-    @Override
-    public String toString() {
-        return "MClass{" +
-                "value=" + value +
-                '}';
-    }
 
     @JsonValue
     public Integer toJson() {
@@ -35,11 +30,6 @@ public enum MClassType {
             return flash;
         }
         return normal;
-    }
-
-
-    public Integer getValue() {
-        return value;
     }
 
 }

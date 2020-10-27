@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +14,12 @@ import java.util.List;
  * decreases the possibility of being blocked on the first contact as the
  * message is pre-approved by WhatsApp.
  */
+@Getter
+@Setter
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ConversationContentHsm {
 
     private String namespace;
@@ -19,79 +27,11 @@ public class ConversationContentHsm {
     private ConversationHsmLanguage language;
     private List<ConversationHsmLocalizableParameter> params;
 
-    public ConversationContentHsm(
-            final String namespace,
-            final String templateName,
-            final ConversationHsmLanguage language,
-            final List<ConversationHsmLocalizableParameter> params
-    ) {
-        this.namespace = namespace;
-        this.templateName = templateName;
-        this.language = language;
-        this.params = params;
-    }
-
-    public ConversationContentHsm(
-            final String namespace,
-            final String templateName,
-            final ConversationHsmLanguage language
-    ) {
-        this.namespace = namespace;
-        this.templateName = templateName;
-        this.language = language;
-    }
-
-    public ConversationContentHsm() {
-        //
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(final String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    public void setTemplateName(final String templateName) {
-        this.templateName = templateName;
-    }
-
-    public ConversationHsmLanguage getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(final ConversationHsmLanguage language) {
-        this.language = language;
-    }
-
-    public List<ConversationHsmLocalizableParameter> getParams() {
-        return params;
-    }
-
     public void addParams(final ConversationHsmLocalizableParameter... params) {
         if (this.params == null) {
             this.params = new ArrayList<>(params.length);
         }
 
         Collections.addAll(this.params, params);
-    }
-
-    public void setParams(final List<ConversationHsmLocalizableParameter> params) {
-        this.params = params;
-    }
-
-    @Override
-    public String toString() {
-        return "ConversationContentHsm{" +
-                "namespace='" + namespace + '\'' +
-                ", templateName='" + templateName + '\'' +
-                ", language=" + language +
-                ", params=" + params +
-                '}';
     }
 }

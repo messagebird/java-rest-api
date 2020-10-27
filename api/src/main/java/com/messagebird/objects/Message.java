@@ -1,5 +1,9 @@
 package com.messagebird.objects;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URL;
@@ -13,28 +17,50 @@ import java.util.Map;
  * <p/>
  * Created by rvt on 1/7/15.
  */
+@ToString
 public class Message implements MessageBase, Serializable {
 
     private static final long serialVersionUID = -2110297078875657480L;
 
     private static final String EMPTY = "";
 
+    @Getter
     private String originator;
     private String body;
     private String recipients;
 
+    @Getter
     private MsgType type;
+
+    @Setter
     private String reference;
+
+    @Getter
     private Integer validity;
+
+    @Getter
+    @Setter
     private Integer gateway;
+
+    @Getter
+    @Setter
     private Map<String, Object> typeDetails;
+
+    @Getter
+    @Setter
     private DataCodingType datacoding = DataCodingType.plain;
+
+    @Getter
     private MClassType mclass;
+
+    @Setter
     private Date scheduledDatetime;
-    
+
     /**
      * Optional URL for the status report. If not set uses URL from account settings.
      */
+    @Getter
+    @Setter
     private URL reportUrl;
 
     public Message(String originator, String body, String recipients) {
@@ -112,33 +138,6 @@ public class Message implements MessageBase, Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Message{" +
-                "originator='" + originator + '\'' +
-                ", body='" + body + '\'' +
-                ", recipients='" + recipients + '\'' +
-                ", type=" + type +
-                ", reference='" + reference + '\'' +
-                ", validity=" + validity +
-                ", gateway=" + gateway +
-                ", reportUrl=" + reportUrl +
-                ", typeDetails='" + typeDetails + '\'' +
-                ", datacoding=" + datacoding +
-                ", mclass=" + mclass +
-                ", scheduledDatetime=" + scheduledDatetime +
-                '}';
-    }
-
-    /**
-     * The sender of the message. This can be a telephone number (including country code) or an alphanumeric string. In case of an alphanumeric string, the maximum length is 11 characters.
-     *
-     * @return originator of the message
-     */
-    public String getOriginator() {
-        return originator;
-    }
-
-    @Override
     public String getBody() {
         return body;
     }
@@ -148,14 +147,6 @@ public class Message implements MessageBase, Serializable {
         return recipients;
     }
 
-    /**
-     * The configured message type. Values can be: sms, binary, premium, or flash.
-     *
-     * @return MsgType that has been configured
-     */
-    public MsgType getType() {
-        return type;
-    }
 
     /**
      * The type of message. Values can be: sms, binary, premium, or flash.
@@ -178,23 +169,6 @@ public class Message implements MessageBase, Serializable {
     }
 
     /**
-     * @param reference The client reference
-     */
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    /**
-     * The configured validity
-     * The amount of seconds that the message is valid. If a message is not delivered within this time, the message will be discarded.
-     *
-     * @return validity value
-     */
-    public Integer getValidity() {
-        return validity;
-    }
-
-    /**
      * The amount of seconds that the message is valid. If a message is not delivered within this time, the message will be discarded.
      *
      * @param validity
@@ -206,85 +180,9 @@ public class Message implements MessageBase, Serializable {
         this.validity = validity;
     }
 
-    /**
-     * The configured SMS route that is used to send the message.
-     *
-     * @return routing number
-     */
-    public Integer getGateway() {
-        return gateway;
-    }
-
-    /**
-     * The SMS route that is used to send the message.
-     *
-     * @param gateway
-     */
-    public void setGateway(Integer gateway) {
-        this.gateway = gateway;
-    }
-
-    /**
-     * An hash with extra information. Is only used when a binary or premium message is sent.
-     * <p/>
-     * Note: Interface might change in feature
-     *
-     * @return Map with specific items for that request
-     */
-    public Map<String, Object> getTypeDetails() {
-        return typeDetails;
-    }
-
-    /**
-     * An hash with extra information. Is only used when a binary or premium message is sent.
-     * <p/>
-     * Note: Interface might change in feature
-     *
-     * @return
-     */
-    public void setTypeDetails(Map<String, Object> typeDetails) {
-        this.typeDetails = typeDetails;
-    }
-
-    /**
-     * The datacoding used, can be plain or unicode
-     *
-     * @return returns plain or unicode
-     */
-    public DataCodingType getDatacoding() {
-        return datacoding;
-    }
-
-    /**
-     * The datacoding used, can be plain or unicode
-     *
-     * @param datacoding
-     */
-    public void setDatacoding(DataCodingType datacoding) {
-        this.datacoding = datacoding;
-    }
-
-    /**
-     * Indicated the message type.
-     *
-     * @return
-     */
-    public MClassType getMclass() {
-        return mclass;
-    }
-
     @Override
     public Date getScheduledDatetime() {
         return scheduledDatetime;
-    }
-
-    /**
-     * The scheduled date and time of the message. Allows to specify when MessageBird server send's the mesage.
-     *
-     * @param scheduledDatetime
-     */
-    public void setScheduledDatetime(Date scheduledDatetime) {
-        this.scheduledDatetime = scheduledDatetime;
     }
 
     /**
@@ -304,13 +202,5 @@ public class Message implements MessageBase, Serializable {
         this.typeDetails = premiumSMSConfig;
         this.type = MsgType.premium;
     }
-
-	public URL getReportUrl() {
-		return reportUrl;
-	}
-
-	public void setReportUrl(URL reportUrl) {
-		this.reportUrl = reportUrl;
-	}
 
 }

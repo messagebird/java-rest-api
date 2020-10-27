@@ -2,19 +2,20 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Indicates whether a conversation webhook is <strong>enabled</strong> or <strong>disabled</strong>.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public enum ConversationWebhookStatus {
     ENABLED("enabled"),
     DISABLED("disabled");
 
-    private final String status;
-
-    ConversationWebhookStatus(final String status) {
-        this.status = status;
-    }
+    @Getter private final String status;
 
     @JsonCreator
     public static ConversationWebhookStatus forValue(final String value) {
@@ -30,10 +31,6 @@ public enum ConversationWebhookStatus {
     @JsonValue
     public String toJson() {
         return getStatus();
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     @Override

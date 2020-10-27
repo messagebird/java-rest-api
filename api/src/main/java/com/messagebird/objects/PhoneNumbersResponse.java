@@ -1,11 +1,13 @@
 package com.messagebird.objects;
 
-import com.messagebird.objects.PhoneNumber;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
+@Getter
+@ToString
 public class PhoneNumbersResponse implements Serializable {
     /**
      *
@@ -15,24 +17,4 @@ public class PhoneNumbersResponse implements Serializable {
     private Number offset;
     private List<PhoneNumber> items;
 
-    public Number getLimit() {
-        return this.limit;
-    }
-
-    public Number getOffset() {
-        return this.offset;
-    }
-
-    public List<PhoneNumber> getItems() {
-        return this.items;
-    }
-    
-    @Override
-    public String toString() {
-        return "PhoneNumbersResponse{" +
-            "limit=" + limit +
-            ", offset=" + offset +
-            ", items=" + items +
-            "}";
-    }
 }

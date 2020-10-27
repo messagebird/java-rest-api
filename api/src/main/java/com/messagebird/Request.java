@@ -1,5 +1,8 @@
 package com.messagebird;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 import java.util.Arrays;
 
 /**
@@ -7,9 +10,12 @@ import java.util.Arrays;
  * webhooks.
  */
 public class Request {
-
+    @Getter(value = AccessLevel.PACKAGE)
     private final String timestamp;
+
     private final String queryParameters;
+
+    @Getter(value = AccessLevel.PACKAGE)
     private final byte[] data;
 
     private final static String QUERY_PARAMETERS_DELIMITER = "&";
@@ -32,10 +38,6 @@ public class Request {
         this.data = data;
     }
 
-    String getTimestamp() {
-        return timestamp;
-    }
-
     String getSortedQueryParameters() {
         String[] params = queryParameters.split(QUERY_PARAMETERS_DELIMITER);
         Arrays.sort(params);
@@ -47,9 +49,5 @@ public class Request {
             }
         }
         return sortedParamsAccumulator.toString();
-    }
-
-    byte[] getData() {
-        return data;
     }
 }

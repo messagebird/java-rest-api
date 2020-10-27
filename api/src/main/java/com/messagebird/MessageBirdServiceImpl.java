@@ -1,5 +1,18 @@
 package com.messagebird;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.NotFoundException;
+import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.ErrorReport;
+import com.messagebird.objects.PagedPaging;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -11,17 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.messagebird.exceptions.GeneralException;
-import com.messagebird.exceptions.NotFoundException;
-import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.ErrorReport;
-import com.messagebird.objects.PagedPaging;
 
 /**
  * Implementation of MessageBirdService
@@ -59,10 +61,20 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     private static final int BUFFER_SIZE = 4096;
 
+    @Getter
     private final String accessKey;
+
+    @Getter
     private final String serviceUrl;
+
+    @Getter
     private final String clientVersion = "3.0.17";
+
+    @Getter
     private final String userAgentString;
+
+    @Getter
+    @Setter
     private Proxy proxy = null;
 
     public MessageBirdServiceImpl(final String accessKey, final String serviceUrl) {
@@ -188,14 +200,14 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             if (homePath == null) {
                 throw new IllegalArgumentException("BasePath must be specified.");
             }
-            basePath = String.format("%s/%s",homePath,"Downloads");
+            basePath = String.format("%s/%s", homePath, "Downloads");
         }
         File file = new File(basePath);
-        if(!file.exists()) {
+        if (!file.exists()) {
             throw new IllegalArgumentException("basePath must be existed as directory.");
         }
 
-        if(!file.isDirectory()) {
+        if (!file.isDirectory()) {
             throw new IllegalArgumentException("basePath must be a directory.");
         }
         String filePath = String.format("%s/%s", basePath, fileName);
@@ -251,6 +263,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             throw new GeneralException(FAILED_DATA_RESPONSE_CODE + status, status);
         }
     }
+
     /**
      * Actually sends a HTTP request and returns its body and HTTP status code.
      *
@@ -297,9 +310,9 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     /**
-     *
      * Do get request for file from input url and stores the file in filepath.
-     * @param url     Absolute URL.
+     *
+     * @param url      Absolute URL.
      * @param filePath the path where the downloaded file is going to be stored.
      * @return if it succeed, it returns filepath otherwise null or exception.
      */
@@ -337,8 +350,9 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     /**
      * Writes input stream from IO to filepath.
+     *
      * @param inputStream stream that has been collected file input
-     * @param filepath the storage path for the file
+     * @param filepath    the storage path for the file
      * @return if it succeed, it returns filepath otherwise null or exception.
      * @throws IOException
      */
@@ -376,13 +390,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
-            
+
             Object noInstanceBecauseStaticField = null;
-            
+
             // Determine what methods should be allowed.
             String[] existingMethods = (String[]) methodsField.get(noInstanceBecauseStaticField);
             String[] allowedMethods = getAllowedMethods(existingMethods);
-            
+
             // Override the actual field to allow PATCH.
             methodsField.set(noInstanceBecauseStaticField, allowedMethods);
 
@@ -444,7 +458,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * Create a HttpURLConnection connection object
      *
      * @param serviceUrl  URL that needs to be requested
-     * @param body body could not be empty for POST or PUT requests
+     * @param body        body could not be empty for POST or PUT requests
      * @param requestType Request type POST requests without a payload will generate a exception
      * @return base class
      * @throws IOException io exception
@@ -540,7 +554,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readValue(body, JsonNode.class);
-            if(!jsonNode.has("errors")) {
+            if (!jsonNode.has("errors")) {
                 return null;
             }
 
@@ -556,63 +570,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    /**
-     * Get the used access key
-     *
-     * @return String
-     */
-    public String getAccessKey() {
-        return accessKey;
-    }
-
-    /**
-     * get the used service URL
-     *
-     * @return String
-     */
-    public String getServiceUrl() {
-        return serviceUrl;
-    }
-
-    /**
-     * Get the client version
-     *
-     * @return String
-     */
-    public String getClientVersion() {
-        return clientVersion;
-    }
-
-    /**
-     * Get the user agent string
-     *
-     * @return String
-     */
-    public String getUserAgentString() {
-        return userAgentString;
-    }
-
-    /**
-     * Enable proxy support
-     * example:
-     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));
-     * messageBirdService.setProxy(proxy);
-     *
-     * @param proxy proxy
-     */
-    public void setProxy(Proxy proxy) {
-        this.proxy = proxy;
-    }
-
-    /**
-     * Get the proxy object if set
-     *
-     * @return Proxy
-     */
-    public Proxy getProxy() {
-        return proxy;
     }
 
     /**
@@ -633,7 +590,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     /**
      * Encodes a key/value pair with percent encoding.
      *
-     * @param key the key name to be used
+     * @param key   the key name to be used
      * @param value the value to be assigned to that key
      * @return String
      */
@@ -660,7 +617,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                     // so it can be iterated over. Its values should be
                     // appended to the querystring parameters using the
                     // original key provided (e.g., ?features=sms&features=mms)
-                    Collection<?> col =  (Collection<?>) param.getValue();
+                    Collection<?> col = (Collection<?>) param.getValue();
                     Iterator<?> iterator = col.iterator();
                     int count = 0;
                     // While there are still remaining iterables
@@ -673,7 +630,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                         // the value is returned from the next() call
                         bpath.append(encodeKeyValuePair(param.getKey(), iterator.next()));
                         count++;
-                    }   
+                    }
                 } else {
                     // If the value is not a collection, create the querystring value directly.
                     bpath.append(encodeKeyValuePair(param.getKey(), param.getValue()));
