@@ -21,7 +21,7 @@ public class ExampleConversationSendEmailMessage {
 
         if (args.length < 4) {
             System.out.println("Please at least specify your access key, the channel id and destination address.\n" +
-                    "Usage : java -jar <this jar file> test_accesskey(Required) channel_id(Required) to(Required) from(Required)");
+                    "Usage : java -jar <this jar file> test_accesskey(Required) channel_id(Required) from(Required) to(Required)");
             return;
         }
 
