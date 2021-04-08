@@ -1,6 +1,6 @@
 package com.messagebird.objects;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.math.BigInteger;
