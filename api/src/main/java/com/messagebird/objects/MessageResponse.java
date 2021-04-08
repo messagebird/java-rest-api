@@ -1,5 +1,7 @@
 package com.messagebird.objects;
 
+import com.sun.istack.internal.Nullable;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -260,6 +262,8 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         private BigInteger recipient;
         private String status;
         private Date statusDatetime;
+        @Nullable
+        private Price price;
 
         public Items() {
         }
@@ -270,6 +274,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
                     "recipient=" + recipient +
                     ", status='" + status + '\'' +
                     ", statusDatetime=" + statusDatetime +
+                    ", price=" + price +
                     "}";
         }
 
@@ -298,6 +303,41 @@ public class MessageResponse implements MessageResponseBase, Serializable {
          */
         public Date getStatusDatetime() {
             return statusDatetime;
+        }
+
+        public Price getPrice() {
+            return price;
+        }
+
+    }
+
+    /**
+     * Response price of items
+     */
+    static public class Price implements Serializable {
+
+        private static final long serialVersionUID = -4104837036540050532L;
+
+        private float amount;
+        private String currency;
+
+        public Price() {
+        }
+
+        @Override
+        public String toString() {
+            return "Price{" +
+                    "amount=" + amount +
+                    ", currency=" + currency +
+                    "}";
+        }
+
+        public float getAmount() {
+            return amount;
+        }
+
+        public String getCurrency() {
+            return currency;
         }
 
     }
