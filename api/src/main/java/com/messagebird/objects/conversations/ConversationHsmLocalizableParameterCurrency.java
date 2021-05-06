@@ -11,10 +11,10 @@ public class ConversationHsmLocalizableParameterCurrency {
     /**
      * Instantiates a localizable parameter for currencies.
      *
-     * @param code ISO 4217 compliant currency code.
+     * @param currencyCode ISO 4217 compliant currency code.
      * @param amount Amount multiplied by 1000. E.g. 12.34 becomes 12340.
      */
-    public ConversationHsmLocalizableParameterCurrency(final String code, final int amount) {
+    public ConversationHsmLocalizableParameterCurrency(final String currencyCode, final int amount) {
         this.currencyCode = currencyCode;
         this.amount = amount;
     }
