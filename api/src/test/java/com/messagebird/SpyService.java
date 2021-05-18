@@ -2,6 +2,8 @@ package com.messagebird;
 
 import com.messagebird.exceptions.GeneralException;
 
+import java.util.HashMap;
+
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
@@ -147,7 +149,7 @@ class SpyService<P> {
         }
 
         MessageBirdServiceImpl messageBirdService = spy(new MessageBirdServiceImpl(getAccessKey()));
-        doReturn(apiResponse).when(messageBirdService).doRequest(method, url, payload);
+        doReturn(apiResponse).when(messageBirdService).doRequest(method, url, new HashMap<>(), payload);
 
         return messageBirdService;
     }

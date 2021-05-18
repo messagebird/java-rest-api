@@ -8,6 +8,7 @@ import com.messagebird.objects.Contact;
 import com.messagebird.objects.ContactList;
 import com.messagebird.objects.ContactRequest;
 import com.messagebird.objects.ErrorReport;
+import com.messagebird.objects.FileUploadResponse;
 import com.messagebird.objects.Group;
 import com.messagebird.objects.GroupList;
 import com.messagebird.objects.GroupRequest;
@@ -98,6 +99,7 @@ public class MessageBirdClient {
     private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
     static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
+    static final String MESSAGING_BASE_URL = "https://messaging.messagebird.com/v1";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
 
     private static final String BALANCEPATH = "/balance";
@@ -120,6 +122,8 @@ public class MessageBirdClient {
     static final String WEBHOOKS = "/webhooks";
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
+    static final String FILES_PATH = "/files";
+
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
 
     static final String TRANSCRIPTION_DOWNLOAD_FORMAT = ".txt";
@@ -1766,5 +1770,55 @@ public class MessageBirdClient {
     public void cancelNumber(String number) throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
         messageBirdService.deleteByID(url, number);
+    }
+
+    /**
+     * Uploads a file and returns the assigned ID.
+     *
+     * @param binary the bytes of the file to upload.
+     * @param contentType the content type of the file (e.g. "image/png").
+     * @return FileUploadResponse
+     * @throws GeneralException      general exception
+     * @throws UnauthorizedException if client is unauthorized
+     * @see #downloadFile
+     */
+    public FileUploadResponse uploadFile(byte[] binary, String contentType) throws GeneralException, UnauthorizedException {
+        if (binary == null) {
+            throw new IllegalArgumentException("File binary must be specified.");
+        }
+        if (contentType == null) {
+            throw new IllegalArgumentException("Content type must be specified.");
+        }
+
+        final String url = MESSAGING_BASE_URL + FILES_PATH;
+        final Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", contentType);
+        return messageBirdService.sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
+    }
+
+    /**
+     * Downloads a file and stores it with the provided filename in the basePath directory. The
+     * basePath may be null. If basePath is null, the default download directory will be the
+     * /Download folder in the user home directory.
+     *
+     * @param id       the ID of the file, provided when the file was uploaded
+     * @param basePath store location. It should be a directory. Property is nullable if $HOME is accessible
+     * @param filename the name of the file to download to.
+     * @return the path where the downloaded file is stored
+     * @throws NotFoundException     if the file does not exist
+     * @throws GeneralException      general exception
+     * @throws UnauthorizedException if client is unauthorized
+     * @see #uploadFile
+     */
+    public String downloadFile(String id, String filename, String basePath) throws GeneralException, UnauthorizedException, NotFoundException {
+        if (id == null) {
+            throw new IllegalArgumentException("File ID must be specified.");
+        }
+        if (filename == null) {
+            throw new IllegalArgumentException("Filename must be specified.");
+        }
+
+        final String url = String.format("%s%s/%s", MESSAGING_BASE_URL, FILES_PATH, id);
+        return messageBirdService.getBinaryData(url, basePath, filename);
     }
 } 
