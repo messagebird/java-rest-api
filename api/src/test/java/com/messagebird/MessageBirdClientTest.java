@@ -1022,12 +1022,14 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testDownloadFileWithNullFilename() {
+    public void testDownloadFileWithNullFilename() throws GeneralException, UnauthorizedException, NotFoundException {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
         String id = "8144d3bf-6228-4b0e-903f-022d8917f297";
         String basePath = "/base/path";
-        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.downloadFile(id, null, basePath));
+        messageBirdClient.downloadFile(id, null, basePath);
+        String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, id);
     }
 
     @Test

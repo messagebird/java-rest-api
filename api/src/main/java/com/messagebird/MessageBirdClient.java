@@ -1803,7 +1803,8 @@ public class MessageBirdClient {
     /**
      * Downloads a file and stores it with the provided filename in the basePath directory. The
      * basePath may be null. If basePath is null, the default download directory will be the
-     * /Download folder in the user home directory.
+     * /Download folder in the user home directory. The filename may be null. If filename is null,
+     * the provided id will be used as the filename instead.
      *
      * @param id       the ID of the file, provided when the file was uploaded
      * @param basePath store location. It should be a directory. Property is nullable if $HOME is accessible
@@ -1818,8 +1819,9 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("File ID must be specified.");
         }
+
         if (filename == null) {
-            throw new IllegalArgumentException("Filename must be specified.");
+            filename = id;
         }
 
         final String url = String.format("%s%s/%s", MESSAGING_BASE_URL, FILES_PATH, id);
