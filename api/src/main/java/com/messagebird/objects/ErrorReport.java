@@ -1,6 +1,9 @@
 package com.messagebird.objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.io.Serializable;
+
 /**
  * When MessageBird returns a 4xx, you will find a list of any error codes in your return dataset.
  * you will receive a list of errors from the API in such case.
@@ -8,7 +11,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * Created by rvt on 1/5/15.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorReport {
+public class ErrorReport implements Serializable {
+
+    private static final long serialVersionUID = -8611665867089703268L;
+
     private Integer code;
     private String description;
     private String parameter;
