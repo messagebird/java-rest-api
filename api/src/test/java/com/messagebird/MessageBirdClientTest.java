@@ -1042,23 +1042,4 @@ public class MessageBirdClientTest {
         String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
         verify(messageBirdServiceMock, times(1)).getBinaryData(url, null, filename);
     }
-
-    @Test
-    public void testUploadAndDownloadFile() throws GeneralException, UnauthorizedException, NotFoundException, IOException {
-        byte[] binary = {1, 2, 3, 4, 5, 6};
-        String contentType = "image/png";
-        FileUploadResponse response = messageBirdClient.uploadFile(binary, contentType, null);
-        assertNotNull(response.getId());
-        String filepath = messageBirdClient.downloadFile(response.getId(), "file.png", null);
-        File file = new File(filepath);
-        assertTrue(file.exists());
-        InputStream inputStream = new FileInputStream(file);
-        byte[] output = new byte[binary.length];
-        assertEquals(binary.length, inputStream.read(output));
-        for (int i = 0; i < output.length; i++) {
-            assertEquals(binary[i], output[i]);
-        }
-        inputStream.close();
-        file.deleteOnExit();
-    }
 }
