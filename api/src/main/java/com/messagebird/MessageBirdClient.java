@@ -1777,12 +1777,13 @@ public class MessageBirdClient {
      *
      * @param binary the bytes of the file to upload.
      * @param contentType the content type of the file (e.g. "image/png").
+     * @param filename optional filename to set in the upload request headers.
      * @return FileUploadResponse
      * @throws GeneralException      general exception
      * @throws UnauthorizedException if client is unauthorized
      * @see #downloadFile
      */
-    public FileUploadResponse uploadFile(byte[] binary, String contentType) throws GeneralException, UnauthorizedException {
+    public FileUploadResponse uploadFile(byte[] binary, String contentType, String filename) throws GeneralException, UnauthorizedException {
         if (binary == null) {
             throw new IllegalArgumentException("File binary must be specified.");
         }
@@ -1793,6 +1794,9 @@ public class MessageBirdClient {
         final String url = MESSAGING_BASE_URL + FILES_PATH;
         final Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", contentType);
+        if (filename != null) {
+            headers.put("filename", filename);
+        }
         return messageBirdService.sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
     }
 

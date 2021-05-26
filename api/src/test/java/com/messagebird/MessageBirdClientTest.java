@@ -960,10 +960,12 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
         byte[] binary = {1, 2, 3, 4, 5, 6};
         String contentType = "image/png";
-        messageBirdClient.uploadFile(binary, contentType);
+        String filename = "filename.png";
+        messageBirdClient.uploadFile(binary, contentType, filename);
         String url = MESSAGING_BASE_URL + FILES_PATH;
         final Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", contentType);
+        headers.put("filename", filename);
         verify(messageBirdServiceMock, times(1)).sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
     }
 
@@ -972,7 +974,8 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
         String contentType = "image/png";
-        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(null, contentType));
+        String filename = "filename.png";
+        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(null, contentType, filename));
     }
 
     @Test
@@ -980,7 +983,21 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
         byte[] binary = {1, 2, 3, 4, 5, 6};
-        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(binary, null));
+        String filename = "filename.png";
+        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(binary, null, filename));
+    }
+
+    @Test
+    public void testUploadFileWithNullFilename() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        byte[] binary = {1, 2, 3, 4, 5, 6};
+        String contentType = "image/png";
+        messageBirdClient.uploadFile(binary, contentType, null);
+        String url = MESSAGING_BASE_URL + FILES_PATH;
+        final Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", contentType);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
     }
 
     @Test
@@ -1028,7 +1045,7 @@ public class MessageBirdClientTest {
     public void testUploadAndDownloadFile() throws GeneralException, UnauthorizedException, NotFoundException, IOException {
         byte[] binary = {1, 2, 3, 4, 5, 6};
         String contentType = "image/png";
-        FileUploadResponse response = messageBirdClient.uploadFile(binary, contentType);
+        FileUploadResponse response = messageBirdClient.uploadFile(binary, contentType, null);
         assertNotNull(response.getId());
         String filepath = messageBirdClient.downloadFile(response.getId(), "file.png", null);
         File file = new File(filepath);
