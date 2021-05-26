@@ -108,6 +108,20 @@ public interface MessageBirdService {
     <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException;
 
     /**
+     * Send a payload with the provided method and headers and receive a payload object.
+     *
+     * @param method HTTP method to use for the request
+     * @param request path to the request, for example "/messages"
+     * @param headers additional headers to set on the request
+     * @param payload payload to send to the server
+     * @param clazz object type to return
+     * @return base class
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     */
+    <R, P> R sendPayLoad(String method, String request, Map<String, String> headers, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException;
+
+    /**
      * Gets the data from the request URL and stores it to basePath/fileName
      *
      * @param request  path to the request, for example "/messages"

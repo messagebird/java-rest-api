@@ -169,12 +169,17 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     @Override
     public <R, P> R sendPayLoad(String method, String request, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
+        return sendPayLoad(method, request, new HashMap<>(), payload, clazz);
+    }
+
+    @Override
+    public <R, P> R sendPayLoad(String method, String request, Map<String, String> headers, P payload, Class<R> clazz) throws UnauthorizedException, GeneralException {
         if (!REQUEST_METHODS_WITH_PAYLOAD.contains(method)) {
             throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, method));
         }
 
         try {
-            return getJsonData(request, payload, method, clazz);
+            return getJsonData(request, payload, method, headers, clazz);
         } catch (NotFoundException e) {
             throw new GeneralException(e);
         }
@@ -204,6 +209,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
 
     public <T, P> T getJsonData(final String request, final P payload, final String requestType, final Class<T> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
+        return getJsonData(request, payload, requestType, new HashMap<>(), clazz);
+    }
+
+    public <T, P> T getJsonData(final String request, final P payload, final String requestType, final Map<String, String> headers, final Class<T> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
         if (request == null) {
             throw new IllegalArgumentException(REQUEST_VALUE_MUST_BE_SPECIFIED);
         }
@@ -212,7 +221,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         if (!isURLAbsolute(url)) {
             url = serviceUrl + url;
         }
-        final APIResponse apiResponse = doRequest(requestType, url, payload);
+        final APIResponse apiResponse = doRequest(requestType, url, headers, payload);
 
         final String body = apiResponse.getBody();
         final int status = apiResponse.getStatus();
@@ -256,11 +265,12 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      *
      * @param method  HTTP method.
      * @param url     Absolute URL.
+     * @param headers additional headers to set on the request.
      * @param payload Payload to JSON encode for the request body. May be null.
      * @param <P>     Type of the payload.
      * @return APIResponse containing the response's body and status.
      */
-    <P> APIResponse doRequest(final String method, final String url, final P payload) throws GeneralException {
+    <P> APIResponse doRequest(final String method, final String url, final Map<String, String> headers, final P payload) throws GeneralException {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
@@ -275,7 +285,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         }
 
         try {
-            connection = getConnection(url, payload, method);
+            connection = getConnection(url, payload, method, headers);
             int status = connection.getResponseCode();
 
             if (APIResponse.isSuccessStatus(status)) {
@@ -450,6 +460,20 @@ public class MessageBirdServiceImpl implements MessageBirdService {
      * @throws IOException io exception
      */
     public <P> HttpURLConnection getConnection(final String serviceUrl, final P body, final String requestType) throws IOException {
+        return getConnection(serviceUrl, body, requestType, new HashMap<>());
+    }
+
+    /**
+     * Create a HttpURLConnection connection object
+     *
+     * @param serviceUrl  URL that needs to be requested
+     * @param body body could not be empty for POST or PUT requests
+     * @param requestType Request type POST requests without a payload will generate a exception
+     * @param headers additional headers to set on the request
+     * @return base class
+     * @throws IOException io exception
+     */
+    public <P> HttpURLConnection getConnection(final String serviceUrl, final P body, final String requestType, final Map<String, String> headers) throws IOException {
         if (requestType == null || !REQUEST_METHODS.contains(requestType)) {
             throw new IllegalArgumentException(String.format(REQUEST_METHOD_NOT_ALLOWED, requestType));
         }
@@ -485,20 +509,38 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             DateFormat df = getDateFormat();
             mapper.setDateFormat(df);
 
-            final String json = mapper.writeValueAsString(body);
-            connection.getOutputStream().write(json.getBytes(String.valueOf(StandardCharsets.UTF_8)));
+            setAdditionalHeaders(connection, headers);
+
+            byte[] bodyBytes;
+            if (body instanceof byte[]) {
+                bodyBytes = (byte[]) body;
+            } else {
+                final String json = mapper.writeValueAsString(body);
+                bodyBytes = json.getBytes(StandardCharsets.UTF_8);
+            }
+            connection.getOutputStream().write(bodyBytes);
         } else if ("DELETE".equals(requestType)) {
             // could have just used rquestType as it is
             connection.setDoOutput(false);
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-Type", "text/plain");
+
+            setAdditionalHeaders(connection, headers);
         } else {
             connection.setDoOutput(false);
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "text/plain");
+
+            setAdditionalHeaders(connection, headers);
         }
 
         return connection;
+    }
+
+    private void setAdditionalHeaders(HttpURLConnection connection, Map<String, String> headers) {
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            connection.setRequestProperty(header.getKey(), header.getValue());
+        }
     }
 
     private DateFormat getDateFormat() {

@@ -10,9 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -953,5 +952,94 @@ public class MessageBirdClientTest {
         );
         messageBirdClientMock.deleteRecording("ANY_CALL_ID", "ANY_LEG_ID","recordingID");
         verify(messageBirdServiceMock, times(1)).deleteByID(url , "recordingID");
+    }
+
+    @Test
+    public void testMockUploadFile() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        byte[] binary = {1, 2, 3, 4, 5, 6};
+        String contentType = "image/png";
+        String filename = "filename.png";
+        messageBirdClient.uploadFile(binary, contentType, filename);
+        String url = MESSAGING_BASE_URL + FILES_PATH;
+        final Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", contentType);
+        headers.put("filename", filename);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
+    }
+
+    @Test
+    public void testUploadFileWithNullBinary() {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        String contentType = "image/png";
+        String filename = "filename.png";
+        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(null, contentType, filename));
+    }
+
+    @Test
+    public void testUploadFileWithNullContentType() {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        byte[] binary = {1, 2, 3, 4, 5, 6};
+        String filename = "filename.png";
+        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.uploadFile(binary, null, filename));
+    }
+
+    @Test
+    public void testUploadFileWithNullFilename() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        byte[] binary = {1, 2, 3, 4, 5, 6};
+        String contentType = "image/png";
+        messageBirdClient.uploadFile(binary, contentType, null);
+        String url = MESSAGING_BASE_URL + FILES_PATH;
+        final Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", contentType);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad("POST", url, headers, binary, FileUploadResponse.class);
+    }
+
+    @Test
+    public void testMockDownloadFile() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        String id = "8144d3bf-6228-4b0e-903f-022d8917f297";
+        String filename = "file.png";
+        String basePath = "/base/path";
+        messageBirdClient.downloadFile(id, filename, basePath);
+        String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, filename);
+    }
+
+    @Test
+    public void testDownloadFileWithNullId() {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        String filename = "file.png";
+        String basePath = "/base/path";
+        assertThrows(IllegalArgumentException.class, () -> messageBirdClient.downloadFile(null, filename, basePath));
+    }
+
+    @Test
+    public void testDownloadFileWithNullFilename() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        String id = "8144d3bf-6228-4b0e-903f-022d8917f297";
+        String basePath = "/base/path";
+        messageBirdClient.downloadFile(id, null, basePath);
+        String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, basePath, id);
+    }
+
+    @Test
+    public void testDownloadFileWithNullBasePath() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdServiceMock);
+        String id = "8144d3bf-6228-4b0e-903f-022d8917f297";
+        String filename = "file.png";
+        messageBirdClient.downloadFile(id, filename, null);
+        String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
+        verify(messageBirdServiceMock, times(1)).getBinaryData(url, null, filename);
     }
 }
