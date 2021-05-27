@@ -4,7 +4,7 @@
 
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>3.0.22</version> <!--
+    <version>3.1.0</version> <!--
         are you going to bump a major number?
         then you are pleased to replace com.messagebird.Base64 with some library, for example net.iharder.base64
     -->
