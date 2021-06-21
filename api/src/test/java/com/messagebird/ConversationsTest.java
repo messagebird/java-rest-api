@@ -76,7 +76,7 @@ public class ConversationsTest {
     @Test
     public void testUpdateConversation() throws GeneralException, UnauthorizedException {
         MessageBirdService messageBirdService = SpyService
-                .expects("PATCH", "conversations/convid", ConversationStatus.ARCHIVED)
+                .expects("PATCH", "conversations/convid", new ConversationUpdateRequest(ConversationStatus.ARCHIVED))
                 .withConversationsAPIBaseURL()
                 .andReturns(new APIResponse(JSON_CONVERSATION));
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);

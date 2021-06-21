@@ -41,6 +41,7 @@ import com.messagebird.objects.conversations.ConversationSendRequest;
 import com.messagebird.objects.conversations.ConversationSendResponse;
 import com.messagebird.objects.conversations.ConversationStartRequest;
 import com.messagebird.objects.conversations.ConversationStatus;
+import com.messagebird.objects.conversations.ConversationUpdateRequest;
 import com.messagebird.objects.conversations.ConversationWebhook;
 import com.messagebird.objects.conversations.ConversationWebhookCreateRequest;
 import com.messagebird.objects.conversations.ConversationWebhookList;
@@ -923,8 +924,12 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Id must be specified.");
         }
+        if (status == null) {
+            throw new IllegalArgumentException("An updated conversation status must be specified");
+        }
+        ConversationUpdateRequest payload = new ConversationUpdateRequest(status);
         String url = String.format("%s%s/%s", CONVERSATIONS_BASE_URL, CONVERSATION_PATH, id);
-        return messageBirdService.sendPayLoad("PATCH", url, status, Conversation.class);
+        return messageBirdService.sendPayLoad("PATCH", url, payload, Conversation.class);
     }
 
     /**
