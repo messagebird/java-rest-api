@@ -27,6 +27,7 @@ import com.messagebird.objects.PurchasedNumberCreatedResponse;
 import com.messagebird.objects.PurchasedNumbersResponse;
 import com.messagebird.objects.PurchasedNumbersFilter;
 import com.messagebird.objects.Verify;
+import com.messagebird.objects.VerifyMessage;
 import com.messagebird.objects.VerifyRequest;
 import com.messagebird.objects.VoiceMessage;
 import com.messagebird.objects.VoiceMessageList;
@@ -110,6 +111,7 @@ public class MessageBirdClient {
     private static final String LOOKUPPATH = "/lookup";
     private static final String MESSAGESPATH = "/messages";
     private static final String VERIFYPATH = "/verify";
+    private static final String VERIFYEMAILPATH = "/verify/messages/email";
     private static final String VOICEMESSAGESPATH = "/voicemessages";
     private static final String CONVERSATION_PATH = "/conversations";
     private static final String CONVERSATION_SEND_PATH = "/send";
@@ -491,6 +493,24 @@ public class MessageBirdClient {
         }
         return messageBirdService.requestByID(VERIFYPATH, id, Verify.class);
     }
+
+    /**
+     *
+     * This method can be used to retrieve a Verify Email Message
+     *
+     * @param id id is for the email message part of a verify object
+     * @return Verify object
+     * @throws NotFoundException     if id is not found
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public VerifyMessage getVerifyEmailMessage(String messageId) throws UnauthorizedException, GeneralException, NotFoundException {
+		// TODO Auto-generated method stub
+        if (messageId == null || messageId.isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be empty for verify email message");
+        }
+        return messageBirdService.requestByID(VERIFYEMAILPATH, messageId, VerifyMessage.class);
+	}
 
     /**
      * @param id id for deleting verify object
