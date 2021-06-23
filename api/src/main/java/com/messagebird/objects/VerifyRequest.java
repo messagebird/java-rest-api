@@ -17,6 +17,7 @@ public class VerifyRequest implements Serializable {
     private Integer tokenLength;
     private Gender voice;
     private Language language;
+    private String subject;
 
     public VerifyRequest(String recipient) {
         this.recipient = recipient;
@@ -52,6 +53,10 @@ public class VerifyRequest implements Serializable {
 
     public void setType(VerifyType type) {
         this.type = type;
+    }
+
+    public void setType(String type) {
+        this.type = VerifyType.valueOf(type.toUpperCase());
     }
 
     /**
@@ -112,4 +117,11 @@ public class VerifyRequest implements Serializable {
         this.language = language;
     }
 
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
 }

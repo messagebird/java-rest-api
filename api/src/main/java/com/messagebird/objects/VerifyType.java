@@ -9,7 +9,8 @@ public enum VerifyType {
 
     FLASH("flash"),
     SMS("sms"),
-    TTS("tts");
+    TTS("tts"),
+    EMAIL("email");
 
     final String value;
 
