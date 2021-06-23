@@ -55,10 +55,9 @@ public class VerifyRequest implements Serializable {
         this.type = type;
     }
 
-	public void setType(String type) {
+    public void setType(String type) {
         this.type = VerifyType.valueOf(type.toUpperCase());
-	}
-
+    }
 
     /**
      * The datacoding used by the template.
@@ -118,11 +117,11 @@ public class VerifyRequest implements Serializable {
         this.language = language;
     }
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
-	public String getSubject() {
-		return subject;
-	}
+    public String getSubject() {
+        return subject;
+    }
 }

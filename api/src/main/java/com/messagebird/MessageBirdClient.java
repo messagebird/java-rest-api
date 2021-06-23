@@ -496,9 +496,6 @@ public class MessageBirdClient {
     }
 
     /**
-     *
-     * This method can be used to retrieve a Verify Email Message
-     *
      * @param id id is for the email message part of a verify object
      * @return Verify object
      * @throws NotFoundException     if id is not found
@@ -506,7 +503,6 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      */
     public VerifyMessage getVerifyEmailMessage(String messageId) throws UnauthorizedException, GeneralException, NotFoundException {
-		// TODO Auto-generated method stub
         if (messageId == null || messageId.isEmpty()) {
             throw new IllegalArgumentException("ID cannot be empty for verify email message");
         }
