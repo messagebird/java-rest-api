@@ -23,23 +23,33 @@ public class RequestValidator {
     public static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
             'f' };
 
-    private String signatureKey;
+    private final Algorithm algorithm;
 
     public RequestValidator(String signatureKey) {
-        this.signatureKey = signatureKey;
+        this.algorithm = Algorithm.HMAC256(signatureKey);
+    }
+
+    public RequestValidator(byte[] signatureKey) {
+        this.algorithm = Algorithm.HMAC256(signatureKey);
     }
 
     DecodedJWT validateSignature(Clock clock, String signature, String url, byte[] requestBody)
             throws RequestValidationException {
-        Algorithm algorithmHS = Algorithm.HMAC256(this.signatureKey);
         DecodedJWT jwt = JWT.decode(signature);
-        BaseVerification builder = (BaseVerification) JWT.require(algorithmHS).withIssuer("MessageBird").acceptLeeway(1)
+        BaseVerification builder = (BaseVerification) JWT.require(this.algorithm)
+                .withIssuer("MessageBird")
+                .acceptLeeway(1)
                 .withClaim("url_hash", calculateSha256(url.getBytes()));
 
+        boolean payloadHashClaimExist = !jwt.getClaim("payload_hash").isNull();
+        
         if (requestBody != null && requestBody.length > 0) {
+            if (!payloadHashClaimExist) {
+                throw new RequestValidationException("The Claim 'payload_hash' is not set but payload is present."); 
+            }
             builder.withClaim("payload_hash", calculateSha256(requestBody));
-        } else if (!jwt.getClaim("payload_hash").isNull()) {
-            throw new RequestValidationException("The Claim 'payload_hash' was set but no payload value.");
+        } else if (payloadHashClaimExist) {
+            throw new RequestValidationException("The Claim 'payload_hash' is set but actual payload is missing.");
         }
 
         JWTVerifier verifier;
