@@ -45,7 +45,8 @@ public class RequestValidatorTest {
         public String payload;
         public String timestamp;
         public String token;
-        public String outcome;
+        public Boolean valid;
+        public String reason;
     }
 
     /**
@@ -53,7 +54,7 @@ public class RequestValidatorTest {
      */
     private static final Map<String, String> ERROR_MAP = new HashMap<String, String>() {
         {
-            put("invalid jwt: claim iat is in the future", "The Token can't be used before");
+            put("invalid jwt: claim nbf is in the future", "The Token can't be used before");
             put("invalid jwt: claim exp is in the past", "The Token has expired on");
             put("invalid jwt: claim url_hash is invalid", "The Claim 'url_hash' value doesn't match the required one.");
             put("invalid jwt: claim payload_hash is invalid",
@@ -63,6 +64,7 @@ public class RequestValidatorTest {
                     "The Claim 'payload_hash' is set but actual payload is missing.");
             put("invalid jwt: claim payload_hash is not set but payload is present",
                     "The Claim 'payload_hash' is not set but payload is present.");
+            put("invalid jwt: signing method none is invalid", "The signing method is invalid.");
 
         }
     };
@@ -96,18 +98,18 @@ public class RequestValidatorTest {
         ThrowingRunnable runnable = () -> validator.validateSignature(clock, testCase.token, testCase.url,
                 (testCase.payload == null) ? null : testCase.payload.getBytes(Charset.forName("UTF-8")));
 
-        if (testCase.outcome.equals("valid")) {
+        if (testCase.valid) {
             runnable.run();
             return;
         }
 
-        assertTrue(String.format("Expected error message mapping for '%s' but it was not found.", testCase.outcome),
-                ERROR_MAP.containsKey(testCase.outcome));
+        assertTrue(String.format("Expected error message mapping for '%s' but it was not found.", testCase.reason),
+                ERROR_MAP.containsKey(testCase.reason));
 
-        String expectedError = ERROR_MAP.get(testCase.outcome);
+        String expectedError = ERROR_MAP.get(testCase.reason);
 
         RequestValidationException err = assertThrows(RequestValidationException.class, runnable);
         assertTrue(String.format("Expected error message containing: %s (originally %s) but was: %s", expectedError,
-                testCase.outcome, err.getMessage()), err.getMessage().contains(expectedError));
+                testCase.reason, err.getMessage()), err.getMessage().contains(expectedError));
     }
 }

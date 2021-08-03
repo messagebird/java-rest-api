@@ -14,38 +14,58 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.messagebird.exceptions.RequestValidationException;
 
 /**
- * RequestValidator
+ * RequestValidator validates webhook signature signed by MessageBird services.
  */
 public class RequestValidator {
 
     public static final String SIGNATURE_HEADER = "MessageBird-Signature-JWT";
+
     private static final String ALGORITHM_SHA256 = "SHA-256";
-    public static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
-            'f' };
 
-    private final Algorithm algorithm;
+    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f' };
 
+    private final String signatureKey;
+
+    /**
+     * RequestValidator validates webhook signature with a customer signature key.
+     * 
+     * @param signatureKey customer signature key
+     */
     public RequestValidator(String signatureKey) {
-        this.algorithm = Algorithm.HMAC256(signatureKey);
+        this.signatureKey = signatureKey;
     }
 
-    public RequestValidator(byte[] signatureKey) {
-        this.algorithm = Algorithm.HMAC256(signatureKey);
-    }
-
-    DecodedJWT validateSignature(Clock clock, String signature, String url, byte[] requestBody)
+    public DecodedJWT validateSignature(Clock clock, String signature, String url, byte[] requestBody)
             throws RequestValidationException {
         DecodedJWT jwt = JWT.decode(signature);
-        BaseVerification builder = (BaseVerification) JWT.require(this.algorithm)
+
+        Algorithm algorithm;
+        switch (jwt.getAlgorithm()) {
+            case "HS256":
+                algorithm = Algorithm.HMAC256(this.signatureKey);
+                break;
+            case "HS384":
+                algorithm = Algorithm.HMAC384(this.signatureKey);
+                break;
+            case "HS512":
+                algorithm = Algorithm.HMAC512(this.signatureKey);
+                break;
+            default:
+                throw new RequestValidationException("The signing method is invalid.");
+        }
+
+        BaseVerification builder = (BaseVerification) JWT.require(algorithm)
                 .withIssuer("MessageBird")
+                .ignoreIssuedAt()
                 .acceptLeeway(1)
                 .withClaim("url_hash", calculateSha256(url.getBytes()));
 
         boolean payloadHashClaimExist = !jwt.getClaim("payload_hash").isNull();
-        
+
         if (requestBody != null && requestBody.length > 0) {
             if (!payloadHashClaimExist) {
-                throw new RequestValidationException("The Claim 'payload_hash' is not set but payload is present."); 
+                throw new RequestValidationException("The Claim 'payload_hash' is not set but payload is present.");
             }
             builder.withClaim("payload_hash", calculateSha256(requestBody));
         } else if (payloadHashClaimExist) {
@@ -64,7 +84,7 @@ public class RequestValidator {
         } catch (SignatureVerificationException e) {
             throw new RequestValidationException("Signature is invalid.", e);
         } catch (JWTVerificationException e) {
-            throw new RequestValidationException(e.getMessage());
+            throw new RequestValidationException(e.getMessage(), e.getCause());
         }
     }
 
