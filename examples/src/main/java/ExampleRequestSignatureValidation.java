@@ -13,6 +13,7 @@ import util.HttpHandlerHelpers;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -47,7 +48,7 @@ import java.util.Map;
  *      *NOTE* you should use `Live` key for receiving webhooks
  *
  * Run this example as:
- *   java -jar <this jar file> $MBEXAMPLEPORT test_accesskey test_secret $FORWARDING_URL/webhook
+ *   java -jar <this jar file> $MBEXAMPLEPORT test_accesskey test_secret $FORWARDING_URL
  *
  * Now you able to play:
  *  send an SMS:
@@ -80,7 +81,8 @@ public class ExampleRequestSignatureValidation {
             int serverPort = Integer.parseInt(args[0]);
             String apiKey = args[1];
             String apiSecret = args[2];
-            URL reportURL = new URL(args[3]);
+            String forwardURL = args[3];
+            URL reportURL = new URL(forwardURL + "/webhook");
 
             RequestValidator reqValidator = new RequestValidator(apiSecret);
 
@@ -89,7 +91,7 @@ public class ExampleRequestSignatureValidation {
             final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
             HttpServer httpServer = HttpServer.create(new InetSocketAddress(serverPort), 0);
-            httpServer.createContext("/webhook", new MessageBirdWebhookHandler(reqValidator));
+            httpServer.createContext("/webhook", new MessageBirdWebhookHandler(reqValidator, forwardURL));
             httpServer.createContext("/send", new MessageBirdSender(messageBirdClient, reportURL));
 
 
@@ -108,9 +110,11 @@ public class ExampleRequestSignatureValidation {
     static class MessageBirdWebhookHandler extends HttpHandlerHelpers implements HttpHandler {
 
         private final RequestValidator reqValidator;
+        private final String baseURL;
 
-        MessageBirdWebhookHandler(RequestValidator reqSigner) {
+        MessageBirdWebhookHandler(RequestValidator reqSigner, String baseURL) {
             this.reqValidator = reqSigner;
+            this.baseURL = baseURL;
         }
 
         @Override
@@ -119,7 +123,7 @@ public class ExampleRequestSignatureValidation {
 
             try {
                 String requestSignature = he.getRequestHeaders().getFirst(RequestValidator.SIGNATURE_HEADER);
-                String requestURL = he.getRequestURI().toString();
+                String requestURL = URI.create(baseURL).resolve(he.getRequestURI()).toString();
                 byte[] requestBody = readAllBytes(he.getRequestBody());
 
                 printRequest(
