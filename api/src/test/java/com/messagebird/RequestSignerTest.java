@@ -6,6 +6,10 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
 
+/**
+ * @deprecated This class is being deprecated together with {@link RequestSigner}
+ */
+@Deprecated
 public class RequestSignerTest {
 
     /**
@@ -87,24 +91,24 @@ public class RequestSignerTest {
         byte[] spoiledBody = getBytes("get shit spoiled");
 
         assertTrue(
-            "Definitely valid signature is threaten as invalid",
-            requestSigner.isMatch(requestSignature, new Request(requestTimestamp, requestParams, requestBody))
+                "Definitely valid signature is threaten as invalid",
+                requestSigner.isMatch(requestSignature, new Request(requestTimestamp, requestParams, requestBody))
         );
         assertFalse(
-            "Invalid signature is threaten as invalid",
-            requestSigner.isMatch(spoiledSignature, new Request(requestTimestamp, requestParams, requestBody))
+                "Invalid signature is threaten as invalid",
+                requestSigner.isMatch(spoiledSignature, new Request(requestTimestamp, requestParams, requestBody))
         );
         assertFalse(
-            "Signature is still valid with replaced timestamp",
-            requestSigner.isMatch(requestSignature, new Request(spoiledTimestamp, requestParams, requestBody))
+                "Signature is still valid with replaced timestamp",
+                requestSigner.isMatch(requestSignature, new Request(spoiledTimestamp, requestParams, requestBody))
         );
         assertFalse(
-            "Signature is still valid with replaced params",
-            requestSigner.isMatch(requestSignature, new Request(requestTimestamp, spoiledParams, requestBody))
+                "Signature is still valid with replaced params",
+                requestSigner.isMatch(requestSignature, new Request(requestTimestamp, spoiledParams, requestBody))
         );
         assertFalse(
-            "Signature is still valid with replaced body",
-            requestSigner.isMatch(requestSignature, new Request(requestTimestamp, requestParams, spoiledBody))
+                "Signature is still valid with replaced body",
+                requestSigner.isMatch(requestSignature, new Request(requestTimestamp, requestParams, spoiledBody))
         );
     }
 }

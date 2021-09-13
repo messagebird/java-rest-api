@@ -5,7 +5,10 @@ import java.util.Arrays;
 /**
  * Holds request data needed to calculate a signature hash for incoming
  * webhooks.
+ *
+ * @deprecated This class is being deprecated together with {@link RequestSigner}
  */
+@Deprecated
 public class Request {
 
     private final String timestamp;
@@ -17,11 +20,13 @@ public class Request {
     /**
      * Constructs a new request instance.
      *
-     * @param timestamp Timestamp provided in the MessageBird-Request-Timestamp
-     *                  header.
+     * @param timestamp       Timestamp provided in the MessageBird-Request-Timestamp
+     *                        header.
      * @param queryParameters Query parameters in abc=foo&def=ghi format.
-     * @param data Raw body of this request.
+     * @param data            Raw body of this request.
+     * @deprecated
      */
+    @Deprecated
     public Request(String timestamp, String queryParameters, byte[] data) {
         if (timestamp == null || timestamp.isEmpty()) {
             throw new IllegalArgumentException("Timestamp can not be null or empty");

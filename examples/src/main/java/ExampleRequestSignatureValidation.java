@@ -1,27 +1,25 @@
 import com.messagebird.MessageBirdClient;
 import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
-import com.messagebird.RequestSigner;
+import com.messagebird.RequestValidator;
 import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.RequestValidationException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.Message;
-import com.messagebird.Request;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import util.HttpHandlerHelpers;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Map;
 
 /**
  * Created by hasselbach
- *
- * Complete example of MessageBird webhook signature verification
- * @see com.messagebird.RequestSignerTest for simplified examples
  *
  * For exposing your application for external calls (webhooks from MessageBird)
  * you can use serveo.net: `ssh -R 80:localhost:3000 serveo.net`
@@ -50,7 +48,7 @@ import java.util.*;
  *      *NOTE* you should use `Live` key for receiving webhooks
  *
  * Run this example as:
- *   java -jar <this jar file> $MBEXAMPLEPORT test_accesskey test_secret $FORWARDING_URL/webhook
+ *   java -jar <this jar file> $MBEXAMPLEPORT test_accesskey test_secret $FORWARDING_URL
  *
  * Now you able to play:
  *  send an SMS:
@@ -83,16 +81,17 @@ public class ExampleRequestSignatureValidation {
             int serverPort = Integer.parseInt(args[0]);
             String apiKey = args[1];
             String apiSecret = args[2];
-            URL reportURL = new URL(args[3]);
+            String forwardURL = args[3];
+            URL reportURL = new URL(forwardURL + "/webhook");
 
-            RequestSigner reqSigner = new RequestSigner(apiSecret.getBytes());
+            RequestValidator reqValidator = new RequestValidator(apiSecret);
 
             // Creating MessageBird client
             final MessageBirdService wsr = new MessageBirdServiceImpl(apiKey);
             final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
             HttpServer httpServer = HttpServer.create(new InetSocketAddress(serverPort), 0);
-            httpServer.createContext("/webhook", new MessageBirdWebhookHandler(reqSigner));
+            httpServer.createContext("/webhook", new MessageBirdWebhookHandler(reqValidator, forwardURL));
             httpServer.createContext("/send", new MessageBirdSender(messageBirdClient, reportURL));
 
 
@@ -110,10 +109,12 @@ public class ExampleRequestSignatureValidation {
      */
     static class MessageBirdWebhookHandler extends HttpHandlerHelpers implements HttpHandler {
 
-        private final RequestSigner reqSigner;
+        private final RequestValidator reqValidator;
+        private final String baseURL;
 
-        MessageBirdWebhookHandler(RequestSigner reqSigner) {
-            this.reqSigner = reqSigner;
+        MessageBirdWebhookHandler(RequestValidator reqSigner, String baseURL) {
+            this.reqValidator = reqSigner;
+            this.baseURL = baseURL;
         }
 
         @Override
@@ -121,12 +122,9 @@ public class ExampleRequestSignatureValidation {
             System.out.println("New request:");
 
             try {
-                String requestSignature = he.getRequestHeaders().getFirst("MessageBird-Signature");
-                String requestTimestamp = he.getRequestHeaders().getFirst("MessageBird-Request-Timestamp");
-                String requestParams = he.getRequestURI().getRawQuery();
+                String requestSignature = he.getRequestHeaders().getFirst(RequestValidator.SIGNATURE_HEADER);
+                String requestURL = URI.create(baseURL).resolve(he.getRequestURI()).toString();
                 byte[] requestBody = readAllBytes(he.getRequestBody());
-
-                Request request = new Request(requestTimestamp, requestParams, requestBody);
 
                 printRequest(
                         he.getRequestMethod(),
@@ -134,20 +132,19 @@ public class ExampleRequestSignatureValidation {
                         new String(requestBody, StandardCharsets.UTF_8)
                 );
 
-                if (reqSigner.isMatch(requestSignature, request)) {
-                    // then only if signature is valid we can look at what is sent
-                    // for SMS status parameters can be found on https://developers.messagebird.com/docs/sms-messaging#handle-a-status-report
-                    reportStatus(parseQuery(he.getRequestURI().getQuery()));
+                reqValidator.validateSignature(requestSignature, requestURL, requestBody);
 
-                    // MessageBird expects for `200 OK` status
-                    // otherwise, MessageBird will retry this request limited times
-                    sendResponse(he, 200, "Ok");
-                    System.out.println("Request has valid signature");
+                // then only if signature is valid we can look at what is sent
+                // for SMS status parameters can be found on https://developers.messagebird.com/docs/sms-messaging#handle-a-status-report
+                reportStatus(parseQuery(he.getRequestURI().getQuery()));
 
-                } else {
-                    sendResponse(he, 401, "Signature is invalid");
-                    System.out.println("Request has invalid signature");
-                }
+                // MessageBird expects for `200 OK` status
+                // otherwise, MessageBird will retry this request limited times
+                sendResponse(he, 200, "Ok");
+                System.out.println("Request has valid signature");
+            } catch (RequestValidationException e) {
+                sendResponse(he, 401, "Signature is invalid");
+                System.out.println("Request has invalid signature: " + e.getMessage());
             } catch (Exception e) {
                 sendResponse(he, 500, e.getMessage());
             }
@@ -163,6 +160,7 @@ public class ExampleRequestSignatureValidation {
 
     /**
      * Simple endpoint for sending SMS-messages via MessageBird
+     *
      * @see ExampleSendMessage simplified example for message sending
      */
     static class MessageBirdSender extends HttpHandlerHelpers implements HttpHandler {
@@ -192,7 +190,7 @@ public class ExampleRequestSignatureValidation {
 
             try {
                 messageBirdClient.sendMessage(message);
-                sendResponse(he,201, "Message sent");
+                sendResponse(he, 201, "Message sent");
             } catch (GeneralException | UnauthorizedException e) {
                 sendResponse(he, 500, e.getMessage());
                 throw new IOException(e);

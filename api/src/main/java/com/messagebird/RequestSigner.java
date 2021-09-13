@@ -16,7 +16,11 @@ import java.util.Arrays;
  * RequestSigner is used to verify HTTP requests and is an implementation of:
  * https://developers.messagebird.com/docs/verify-http-requests. Retrieve your
  * signing key at https://dashboard.messagebird.com/developers/settings.
+ *
+ * @deprecated This class is being deprecated.
+ * <p>Use {@link RequestValidator} instead.</p>
  */
+@Deprecated
 public class RequestSigner {
 
     private static final String ALGORITHM_SHA256 = "SHA-256";
@@ -31,7 +35,9 @@ public class RequestSigner {
      * @param key Signing key. Can be retrieved through
      *            https://dashboard.messagebird.com/developers/settings. This
      *            is NOT your API key.
+     * @deprecated Use {@link RequestValidator#RequestValidator(String)} )} instead.
      */
+    @Deprecated
     public RequestSigner(byte[] key) {
         this.secret = new SecretKeySpec(key, ALGORITHM_HMAC_SHA256);
     }
@@ -42,9 +48,11 @@ public class RequestSigner {
      *
      * @param expectedSignature Signature from the MessageBird-Signature
      *                          header in its original base64 encoded state.
-     * @param request Request containing the values from the incoming webhook.
+     * @param request           Request containing the values from the incoming webhook.
      * @return True if the computed signature matches the expected signature.
+     * @deprecated Use {@link RequestValidator#validateSignature(String, String, byte[])} instead.
      */
+    @Deprecated
     public boolean isMatch(String expectedSignature, Request request) {
         try {
             return isMatch(Base64.decode(expectedSignature), request);
@@ -59,9 +67,11 @@ public class RequestSigner {
      *
      * @param expectedSignature Decoded (with base64) signature
      *                          from the MessageBird-Signature header
-     * @param request Request containing the values from the incoming webhook.
+     * @param request           Request containing the values from the incoming webhook.
      * @return True if the computed signature matches the expected signature.
+     * @deprecated Use {@link RequestValidator#validateSignature(String, String, byte[])} instead.
      */
+    @Deprecated
     public boolean isMatch(byte[] expectedSignature, Request request) {
         return Arrays.equals(computeSignature(request), expectedSignature);
     }
@@ -93,7 +103,7 @@ public class RequestSigner {
     /**
      * Stitches the two arrays together and returns a new one.
      *
-     * @param first Start of the new array.
+     * @param first  Start of the new array.
      * @param second End of the new array.
      * @return New array based on first and second.
      */
