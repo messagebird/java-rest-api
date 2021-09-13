@@ -18,17 +18,20 @@ public class ConversationContentHsm {
     private String templateName;
     private ConversationHsmLanguage language;
     private List<ConversationHsmLocalizableParameter> params;
+    private List<MessageComponent> components;
 
     public ConversationContentHsm(
             final String namespace,
             final String templateName,
             final ConversationHsmLanguage language,
-            final List<ConversationHsmLocalizableParameter> params
+            final List<ConversationHsmLocalizableParameter> params,
+            final List<MessageComponent> components
     ) {
         this.namespace = namespace;
         this.templateName = templateName;
         this.language = language;
         this.params = params;
+        this.components = components;
     }
 
     public ConversationContentHsm(
@@ -85,6 +88,14 @@ public class ConversationContentHsm {
         this.params = params;
     }
 
+    public List<MessageComponent> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<MessageComponent> components) {
+        this.components = components;
+    }
+
     @Override
     public String toString() {
         return "ConversationContentHsm{" +
@@ -92,6 +103,7 @@ public class ConversationContentHsm {
                 ", templateName='" + templateName + '\'' +
                 ", language=" + language +
                 ", params=" + params +
+                ", components=" + components +
                 '}';
     }
 }
