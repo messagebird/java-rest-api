@@ -4,17 +4,17 @@ import java.util.List;
 
 public class MessageComponent {
 
-    private String type;
+    private MessageComponentType type;
     private String sub_type;
     private int index;
     private List<MessageParam> parameters;
 
-    public String getType() {
-        return type;
+    public void setType(MessageComponentType type) {
+        this.type = type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public MessageComponentType getType() {
+        return type;
     }
 
     public String getSub_type() {
