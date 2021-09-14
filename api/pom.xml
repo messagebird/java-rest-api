@@ -4,7 +4,7 @@
 
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>3.1.2-SNAPSHOT</version> <!--
+    <version>3.1.2</version> <!--
         are you going to bump a major number?
         then you are pleased to replace com.messagebird.Base64 with some library, for example net.iharder.base64
     -->
@@ -42,7 +42,7 @@
         <connection>scm:git:git@github.com:messagebird/java-rest-api.git</connection>
         <developerConnection>scm:git:git@github.com:messagebird/java-rest-api.git</developerConnection>
         <url>git@github.com:messagebird/java-rest-api.git</url>
-        <tag>HEAD</tag>
+        <tag>v3.1.2</tag>
     </scm>
 
     <profiles>
