@@ -122,7 +122,7 @@ public class MessageBirdClient {
     private static final String CONVERSATION_SEND_PATH = "/send";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
-    private static final String INTEGRATIONS_WHATSAPP_PATH = "/platforms/whatsapp";
+    static final String INTEGRATIONS_WHATSAPP_PATH = "/platforms/whatsapp";
     static final String VOICECALLSPATH = "/calls";
     static final String LEGSPATH = "/legs";
     static final String RECORDINGPATH = "/recordings";
@@ -1936,8 +1936,7 @@ public class MessageBirdClient {
             TEMPLATES_PATH
         );
 
-        final WhatsAppTemplateResponse[] templateResponses = messageBirdService.requestByID(url, templateName, WhatsAppTemplateResponse[].class);
-        return Arrays.asList(templateResponses);
+        return messageBirdService.requestByIdAsList(url, templateName, WhatsAppTemplateResponse.class);
     }
 
   /**

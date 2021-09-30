@@ -2,6 +2,17 @@ package com.messagebird;
 
 import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.*;
+import com.messagebird.objects.integrations.HSMCategory;
+import com.messagebird.objects.integrations.HSMComponent;
+import com.messagebird.objects.integrations.HSMComponentButton;
+import com.messagebird.objects.integrations.HSMComponentButtonType;
+import com.messagebird.objects.integrations.HSMComponentFormat;
+import com.messagebird.objects.integrations.HSMComponentType;
+import com.messagebird.objects.integrations.HSMExample;
+import com.messagebird.objects.integrations.HSMStatus;
+import com.messagebird.objects.integrations.WhatsAppTemplate;
+import com.messagebird.objects.integrations.WhatsAppTemplateList;
+import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
 import com.messagebird.objects.voicecalls.*;
 
 import java.util.*;
@@ -239,5 +250,103 @@ class TestUtil {
                         ConversationWebhookEvent.MESSAGE_CREATED
                 )
         );
+    }
+
+    private static HSMComponent createHSMComponentHeader() {
+        final HSMComponent headerComponent = new HSMComponent();
+        final HSMExample headerExample = new HSMExample();
+        headerExample.setHeader_url(Arrays.asList("https://www.mysample.com/sample.img"));
+
+        headerComponent.setType(HSMComponentType.HEADER);
+        headerComponent.setFormat(HSMComponentFormat.IMAGE);
+        headerComponent.setExample(headerExample);
+
+        return headerComponent;
+    }
+
+    private static HSMComponent createHSMComponentBody() {
+        final HSMComponent bodyComponent = new HSMComponent();
+        final HSMExample bodyExample = new HSMExample();
+        final List<List<String>> bodyText = new ArrayList<>();
+        bodyText.add(Arrays.asList("John"));
+        bodyText.add(Arrays.asList("Anna"));
+        bodyExample.setBody_text(bodyText);
+
+        bodyComponent.setType(HSMComponentType.BODY);
+        bodyComponent.setText("Hey {{1}}! This is a sample template from Java.");
+        bodyComponent.setExample(bodyExample);
+
+        return bodyComponent;
+    }
+
+    private static HSMComponent createHSMComponentFooter() {
+        final HSMComponent footerComponent = new HSMComponent();
+        footerComponent.setType(HSMComponentType.FOOTER);
+        footerComponent.setText("This is a sample footer");
+
+        return footerComponent;
+    }
+
+    private static HSMComponent createHSMComponentButton() {
+        final HSMComponent buttonComponent = new HSMComponent();
+        final List<HSMComponentButton> buttons = new ArrayList<>();
+        final HSMComponentButton button = new HSMComponentButton();
+        button.setType(HSMComponentButtonType.URL);
+        button.setText("Touch it");
+        button.setUrl("https://www.messagebird.com");
+        button.setExample(Arrays.asList("https://developers.messagebird.com"));
+        buttons.add(button);
+        buttonComponent.setType(HSMComponentType.BUTTONS);
+        buttonComponent.setButtons(buttons);
+
+        return buttonComponent;
+    }
+
+    public static WhatsAppTemplateResponse createWhatsAppTemplateResponse(final String templateName, final String language) {
+        final WhatsAppTemplateResponse templateResponse = new WhatsAppTemplateResponse();
+        templateResponse.setName(templateName);
+        templateResponse.setLanguage(language);
+        templateResponse.setCategory(HSMCategory.ACCOUNT_UPDATE);
+        templateResponse.setStatus(HSMStatus.NEW);
+        templateResponse.setCreatedAt(new Date());
+        templateResponse.setUpdatedAt(new Date());
+
+        final List<HSMComponent> components = new ArrayList<>();
+        components.add(createHSMComponentHeader());
+        components.add(createHSMComponentBody());
+        components.add(createHSMComponentFooter());
+        components.add(createHSMComponentButton());
+        templateResponse.setComponents(components);
+
+        return templateResponse;
+    }
+
+    public static WhatsAppTemplate createWhatsAppTemplate(final String templateName, final String language) {
+        final WhatsAppTemplate template = new WhatsAppTemplate();
+        template.setName(templateName);
+        template.setLanguage(language);
+        template.setCategory(HSMCategory.ACCOUNT_UPDATE);
+
+        final List<HSMComponent> components = new ArrayList<>();
+        components.add(createHSMComponentHeader());
+        components.add(createHSMComponentBody());
+        components.add(createHSMComponentFooter());
+        components.add(createHSMComponentButton());
+        template.setComponents(components);
+
+        return template;
+    }
+
+    public static WhatsAppTemplateList createWhatsAppTemplateList(final String templateName) {
+        final WhatsAppTemplateResponse template1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
+        final WhatsAppTemplateResponse template2 = TestUtil.createWhatsAppTemplateResponse(templateName, "ko");
+        final WhatsAppTemplateList templateList = new WhatsAppTemplateList();
+
+        List<WhatsAppTemplateResponse> templateResponseList = new ArrayList<>();
+        templateResponseList.add(template1);
+        templateResponseList.add(template2);
+
+        templateList.setItems(templateResponseList);
+        return templateList;
     }
 }
