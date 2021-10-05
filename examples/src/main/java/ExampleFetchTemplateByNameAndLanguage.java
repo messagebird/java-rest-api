@@ -4,7 +4,7 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
+import com.messagebird.objects.integrations.TemplateResponse;
 
 /**
  * Fetch template by name and language
@@ -32,7 +32,7 @@ public class ExampleFetchTemplateByNameAndLanguage {
 
     try {
       System.out.println("Fetching WhatsApp Template list by {name: " + templateName + ", language: " + language + "}");
-      final WhatsAppTemplateResponse template = messageBirdClient.fetchWhatsAppTemplateBy(templateName, language);
+      final TemplateResponse template = messageBirdClient.fetchWhatsAppTemplateBy(templateName, language);
       System.out.println(template.toString());
     } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
       exception.printStackTrace();

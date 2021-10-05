@@ -10,9 +10,9 @@ import com.messagebird.objects.integrations.HSMComponentFormat;
 import com.messagebird.objects.integrations.HSMComponentType;
 import com.messagebird.objects.integrations.HSMExample;
 import com.messagebird.objects.integrations.HSMStatus;
-import com.messagebird.objects.integrations.WhatsAppTemplate;
-import com.messagebird.objects.integrations.WhatsAppTemplateList;
-import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
+import com.messagebird.objects.integrations.Template;
+import com.messagebird.objects.integrations.TemplateList;
+import com.messagebird.objects.integrations.TemplateResponse;
 import com.messagebird.objects.voicecalls.*;
 
 import java.util.*;
@@ -302,8 +302,8 @@ class TestUtil {
         return buttonComponent;
     }
 
-    public static WhatsAppTemplateResponse createWhatsAppTemplateResponse(final String templateName, final String language) {
-        final WhatsAppTemplateResponse templateResponse = new WhatsAppTemplateResponse();
+    public static TemplateResponse createWhatsAppTemplateResponse(final String templateName, final String language) {
+        final TemplateResponse templateResponse = new TemplateResponse();
         templateResponse.setName(templateName);
         templateResponse.setLanguage(language);
         templateResponse.setCategory(HSMCategory.ACCOUNT_UPDATE);
@@ -321,8 +321,8 @@ class TestUtil {
         return templateResponse;
     }
 
-    public static WhatsAppTemplate createWhatsAppTemplate(final String templateName, final String language) {
-        final WhatsAppTemplate template = new WhatsAppTemplate();
+    public static Template createWhatsAppTemplate(final String templateName, final String language) {
+        final Template template = new Template();
         template.setName(templateName);
         template.setLanguage(language);
         template.setCategory(HSMCategory.ACCOUNT_UPDATE);
@@ -337,12 +337,12 @@ class TestUtil {
         return template;
     }
 
-    public static WhatsAppTemplateList createWhatsAppTemplateList(final String templateName) {
-        final WhatsAppTemplateResponse template1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
-        final WhatsAppTemplateResponse template2 = TestUtil.createWhatsAppTemplateResponse(templateName, "ko");
-        final WhatsAppTemplateList templateList = new WhatsAppTemplateList();
+    public static TemplateList createWhatsAppTemplateList(final String templateName) {
+        final TemplateResponse template1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
+        final TemplateResponse template2 = TestUtil.createWhatsAppTemplateResponse(templateName, "ko");
+        final TemplateList templateList = new TemplateList();
 
-        List<WhatsAppTemplateResponse> templateResponseList = new ArrayList<>();
+        List<TemplateResponse> templateResponseList = new ArrayList<>();
         templateResponseList.add(template1);
         templateResponseList.add(template2);
 

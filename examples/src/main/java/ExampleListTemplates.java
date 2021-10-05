@@ -3,7 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.integrations.WhatsAppTemplateList;
+import com.messagebird.objects.integrations.TemplateList;
 
 /**
  * List templates
@@ -27,7 +27,7 @@ public class ExampleListTemplates {
 
     try {
       System.out.println("Retrieving WhatsApp Template list");
-      final WhatsAppTemplateList templateList = messageBirdClient.listWhatsAppTemplates();
+      final TemplateList templateList = messageBirdClient.listWhatsAppTemplates();
       System.out.println(templateList.toString());
     } catch (GeneralException | UnauthorizedException exception) {
       exception.printStackTrace();

@@ -4,7 +4,7 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
+import com.messagebird.objects.integrations.TemplateResponse;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class ExampleListTemplatesByName {
 
     try {
       System.out.println("Retrieving WhatsApp Template list by name : " + templateName);
-      final List<WhatsAppTemplateResponse> templateList = messageBirdClient.getWhatsAppTemplatesBy(templateName);
+      final List<TemplateResponse> templateList = messageBirdClient.getWhatsAppTemplatesBy(templateName);
       System.out.println(templateList.toString());
     } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
       exception.printStackTrace();

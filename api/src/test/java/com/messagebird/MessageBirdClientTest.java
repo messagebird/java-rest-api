@@ -4,19 +4,14 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
-import com.messagebird.objects.integrations.WhatsAppTemplate;
-import com.messagebird.objects.integrations.WhatsAppTemplateList;
-import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
+import com.messagebird.objects.integrations.Template;
+import com.messagebird.objects.integrations.TemplateList;
+import com.messagebird.objects.integrations.TemplateResponse;
 import com.messagebird.objects.voicecalls.*;
 import java.util.ArrayList;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 
 import java.io.*;
@@ -26,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.mockito.stubbing.OngoingStubbing;
 
 import static com.messagebird.MessageBirdClient.*;
 import static org.junit.Assert.*;
@@ -42,13 +36,6 @@ public class MessageBirdClientTest {
     private static BigInteger messageBirdMSISDN = null;
     MessageBirdServiceImpl messageBirdService;
     MessageBirdClient messageBirdClient;
-
-    @Captor
-    ArgumentCaptor<WhatsAppTemplateResponse> argument = ArgumentCaptor.forClass(WhatsAppTemplateResponse.class);
-
-    @Captor
-    ArgumentCaptor<Integer> valueCaptor;
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -1066,8 +1053,8 @@ public class MessageBirdClientTest {
 
     @Test
     public void testCreateWhatsAppTemplate() throws UnauthorizedException, GeneralException {
-        final WhatsAppTemplateResponse templateResponse = TestUtil.createWhatsAppTemplateResponse("sample_template_name", "ko");
-        final WhatsAppTemplate template = TestUtil.createWhatsAppTemplate("sample_template_name", "ko");
+        final TemplateResponse templateResponse = TestUtil.createWhatsAppTemplateResponse("sample_template_name", "ko");
+        final Template template = TestUtil.createWhatsAppTemplate("sample_template_name", "ko");
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
@@ -1079,12 +1066,12 @@ public class MessageBirdClientTest {
             TEMPLATES_PATH
         );
 
-        when(messageBirdServiceMock.sendPayLoad(url, template, WhatsAppTemplateResponse.class))
+        when(messageBirdServiceMock.sendPayLoad(url, template, TemplateResponse.class))
             .thenReturn(templateResponse);
 
-        final WhatsAppTemplateResponse response = messageBirdClientInjectMock.createWhatsAppTemplate(template);
+        final TemplateResponse response = messageBirdClientInjectMock.createWhatsAppTemplate(template);
 
-        verify(messageBirdServiceMock, times(1)).sendPayLoad(url, template, WhatsAppTemplateResponse.class);
+        verify(messageBirdServiceMock, times(1)).sendPayLoad(url, template, TemplateResponse.class);
         assertNotNull(response);
         assertEquals(response.getName(), templateResponse.getName());
         assertEquals(response.getLanguage(), templateResponse.getLanguage());
@@ -1103,7 +1090,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testListWhatsAppTemplates() throws UnauthorizedException, GeneralException {
-        final WhatsAppTemplateList templateList = TestUtil.createWhatsAppTemplateList("sample_template_name");
+        final TemplateList templateList = TestUtil.createWhatsAppTemplateList("sample_template_name");
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
@@ -1114,11 +1101,11 @@ public class MessageBirdClientTest {
             TEMPLATES_PATH
         );
 
-        when(messageBirdServiceMock.requestList(url, 0, 0, WhatsAppTemplateList.class))
+        when(messageBirdServiceMock.requestList(url, 0, 0, TemplateList.class))
             .thenReturn(templateList);
 
-        final WhatsAppTemplateList response = messageBirdClientInjectMock.listWhatsAppTemplates(0, 0);
-        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, WhatsAppTemplateList.class);
+        final TemplateList response = messageBirdClientInjectMock.listWhatsAppTemplates(0, 0);
+        verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, TemplateList.class);
         assertNotNull(response);
         for(int i = 0; i < response.getItems().size() ; i++) {
             assertReflectionEquals(response.getItems().get(i), templateList.getItems().get(i));
@@ -1129,9 +1116,9 @@ public class MessageBirdClientTest {
     public void testGetWhatsAppTemplatesBy()
         throws GeneralException, UnauthorizedException, NotFoundException, ClassNotFoundException {
         final String templateName = "sample_template_name";
-        final WhatsAppTemplateResponse templateResponse1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
-        final WhatsAppTemplateResponse templateResponse2 = TestUtil.createWhatsAppTemplateResponse("another_template", "en_US");
-        final List<WhatsAppTemplateResponse> templateList = new ArrayList<>();
+        final TemplateResponse templateResponse1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
+        final TemplateResponse templateResponse2 = TestUtil.createWhatsAppTemplateResponse("another_template", "en_US");
+        final List<TemplateResponse> templateList = new ArrayList<>();
         templateList.add(templateResponse1);
         templateList.add(templateResponse2);
 
@@ -1145,11 +1132,11 @@ public class MessageBirdClientTest {
             TEMPLATES_PATH
         );
 
-        when(messageBirdServiceMock.requestByIdAsList(url, templateName, WhatsAppTemplateResponse.class))
+        when(messageBirdServiceMock.requestByIdAsList(url, templateName, TemplateResponse.class))
             .thenReturn(templateList);
 
-        final List<WhatsAppTemplateResponse> response = messageBirdClientInjectMock.getWhatsAppTemplatesBy(templateName);
-        verify(messageBirdServiceMock, times(1)).requestByIdAsList(url, templateName, WhatsAppTemplateResponse.class);
+        final List<TemplateResponse> response = messageBirdClientInjectMock.getWhatsAppTemplatesBy(templateName);
+        verify(messageBirdServiceMock, times(1)).requestByIdAsList(url, templateName, TemplateResponse.class);
         assertNotNull(response);
         assertEquals(response.size(), templateList.size());
         for(int i = 0; i < response.size() ; i++) {
@@ -1162,7 +1149,7 @@ public class MessageBirdClientTest {
         throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
         final String language = "ko";
-        final WhatsAppTemplateResponse template = TestUtil.createWhatsAppTemplateResponse(templateName, language);
+        final TemplateResponse template = TestUtil.createWhatsAppTemplateResponse(templateName, language);
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
@@ -1176,11 +1163,11 @@ public class MessageBirdClientTest {
             language
         );
 
-        when(messageBirdServiceMock.request(url, WhatsAppTemplateResponse.class))
+        when(messageBirdServiceMock.request(url, TemplateResponse.class))
             .thenReturn(template);
 
-        final WhatsAppTemplateResponse response = messageBirdClientInjectMock.fetchWhatsAppTemplateBy(templateName, language);
-        verify(messageBirdServiceMock, times(1)).request(url, WhatsAppTemplateResponse.class);
+        final TemplateResponse response = messageBirdClientInjectMock.fetchWhatsAppTemplateBy(templateName, language);
+        verify(messageBirdServiceMock, times(1)).request(url, TemplateResponse.class);
         assertNotNull(response);
         assertEquals(response.getName(), template.getName());
         assertEquals(response.getLanguage(), template.getLanguage());

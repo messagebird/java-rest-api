@@ -4,22 +4,22 @@ import com.messagebird.exceptions.GeneralException;
 import java.util.List;
 
 /**
- * WhatsApp Template Object as integrations API request.
+ * Template Object as integrations API request.
  *
  * @see <a href="https://developers.messagebird.com/api/integrations">Integrations API</a>
  * @author ssk910
  */
-public class WhatsAppTemplate {
+public class Template {
 
   private String name;
   private String language;
   private List<HSMComponent> components;
   private HSMCategory category;
 
-  public WhatsAppTemplate() {
+  public Template() {
   }
 
-  public WhatsAppTemplate(String name, String language,
+  public Template(String name, String language,
       List<HSMComponent> components, HSMCategory category) {
     this.name = name;
     this.language = language;
