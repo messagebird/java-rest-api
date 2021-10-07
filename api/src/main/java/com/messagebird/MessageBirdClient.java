@@ -1864,11 +1864,12 @@ public class MessageBirdClient {
      *
      * @param template {@link Template} object to be created
      * @return {@link TemplateResponse} response object
-     * @throws UnauthorizedException if client is unauthorized
-     * @throws GeneralException      general exception or invalid template format
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws IllegalArgumentException invalid template format
      */
     public TemplateResponse createWhatsAppTemplate(final Template template)
-        throws UnauthorizedException, GeneralException {
+        throws UnauthorizedException, GeneralException, IllegalArgumentException {
         template.validate();
 
         String url = String.format(

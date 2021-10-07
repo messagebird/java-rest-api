@@ -1,6 +1,5 @@
 package com.messagebird.objects.integrations;
 
-import com.messagebird.exceptions.GeneralException;
 import java.util.List;
 
 /**
@@ -71,9 +70,9 @@ public class HSMComponentButton {
   /**
    * Check if example field is able to use.
    *
-   * @throws GeneralException Occurs if button type is not {@code URL} or {@code QUICK_REPLY}.
+   * @throws IllegalArgumentException Occurs if button type is not {@code URL} or {@code QUICK_REPLY}.
    */
-  public void validateButtonExample() throws GeneralException {
+  public void validateButtonExample() throws IllegalArgumentException {
     final boolean isExampleEmpty = this.example == null || this.example.isEmpty();
     final boolean isNotProperType = !(this.type.equals(HSMComponentButtonType.URL)
         || this.type.equals(HSMComponentButtonType.QUICK_REPLY));
@@ -83,7 +82,7 @@ public class HSMComponentButton {
     }
 
     if (isNotProperType) {
-      throw new GeneralException("An example field in HSMComponentButton is available for only URL or QUICK_REPLY button types.");
+      throw new IllegalArgumentException("An example field in HSMComponentButton is available for only URL or QUICK_REPLY button types.");
     }
   }
 }

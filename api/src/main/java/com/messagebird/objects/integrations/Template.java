@@ -1,6 +1,5 @@
 package com.messagebird.objects.integrations;
 
-import com.messagebird.exceptions.GeneralException;
 import java.util.List;
 
 /**
@@ -59,21 +58,6 @@ public class Template {
     this.category = category;
   }
 
-  /**
-   * Check if components field is valid.
-   *
-   * @throws GeneralException Occurs when it is invalid.
-   */
-  public void validate() throws GeneralException {
-    if (this.components == null) {
-      return;
-    }
-
-    for (final HSMComponent component : this.components) {
-      component.validateComponent();
-    }
-  }
-
   @Override
   public String toString() {
     return "WhatsAppTemplate{" +
@@ -82,5 +66,71 @@ public class Template {
         ", components=" + components +
         ", category='" + category + '\'' +
         '}';
+  }
+
+  /**
+   * Validate required fields: components, name, language, category
+   *
+   * @throws IllegalArgumentException if required fields are invalid.
+   */
+  public void validate() throws IllegalArgumentException {
+    this.validateComponents();
+    this.validateName();
+    this.validateLanguage();
+    this.validateCategory();
+  }
+
+  /**
+   * Check if components field is valid.
+   *
+   * @throws IllegalArgumentException If components field is null or empty list.
+   */
+  private void validateComponents() throws IllegalArgumentException {
+    final boolean componentsNotEmpty = !(this.components == null || this.components.isEmpty());
+
+    if (componentsNotEmpty) {
+      for (final HSMComponent component : this.components) {
+        component.validateComponent();
+      }
+    } else {
+      throw new IllegalArgumentException("A \"components\" field is required and should not be empty list.");
+    }
+  }
+
+  /**
+   * Check if name field is valid.
+   *
+   * @throws IllegalArgumentException If name field is null or empty string.
+   */
+  private void validateName() {
+    if (this.name == null) {
+      throw new IllegalArgumentException("A \"name\" field is required.");
+    } else if (this.name.length() == 0) {
+      throw new IllegalArgumentException("A \"name\" field can not be an empty string.");
+    }
+  }
+
+  /**
+   * Check if language field is valid.
+   *
+   * @throws IllegalArgumentException If language field is null or empty string.
+   */
+  private void validateLanguage() {
+    if (this.language == null) {
+      throw new IllegalArgumentException("A \"language\" field is required.");
+    } else if (this.language.length() == 0) {
+      throw new IllegalArgumentException("A \"language\" field can not be an empty string.");
+    }
+  }
+
+  /**
+   * Check if category field is valid.
+   *
+   * @throws IllegalArgumentException If category field is null.
+   */
+  private void validateCategory() {
+    if (this.category == null) {
+      throw new IllegalArgumentException("A \"category\" field is required.");
+    }
   }
 }
