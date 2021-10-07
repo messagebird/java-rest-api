@@ -1,16 +1,29 @@
 package com.messagebird;
 
-import java.util.Map;
-
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.PagedPaging;
+import java.util.Map;
 
 /**
  * Created by rvt on 1/7/15.
  */
 public interface MessageBirdService {
+
+    /**
+     * Send GET request . It will retrieve a json object R back.
+     *
+     * @author ssk910
+     * @param request     path to the request, for example "/messages/id/language"
+     * @param clazz       Class type to return
+     * @return new class with returned dataset
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     * @throws NotFoundException if id not found
+     */
+    <R> R request(String request, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
+
     /**
      * Execute a object by ID request. It will add the id to the request parameter and retreive a json object R back.
      *
@@ -35,6 +48,19 @@ public interface MessageBirdService {
      * @throws NotFoundException if id not found
      */
     void deleteByID(String request, String id) throws UnauthorizedException, GeneralException, NotFoundException;
+
+    /**
+     * Send DELETE request. It will retrieve a json object R back.
+     *
+     * @author ssk910
+     * @param request     path to the request, for example "/messages/id/language"
+     * @param clazz       Class type to return
+     * @return class with returned dataset
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     * @throws NotFoundException if id not found
+     */
+    <R> R delete(String request, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
 
     /**
      * Request a List 'of' object.
