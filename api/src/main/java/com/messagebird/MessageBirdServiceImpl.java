@@ -1,17 +1,5 @@
 package com.messagebird;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.HttpURLConnection;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +10,29 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.ErrorReport;
 import com.messagebird.objects.PagedPaging;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Implementation of MessageBirdService
@@ -99,6 +110,12 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     @Override
+    public <R> R request(String request, Class<R> clazz)
+        throws UnauthorizedException, GeneralException, NotFoundException {
+        return getJsonData(request, null, "GET", clazz);
+    }
+
+    @Override
     public <R> R requestByID(String request, String id, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
         String path = "";
         if (id != null) {
@@ -124,6 +141,11 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     @Override
     public void deleteByID(String request, String id) throws UnauthorizedException, GeneralException, NotFoundException {
         getJsonData(request + "/" + id, null, "DELETE", null);
+    }
+
+    @Override
+    public <R> R delete(String request, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
+        return getJsonData(request, null, "DELETE", clazz);
     }
 
     @Override
@@ -235,7 +257,10 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
                 mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
 
-                return mapper.readValue(body, clazz);
+                // Prevents mismatched exception when clazz is null
+                return clazz == null
+                    ? null
+                    : mapper.readValue(body, clazz);
             } catch (IOException ioe) {
                 throw new GeneralException(ioe);
             }

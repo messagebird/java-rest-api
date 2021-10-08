@@ -18,6 +18,9 @@ import com.messagebird.objects.conversations.ConversationWebhook;
 import com.messagebird.objects.conversations.ConversationWebhookCreateRequest;
 import com.messagebird.objects.conversations.ConversationWebhookList;
 import com.messagebird.objects.conversations.ConversationWebhookUpdateRequest;
+import com.messagebird.objects.integrations.WhatsAppTemplate;
+import com.messagebird.objects.integrations.WhatsAppTemplateList;
+import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
 import com.messagebird.objects.voicecalls.RecordingResponse;
 import com.messagebird.objects.voicecalls.TranscriptionResponse;
 import com.messagebird.objects.voicecalls.VoiceCall;
@@ -31,13 +34,13 @@ import com.messagebird.objects.voicecalls.VoiceCallResponseList;
 import com.messagebird.objects.voicecalls.Webhook;
 import com.messagebird.objects.voicecalls.WebhookList;
 import com.messagebird.objects.voicecalls.WebhookResponseData;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,6 +77,8 @@ public class MessageBirdClient {
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
     static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
     static final String MESSAGING_BASE_URL = "https://messaging.messagebird.com/v1";
+    static final String INTEGRATIONS_BASE_URL_V2 = "https://integrations.messagebird.com/v2";
+    static final String INTEGRATIONS_BASE_URL_V3 = "https://integrations.messagebird.com/v3";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
     static final String PARTNER_ACCOUNTS_BASE_URL = "https://partner-accounts.messagebird.com";
 
@@ -91,6 +96,7 @@ public class MessageBirdClient {
     private static final String CONVERSATION_SEND_PATH = "/send";
     private static final String CONVERSATION_MESSAGE_PATH = "/messages";
     private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
+    private static final String INTEGRATIONS_WHATSAPP_PATH = "/platforms/whatsapp";
     static final String VOICECALLSPATH = "/calls";
     static final String LEGSPATH = "/legs";
     static final String RECORDINGPATH = "/recordings";
@@ -99,6 +105,7 @@ public class MessageBirdClient {
     static final String VOICECALLFLOWPATH = "/call-flows";
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String FILES_PATH = "/files";
+    static final String TEMPLATES_PATH = "/templates";
 
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
 
@@ -1820,6 +1827,169 @@ public class MessageBirdClient {
 
         final String url = String.format("%s%s/%s", MESSAGING_BASE_URL, FILES_PATH, id);
         return messageBirdService.getBinaryData(url, basePath, filename);
+    }
+
+    /****************************************************************************************************/
+    /** WhatsApp Templates                                                                             **/
+    /****************************************************************************************************/
+
+    /**
+     * Create a WhatsApp message template through messagebird.
+     *
+     * @param template {@link WhatsAppTemplate} object to be created
+     * @return {@link WhatsAppTemplateResponse} response object
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception or invalid template format
+     */
+    public WhatsAppTemplateResponse createWhatsAppTemplate(final WhatsAppTemplate template)
+        throws UnauthorizedException, GeneralException {
+        template.validate();
+
+        String url = String.format(
+            "%s%s%s",
+            INTEGRATIONS_BASE_URL_V2,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH
+        );
+        return messageBirdService.sendPayLoad(url, template, WhatsAppTemplateResponse.class);
+    }
+
+    /**
+     * Gets a WhatsAppTemplate listing with specified pagination options.
+     *
+     * @param offset Number of objects to skip.
+     * @param limit  Number of objects to take.
+     * @return List of templates.
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public WhatsAppTemplateList listWhatsAppTemplates(final int offset, final int limit)
+        throws UnauthorizedException, GeneralException {
+        String url = String.format(
+            "%s%s%s",
+            INTEGRATIONS_BASE_URL_V3,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH
+        );
+        return messageBirdService.requestList(url, offset, limit, WhatsAppTemplateList.class);
+    }
+
+    /**
+     * Gets a template listing with default pagination options.
+     *
+     * @return List of whatsapp templates.
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public WhatsAppTemplateList listWhatsAppTemplates() throws UnauthorizedException, GeneralException {
+        final int offset = 0;
+        final int limit = 10;
+
+        return listWhatsAppTemplates(offset, limit);
+    }
+
+    /**
+     * Retrieves the template of an existing template name.
+     *
+     * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
+     * @return {@code List<WhatsAppTemplateResponse>} template list
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if template name is not found
+     */
+    public List<WhatsAppTemplateResponse> getWhatsAppTemplatesBy(final String templateName)
+        throws GeneralException, UnauthorizedException, NotFoundException {
+        if (templateName == null) {
+            throw new IllegalArgumentException("Template name must be specified.");
+        }
+
+        String url = String.format(
+            "%s%s%s",
+            INTEGRATIONS_BASE_URL_V2,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH
+        );
+
+        final WhatsAppTemplateResponse[] templateResponses = messageBirdService.requestByID(url, templateName, WhatsAppTemplateResponse[].class);
+        return Arrays.asList(templateResponses);
+    }
+
+  /**
+     * Retrieves the template of an existing template name and language.
+     *
+     * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
+     * @param language A language code as returned by getWhatsAppTemplateBy in the language variable
+     *
+     * @return {@code WhatsAppTemplateResponse} template list
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if template name and language are not found
+     */
+    public WhatsAppTemplateResponse fetchWhatsAppTemplateBy(final String templateName, final String language)
+        throws GeneralException, UnauthorizedException, NotFoundException {
+        if (templateName == null || language == null) {
+            throw new IllegalArgumentException("Template name and language must be specified.");
+        }
+
+        String url = String.format(
+            "%s%s%s/%s/%s",
+            INTEGRATIONS_BASE_URL_V2,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH,
+            templateName,
+            language
+        );
+        return messageBirdService.request(url, WhatsAppTemplateResponse.class);
+    }
+
+    /**
+     * Delete templates of an existing template name.
+     *
+     * @param templateName A template name which is created on the MessageBird platform
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if template name is not found
+     */
+    public void deleteTemplatesBy(final String templateName)
+        throws UnauthorizedException, GeneralException, NotFoundException {
+        if (templateName == null) {
+            throw new IllegalArgumentException("Template name must be specified.");
+        }
+
+        String url = String.format(
+            "%s%s%s/%s",
+            INTEGRATIONS_BASE_URL_V2,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH,
+            templateName
+        );
+        messageBirdService.delete(url, null);
+    }
+
+    /**
+     * Delete template of an existing template name and language.
+     *
+     * @param templateName A template name which is created on the MessageBird platform
+     * @param language A language which is created on the MessageBird platform
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if template name or language are not found
+     */
+    public void deleteTemplatesBy(final String templateName, final String language)
+        throws UnauthorizedException, GeneralException, NotFoundException {
+        if (templateName == null || language == null) {
+            throw new IllegalArgumentException("Template name and language must be specified.");
+        }
+
+        String url = String.format(
+            "%s%s%s/%s/%s",
+            INTEGRATIONS_BASE_URL_V2,
+            INTEGRATIONS_WHATSAPP_PATH,
+            TEMPLATES_PATH,
+            templateName,
+            language
+        );
+        messageBirdService.delete(url, null);
     }
 
     /**
