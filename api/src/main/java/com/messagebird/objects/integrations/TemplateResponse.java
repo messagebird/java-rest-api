@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * WhatsApp Template response using integrations API.
+ * Template response using integrations API.
  *
  * @author ssk910
  */
-public class WhatsAppTemplateResponse implements Serializable {
+public class TemplateResponse implements Serializable {
 
   private static final long serialVersionUID = 7154209824478715861L;
   private String name;

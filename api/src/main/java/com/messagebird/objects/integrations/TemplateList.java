@@ -7,6 +7,6 @@ import com.messagebird.objects.ListBase;
  *
  * @author ssk910
  */
-public class WhatsAppTemplateList extends ListBase<WhatsAppTemplateResponse> {
+public class TemplateList extends ListBase<TemplateResponse> {
 
 }
