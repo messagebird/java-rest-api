@@ -30,4 +30,15 @@ public class ChildAccountCreateResponse extends ChildAccountResponse{
     public void setInvoiceAggregation(String invoiceAggregation) {
         this.invoiceAggregation = invoiceAggregation;
     }
+
+    @Override
+    public String toString() {
+        return "ChildAccountCreateResponse{" +
+                "id='" + getId() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", accessKeys=" + accessKeys + '\'' +
+                ", signingKey='" + signingKey + '\'' +
+                ", invoiceAggregation='" + invoiceAggregation + '\'' +
+                '}';
+    }
 }

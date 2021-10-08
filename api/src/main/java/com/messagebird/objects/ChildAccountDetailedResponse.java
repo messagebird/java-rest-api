@@ -10,4 +10,13 @@ public class ChildAccountDetailedResponse extends ChildAccountResponse{
     public void setInvoiceAggregation(String invoiceAggregation) {
         this.invoiceAggregation = invoiceAggregation;
     }
+
+    @Override
+    public String toString() {
+        return "ChildAccountDetailedResponse{" +
+                "id='" + getId() + '\'' +
+                ", name='" + getName() + '\'' +
+                "invoiceAggregation='" + invoiceAggregation + '\'' +
+                '}';
+    }
 }

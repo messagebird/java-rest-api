@@ -3,6 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.ChildAccountCreateResponse;
 
 public class ExampleCreateChildAccount {
     public static void main(String[] args) {
@@ -16,8 +17,8 @@ public class ExampleCreateChildAccount {
 
         try {
             System.out.println("Creating a child account of partner accounts");
-            messageBirdClient.createChildAccount(args[1]);
-            System.out.println("Child account is created");
+            ChildAccountCreateResponse childAccount = messageBirdClient.createChildAccount(args[1]);
+            System.out.println("Child account is created: " + childAccount.toString());
 
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();

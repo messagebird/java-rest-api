@@ -28,4 +28,13 @@ public class AccessKey {
     public void setMod(String mod) {
         this.mod = mod;
     }
+
+    @Override
+    public String toString() {
+        return "AccessKey{" +
+                "id='" + id + '\'' +
+                ", key='" + key + '\'' +
+                ", mod='" + mod + '\'' +
+                '}';
+    }
 }
