@@ -16,7 +16,7 @@ public class ChildAccountDetailedResponse extends ChildAccountResponse{
         return "ChildAccountDetailedResponse{" +
                 "id='" + getId() + '\'' +
                 ", name='" + getName() + '\'' +
-                "invoiceAggregation='" + invoiceAggregation + '\'' +
+                ", invoiceAggregation='" + invoiceAggregation + '\'' +
                 '}';
     }
 }

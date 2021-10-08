@@ -4,6 +4,7 @@ import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.ChildAccountDetailedResponse;
 
 public class ExampleGetChildAccountById {
     public static void main(String[] args) {
@@ -17,8 +18,8 @@ public class ExampleGetChildAccountById {
 
         try {
             System.out.println("Get a child account by id");
-            messageBirdClient.getChildAccountById(args[1]);
-
+            ChildAccountDetailedResponse response = messageBirdClient.getChildAccountById(args[1]);
+            System.out.println("Response: " + response.toString());
         } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
             exception.printStackTrace();
         }

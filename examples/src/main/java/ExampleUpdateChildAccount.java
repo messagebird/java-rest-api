@@ -3,6 +3,7 @@ import com.messagebird.MessageBirdService;
 import com.messagebird.MessageBirdServiceImpl;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.ChildAccountResponse;
 
 public class ExampleUpdateChildAccount {
     public static void main(String[] args) {
@@ -16,8 +17,8 @@ public class ExampleUpdateChildAccount {
 
         try {
             System.out.println("Updating a child account");
-            messageBirdClient.updateChildAccount(args[1], args[2]);
-            System.out.println("Child account is updated");
+            ChildAccountResponse response = messageBirdClient.updateChildAccount(args[1], args[2]);
+            System.out.println("Child account is updated: " + response.toString());
         } catch (GeneralException | UnauthorizedException exception) {
             exception.printStackTrace();
         }

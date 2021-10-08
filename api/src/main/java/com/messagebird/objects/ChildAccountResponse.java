@@ -1,6 +1,10 @@
 package com.messagebird.objects;
 
-public class ChildAccountResponse {
+import java.io.Serializable;
+
+public class ChildAccountResponse implements Serializable {
+    private static final long serialVersionUID = -8605510461438669942L;
+
     private String id;
     private String name;
 

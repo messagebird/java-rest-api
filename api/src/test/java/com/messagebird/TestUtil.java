@@ -384,7 +384,7 @@ class TestUtil {
     public static PartnerAccountsResponse createPartnerAccountsResponse(){
         final ChildAccountResponse childAccountResponse = createChildAccountResponse();
         final PartnerAccountsResponse partnerAccountsResponse = new PartnerAccountsResponse();
-        partnerAccountsResponse.setChildAccountResponses(Collections.singletonList(childAccountResponse));
+        partnerAccountsResponse.setItems(Collections.singletonList(childAccountResponse));
         return partnerAccountsResponse;
     }
 }

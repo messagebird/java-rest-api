@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * Message bird general client
@@ -1995,18 +1994,18 @@ public class MessageBirdClient {
     /**
      * Function to create a child account
      *
-     * @param name of child account to create
+     * @param childAccountRequest of child account to create
      * @return ChildAccountResponse created
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public ChildAccountCreateResponse createChildAccount(final String name) throws UnauthorizedException, GeneralException {
-        if (name == null) {
+    public ChildAccountCreateResponse createChildAccount(final ChildAccountRequest childAccountRequest) throws UnauthorizedException, GeneralException {
+        if (childAccountRequest.getName() == null || childAccountRequest.getName().isEmpty()) {
             throw new IllegalArgumentException("Name must be specified.");
         }
 
         String url = String.format("%s%s", PARTNER_ACCOUNTS_BASE_URL, "/child-accounts");
-        return messageBirdService.sendPayLoad(url, name, ChildAccountCreateResponse.class);
+        return messageBirdService.sendPayLoad(url, childAccountRequest, ChildAccountCreateResponse.class);
     }
 
     /**
@@ -2025,9 +2024,10 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Child account id must be specified.");
         }
-
+        final ChildAccountRequest childAccountRequest = new ChildAccountRequest();
+        childAccountRequest.setName(name);
         final String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, id);
-        return messageBirdService.sendPayLoad("PATCH", url, name, ChildAccountResponse.class);
+        return messageBirdService.sendPayLoad("PATCH", url, childAccountRequest, ChildAccountResponse.class);
     }
 
     /**
@@ -2043,8 +2043,7 @@ public class MessageBirdClient {
         if (id == null) {
             throw new IllegalArgumentException("Child account id must be specified.");
         }
-
-        return messageBirdService.requestByID(PARTNER_ACCOUNTS_BASE_URL, id, ChildAccountDetailedResponse.class);
+        return messageBirdService.requestByID(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", id, ChildAccountDetailedResponse.class);
     }
 
     /**
@@ -2056,7 +2055,7 @@ public class MessageBirdClient {
      */
     public PartnerAccountsResponse getChildAccounts(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
         verifyOffsetAndLimit(offset, limit);
-        return messageBirdService.requestList(PARTNER_ACCOUNTS_BASE_URL, offset, limit, PartnerAccountsResponse.class);
+        return messageBirdService.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", offset, limit, PartnerAccountsResponse.class);
     }
 
     /**
@@ -2072,7 +2071,8 @@ public class MessageBirdClient {
             throw new IllegalArgumentException("Child account id must be specified.");
         }
 
-        String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, id);
+        String url = String.format("%s/child-accounts", PARTNER_ACCOUNTS_BASE_URL);
+        System.out.println("url: " + url);
         messageBirdService.deleteByID(url, id);
     }
 } 
