@@ -3,35 +3,7 @@ package com.messagebird;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
-import com.messagebird.objects.Balance;
-import com.messagebird.objects.Contact;
-import com.messagebird.objects.ContactList;
-import com.messagebird.objects.ContactRequest;
-import com.messagebird.objects.ErrorReport;
-import com.messagebird.objects.FileUploadResponse;
-import com.messagebird.objects.Group;
-import com.messagebird.objects.GroupList;
-import com.messagebird.objects.GroupRequest;
-import com.messagebird.objects.Hlr;
-import com.messagebird.objects.Lookup;
-import com.messagebird.objects.LookupHlr;
-import com.messagebird.objects.Message;
-import com.messagebird.objects.MessageList;
-import com.messagebird.objects.MessageResponse;
-import com.messagebird.objects.MsgType;
-import com.messagebird.objects.PagedPaging;
-import com.messagebird.objects.PhoneNumbersLookup;
-import com.messagebird.objects.PhoneNumbersResponse;
-import com.messagebird.objects.PurchasedNumber;
-import com.messagebird.objects.PurchasedNumberCreatedResponse;
-import com.messagebird.objects.PurchasedNumbersResponse;
-import com.messagebird.objects.PurchasedNumbersFilter;
-import com.messagebird.objects.Verify;
-import com.messagebird.objects.VerifyMessage;
-import com.messagebird.objects.VerifyRequest;
-import com.messagebird.objects.VoiceMessage;
-import com.messagebird.objects.VoiceMessageList;
-import com.messagebird.objects.VoiceMessageResponse;
+import com.messagebird.objects.*;
 import com.messagebird.objects.conversations.Conversation;
 import com.messagebird.objects.conversations.ConversationList;
 import com.messagebird.objects.conversations.ConversationMessage;
@@ -103,6 +75,7 @@ public class MessageBirdClient {
     static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
     static final String MESSAGING_BASE_URL = "https://messaging.messagebird.com/v1";
     private static String[] supportedLanguages = {"de-DE", "en-AU", "en-UK", "en-US", "es-ES", "es-LA", "fr-FR", "it-IT", "nl-NL", "pt-BR"};
+    static final String PARTNER_ACCOUNTS_BASE_URL = "https://partner-accounts.messagebird.com";
 
     private static final String BALANCEPATH = "/balance";
     private static final String CONTACTPATH = "/contacts";
@@ -496,7 +469,7 @@ public class MessageBirdClient {
     }
 
     /**
-     * @param id id is for the email message part of a verify object
+     * @param messageId is for the email message part of a verify object
      * @return Verify object
      * @throws NotFoundException     if id is not found
      * @throws UnauthorizedException if client is unauthorized
@@ -1847,5 +1820,89 @@ public class MessageBirdClient {
 
         final String url = String.format("%s%s/%s", MESSAGING_BASE_URL, FILES_PATH, id);
         return messageBirdService.getBinaryData(url, basePath, filename);
+    }
+
+    /**
+     * Function to create a child account
+     *
+     * @param name of child account to create
+     * @return ChildAccountResponse created
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public ChildAccountCreateResponse createChildAccount(String name) throws UnauthorizedException, GeneralException {
+        if (name == null) {
+            throw new IllegalArgumentException("Name must be specified.");
+        }
+
+        String url = String.format("%s%s", PARTNER_ACCOUNTS_BASE_URL, "/child-accounts");
+        return messageBirdService.sendPayLoad(url, name, ChildAccountCreateResponse.class);
+    }
+
+    /**
+     * Function to update a child account
+     *
+     * @param id of child account to update
+     * @return ChildAccountResponse created
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public ChildAccountResponse updateChildAccount(String name, String id) throws UnauthorizedException, GeneralException {
+        if (name == null) {
+            throw new IllegalArgumentException("Name must be specified.");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("Child account id must be specified.");
+        }
+
+        final String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, id);
+        return messageBirdService.sendPayLoad("PATCH", url, name, ChildAccountResponse.class);
+    }
+
+    /**
+     * Function to get a child account
+     *
+     * @param id of child account to update
+     * @return ChildAccountResponse created
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     *  @throws NotFoundException    if id is not found
+     */
+    public ChildAccountDetailedResponse getChildAccountById(String id) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (id == null) {
+            throw new IllegalArgumentException("Child account id must be specified.");
+        }
+
+        return messageBirdService.requestByID(PARTNER_ACCOUNTS_BASE_URL, id, ChildAccountDetailedResponse.class);
+    }
+
+    /**
+     * Function to get a child account
+     *
+     * @return ChildAccountResponse created
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     */
+    public PartnerAccountsResponse getChildAccounts(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
+        verifyOffsetAndLimit(offset, limit);
+        return messageBirdService.requestList(PARTNER_ACCOUNTS_BASE_URL, offset, limit, PartnerAccountsResponse.class);
+    }
+
+    /**
+     * Function to delete a child account
+     *
+     * @param id of child account to delete
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException    if id is not found
+     */
+    public void deleteChildAccount(String id) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (id == null) {
+            throw new IllegalArgumentException("Child account id must be specified.");
+        }
+
+        String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, id);
+        messageBirdService.deleteByID(url, id);
     }
 } 

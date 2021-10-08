@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.messagebird.MessageBirdClient.*;
+import static com.messagebird.TestUtil.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -1041,5 +1042,86 @@ public class MessageBirdClientTest {
         messageBirdClient.downloadFile(id, filename, null);
         String url = MESSAGING_BASE_URL + FILES_PATH + "/" + id;
         verify(messageBirdServiceMock, times(1)).getBinaryData(url, null, filename);
+    }
+
+    @Test
+    public void testCreateChildAccounts() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountCreateResponse childAccountCreateResponse = createChildAccountCreateResponse();
+        when(messageBirdServiceMock.sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , "name", ChildAccountCreateResponse.class))
+            .thenReturn(childAccountCreateResponse);
+        final ChildAccountCreateResponse response = messageBirdClientInjectMock.createChildAccount("name");
+
+        verify(messageBirdServiceMock, times(1))
+               .sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , "name", ChildAccountCreateResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountCreateResponse.getId());
+        assertEquals(response.getName(), childAccountCreateResponse.getName());
+        assertEquals(response.getInvoiceAggregation(), childAccountCreateResponse.getInvoiceAggregation());
+        assertEquals(response.getSigningKey(), childAccountCreateResponse.getSigningKey());
+        assertEquals(response.getAccessKeys().get(0).getId(), childAccountCreateResponse.getAccessKeys().get(0).getId());
+        assertEquals(response.getAccessKeys().get(0).getKey(), childAccountCreateResponse.getAccessKeys().get(0).getKey());
+        assertEquals(response.getAccessKeys().get(0).getMod(), childAccountCreateResponse.getAccessKeys().get(0).getMod());
+    }
+
+    @Test
+    public void testGetChildAccount() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountDetailedResponse childAccountDetailedResponse = createChildAccountDetailedResponse();
+        when(messageBirdServiceMock.requestByID(PARTNER_ACCOUNTS_BASE_URL, "ANY_ID", ChildAccountDetailedResponse.class))
+                .thenReturn(childAccountDetailedResponse);
+        ChildAccountDetailedResponse response = messageBirdClientInjectMock.getChildAccountById("ANY_ID");
+
+        verify(messageBirdServiceMock, times(1))
+                .requestByID(PARTNER_ACCOUNTS_BASE_URL, "ANY_ID", ChildAccountDetailedResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountDetailedResponse.getId());
+        assertEquals(response.getName(), childAccountDetailedResponse.getName());
+        assertEquals(response.getInvoiceAggregation(), childAccountDetailedResponse.getInvoiceAggregation());
+    }
+
+    @Test
+    public void testGetChildAccounts() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        PartnerAccountsResponse partnerAccountsResponse = createPartnerAccountsResponse();
+        when(messageBirdServiceMock.requestList(PARTNER_ACCOUNTS_BASE_URL, 1, 10, PartnerAccountsResponse.class))
+                .thenReturn(partnerAccountsResponse);
+
+        PartnerAccountsResponse response = messageBirdClientInjectMock.getChildAccounts(1, 10);
+
+        verify(messageBirdServiceMock, times(1))
+                .requestList(PARTNER_ACCOUNTS_BASE_URL, 1, 10, PartnerAccountsResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getChildAccountResponses().get(0).getId(), partnerAccountsResponse.getChildAccountResponses().get(0).getId());
+        assertEquals(response.getChildAccountResponses().get(0).getName(), partnerAccountsResponse.getChildAccountResponses().get(0).getName());
+    }
+
+    @Test
+    public void testUpdateChildAccount() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountResponse childAccountResponse = createChildAccountResponse();
+        final String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, "ANY_ID");
+        when(messageBirdServiceMock.sendPayLoad("PATCH", url, "ANY_NAME", ChildAccountResponse.class))
+                .thenReturn(childAccountResponse);
+        ChildAccountResponse response = messageBirdClientInjectMock.updateChildAccount("ANY_NAME", "ANY_ID");
+
+        verify(messageBirdServiceMock, times(1))
+                .sendPayLoad("PATCH", url, "ANY_NAME", ChildAccountResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountResponse.getId());
+        assertEquals(response.getName(), childAccountResponse.getName());
+    }
+
+    @Test
+    public void testDeleteChildAccount() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, "ANY_ID");
+        doNothing().when(messageBirdServiceMock).deleteByID(url, "ANY_ID");
+        messageBirdClientInjectMock.deleteChildAccount("id");
     }
 }
