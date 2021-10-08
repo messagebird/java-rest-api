@@ -678,8 +678,8 @@ public class MessageBirdClient {
      * @param id String
      * @param voiceCallFlowRequest VoiceCallFlowRequest
      * @return VoiceCallFlowResponse
-     * @throws UnauthorizedException
-     * @throws GeneralException
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
      */
     public VoiceCallFlowResponse updateVoiceCallFlow(String id, VoiceCallFlowRequest voiceCallFlowRequest)
         throws UnauthorizedException, GeneralException {
@@ -1893,7 +1893,7 @@ public class MessageBirdClient {
      * Retrieves the template of an existing template name.
      *
      * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
-     * @return {@code List<WhatsAppTemplateResponse>} template list
+     * @return {@code List<TemplateResponse>} template list
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      * @throws NotFoundException     if template name is not found
@@ -1920,7 +1920,7 @@ public class MessageBirdClient {
      * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
      * @param language A language code as returned by getWhatsAppTemplateBy in the language variable
      *
-     * @return {@code WhatsAppTemplateResponse} template list
+     * @return {@code TemplateResponse} template list
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      * @throws NotFoundException     if template name and language are not found
@@ -2000,7 +2000,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public ChildAccountCreateResponse createChildAccount(String name) throws UnauthorizedException, GeneralException {
+    public ChildAccountCreateResponse createChildAccount(final String name) throws UnauthorizedException, GeneralException {
         if (name == null) {
             throw new IllegalArgumentException("Name must be specified.");
         }
@@ -2017,7 +2017,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public ChildAccountResponse updateChildAccount(String name, String id) throws UnauthorizedException, GeneralException {
+    public ChildAccountResponse updateChildAccount(final String name, final String id) throws UnauthorizedException, GeneralException {
         if (name == null) {
             throw new IllegalArgumentException("Name must be specified.");
         }
@@ -2039,7 +2039,7 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      *  @throws NotFoundException    if id is not found
      */
-    public ChildAccountDetailedResponse getChildAccountById(String id) throws UnauthorizedException, GeneralException, NotFoundException {
+    public ChildAccountDetailedResponse getChildAccountById(final String id) throws UnauthorizedException, GeneralException, NotFoundException {
         if (id == null) {
             throw new IllegalArgumentException("Child account id must be specified.");
         }
@@ -2067,7 +2067,7 @@ public class MessageBirdClient {
      * @throws GeneralException      general exception
      * @throws NotFoundException    if id is not found
      */
-    public void deleteChildAccount(String id) throws UnauthorizedException, GeneralException, NotFoundException {
+    public void deleteChildAccount(final String id) throws UnauthorizedException, GeneralException, NotFoundException {
         if (id == null) {
             throw new IllegalArgumentException("Child account id must be specified.");
         }
