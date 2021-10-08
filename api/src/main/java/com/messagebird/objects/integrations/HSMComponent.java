@@ -1,6 +1,5 @@
 package com.messagebird.objects.integrations;
 
-import com.messagebird.exceptions.GeneralException;
 import java.util.List;
 
 /**
@@ -71,9 +70,9 @@ public class HSMComponent {
   /**
    * Check if this component is valid.
    *
-   * @throws GeneralException Occurs when validation is not passed.
+   * @throws IllegalArgumentException Occurs when validation is not passed.
    */
-  public void validateComponent() throws GeneralException {
+  public void validateComponent() throws IllegalArgumentException {
     this.validateButtons();
     this.validateComponentExample();
   }
@@ -81,9 +80,9 @@ public class HSMComponent {
   /**
    * Check if button list is valid.
    *
-   * @throws GeneralException Occurs when validation is not passed.
+   * @throws IllegalArgumentException Occurs when validation is not passed.
    */
-  private void validateButtons() throws GeneralException {
+  private void validateButtons() throws IllegalArgumentException {
     if (this.buttons == null) {
       return;
     }
@@ -96,9 +95,9 @@ public class HSMComponent {
   /**
    * Check for header_text and header_url.
    *
-   * @throws GeneralException Occurs when {@code header_text} or {@code header_url} is not able to use.
+   * @throws IllegalArgumentException Occurs when {@code header_text} or {@code header_url} is not able to use.
    */
-  private void validateComponentExample() throws GeneralException {
+  private void validateComponentExample() throws IllegalArgumentException {
     final boolean isExampleNotNull = this.example != null;
     final boolean isHeaderTextNotEmpty =
         isExampleNotNull && !(this.example.getHeader_text() == null || this.example.getHeader_text()
@@ -119,26 +118,26 @@ public class HSMComponent {
   /**
    * Check if header_text is able to use.
    *
-   * @throws GeneralException Occurs when type is not {@code HEADER} and format is not {@code TEXT}.
+   * @throws IllegalArgumentException Occurs when type is not {@code HEADER} and format is not {@code TEXT}.
    */
-  private void checkHeaderText() throws GeneralException {
+  private void checkHeaderText() throws IllegalArgumentException {
     if (!(type.equals(HSMComponentType.HEADER)
         && format.equals(HSMComponentFormat.TEXT))
     ) {
-      throw new GeneralException("\"header_text\" is available for only HEADER type and TEXT format.");
+      throw new IllegalArgumentException("\"header_text\" is available for only HEADER type and TEXT format.");
     }
   }
 
   /**
    * Check if header_url is able to use.
    *
-   * @throws GeneralException Occurs when type is not {@code HEADER} and format is not {@code IMAGE}.
+   * @throws IllegalArgumentException Occurs when type is not {@code HEADER} and format is not {@code IMAGE}.
    */
-  private void checkHeaderUrl() throws GeneralException {
+  private void checkHeaderUrl() throws IllegalArgumentException {
     if (!(type.equals(HSMComponentType.HEADER)
         && format.equals(HSMComponentFormat.IMAGE))
     ) {
-      throw new GeneralException("\"header_url\" is available for only HEADER type and IMAGE format.");
+      throw new IllegalArgumentException("\"header_url\" is available for only HEADER type and IMAGE format.");
     }
   }
 }

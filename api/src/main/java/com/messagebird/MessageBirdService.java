@@ -4,6 +4,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.PagedPaging;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +38,20 @@ public interface MessageBirdService {
     <R> R requestByID(String request, String id, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
 
     <R> R requestByID(String request, String id, Map<String, Object> params, Class<R> clazz) throws UnauthorizedException, GeneralException, NotFoundException;
+
+    /**
+     * Execute a object by ID request. It will add the id to the request parameter and retrieve a list of an object E back.
+     *
+     * @author ssk910
+     * @param request       path to the request, for example "/messages"
+     * @param id            id of the object to request. id can be null in case request's that don't need a id, for example /balance
+     * @param elementClass  Class type of List to return
+     * @return new list of elementClass
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException general exception
+     * @throws NotFoundException
+     */
+    <E> List<E> requestByIdAsList(String request, String id, Class<E> elementClass) throws UnauthorizedException, GeneralException, NotFoundException;
 
     /**
      * Delete a object by ID.

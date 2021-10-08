@@ -10,8 +10,8 @@ import com.messagebird.objects.integrations.HSMComponentButtonType;
 import com.messagebird.objects.integrations.HSMComponentFormat;
 import com.messagebird.objects.integrations.HSMComponentType;
 import com.messagebird.objects.integrations.HSMExample;
-import com.messagebird.objects.integrations.WhatsAppTemplate;
-import com.messagebird.objects.integrations.WhatsAppTemplateResponse;
+import com.messagebird.objects.integrations.Template;
+import com.messagebird.objects.integrations.TemplateResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +75,7 @@ public class ExampleCreateTemplate {
     buttonComponent.setButtons(buttons);
 
     /* set components */
-    final WhatsAppTemplate template = new WhatsAppTemplate();
+    final Template template = new Template();
     final List<HSMComponent> components = new ArrayList<>();
     components.add(headerComponent);
     components.add(bodyComponent);
@@ -88,7 +88,7 @@ public class ExampleCreateTemplate {
     template.setCategory(HSMCategory.ACCOUNT_UPDATE);
 
     try {
-      WhatsAppTemplateResponse response = messageBirdClient.createWhatsAppTemplate(template);
+      TemplateResponse response = messageBirdClient.createWhatsAppTemplate(template);
       System.out.println(response.toString());
     } catch (GeneralException | UnauthorizedException exception) {
       exception.printStackTrace();
