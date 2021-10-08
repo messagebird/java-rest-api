@@ -2,28 +2,10 @@ package com.messagebird.objects;
 
 import java.util.List;
 
-public class ChildAccountCreateResponse {
-    private String id;
-    private String name;
+public class ChildAccountCreateResponse extends ChildAccountResponse{
     private List<AccessKey> accessKeys;
     private String signingKey;
     private String invoiceAggregation;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public List<AccessKey> getAccessKeys() {
         return accessKeys;
