@@ -2053,9 +2053,9 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    public PartnerAccountsResponse getChildAccounts(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
+    public List<ChildAccountResponse> getChildAccounts(final Integer offset, final Integer limit) throws UnauthorizedException, GeneralException {
         verifyOffsetAndLimit(offset, limit);
-        return messageBirdService.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", offset, limit, PartnerAccountsResponse.class);
+        return messageBirdService.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", offset, limit, List.class);
     }
 
     /**

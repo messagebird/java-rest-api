@@ -24,6 +24,7 @@ import java.util.Map;
 
 import static com.messagebird.MessageBirdClient.*;
 import static com.messagebird.TestUtil.*;
+import static com.messagebird.TestUtil.createChildAccountDetailedResponse;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -1264,17 +1265,17 @@ public class MessageBirdClientTest {
     public void testGetChildAccounts() throws GeneralException, UnauthorizedException {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
-        PartnerAccountsResponse partnerAccountsResponse = createPartnerAccountsResponse();
-        when(messageBirdServiceMock.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, PartnerAccountsResponse.class))
-                .thenReturn(partnerAccountsResponse);
+        List<ChildAccountResponse> childAccountResponses = Collections.singletonList(createChildAccountResponse());
+        when(messageBirdServiceMock.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, List.class))
+                .thenReturn(childAccountResponses);
 
-        PartnerAccountsResponse response = messageBirdClientInjectMock.getChildAccounts(1, 10);
+        List<ChildAccountResponse> response = messageBirdClientInjectMock.getChildAccounts(1, 10);
 
         verify(messageBirdServiceMock, times(1))
-                .requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, PartnerAccountsResponse.class);
+                .requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, List.class);
         assertNotNull(response);
-        assertEquals(response.getItems().get(0).getId(), partnerAccountsResponse.getItems().get(0).getId());
-        assertEquals(response.getItems().get(0).getName(), partnerAccountsResponse.getItems().get(0).getName());
+        assertEquals(response.get(0).getId(), childAccountResponses.get(0).getId());
+        assertEquals(response.get(0).getName(), childAccountResponses.get(0).getName());
     }
 
     @Test

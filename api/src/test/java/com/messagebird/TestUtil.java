@@ -380,11 +380,4 @@ class TestUtil {
         childAccountResponse.setName("ANY_NAME");
         return childAccountResponse;
     }
-
-    public static PartnerAccountsResponse createPartnerAccountsResponse(){
-        final ChildAccountResponse childAccountResponse = createChildAccountResponse();
-        final PartnerAccountsResponse partnerAccountsResponse = new PartnerAccountsResponse();
-        partnerAccountsResponse.setItems(Collections.singletonList(childAccountResponse));
-        return partnerAccountsResponse;
-    }
 }
