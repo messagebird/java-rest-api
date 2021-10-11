@@ -349,4 +349,35 @@ class TestUtil {
         templateList.setItems(templateResponseList);
         return templateList;
     }
+
+    public static ChildAccountCreateResponse createChildAccountCreateResponse() {
+        final AccessKey accessKey = new AccessKey();
+        accessKey.setId("ANY_ID");
+        accessKey.setKey("ANY_KEY");
+        accessKey.setMod("ANY_MOD");
+
+        final ChildAccountCreateResponse childAccountCreateResponse = new ChildAccountCreateResponse();
+        childAccountCreateResponse.setId("ANY_ID");
+        childAccountCreateResponse.setName("ANY_NAME");
+        childAccountCreateResponse.setAccessKeys(Collections.singletonList(accessKey));
+        childAccountCreateResponse.setInvoiceAggregation("ANY_INVOICE_AGGREGATION");
+        childAccountCreateResponse.setSigningKey("ANY_SIGNING_KEY");
+
+        return childAccountCreateResponse;
+    }
+
+    public static ChildAccountDetailedResponse createChildAccountDetailedResponse(){
+        final ChildAccountDetailedResponse childAccountDetailedResponse = new ChildAccountDetailedResponse();
+        childAccountDetailedResponse.setId("ANY_ID");
+        childAccountDetailedResponse.setName("ANY_NAME");
+        childAccountDetailedResponse.setInvoiceAggregation("ANY_INVOICE_AGGREGATION");
+        return childAccountDetailedResponse;
+    }
+
+    public static ChildAccountResponse createChildAccountResponse(){
+        final ChildAccountResponse childAccountResponse = new ChildAccountResponse();
+        childAccountResponse.setId("ANY_ID");
+        childAccountResponse.setName("ANY_NAME");
+        return childAccountResponse;
+    }
 }

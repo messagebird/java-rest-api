@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.messagebird.MessageBirdClient.*;
+import static com.messagebird.TestUtil.*;
+import static com.messagebird.TestUtil.createChildAccountDetailedResponse;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -133,7 +135,7 @@ public class MessageBirdClientTest {
     public void testListScheduledMessagesWrongFilter() throws Exception {
         Map<String, Object> filters = new LinkedHashMap<>();
         filters.put("does not exist", null);
-        
+
         messageBirdClient.listMessagesFiltered(null, null, filters);
     }
 
@@ -815,7 +817,7 @@ public class MessageBirdClientTest {
 
         final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("NL");
         verify(messageBirdServiceMock, times(1)).requestByID(url, "NL", PhoneNumbersResponse.class);
-        
+
         assertNotNull(response);
         assertEquals(response, mockedResponse);
     }
@@ -834,7 +836,7 @@ public class MessageBirdClientTest {
         options.setLimit(1);
         options.setNumber(562);
         options.setSearchPattern(PhoneNumberSearchPattern.START);
-    
+
         when(messageBirdServiceMock.requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class))
             .thenReturn(mockedResponse);
 
@@ -852,12 +854,12 @@ public class MessageBirdClientTest {
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
-        
+
         final Map<String, Object> payload = new LinkedHashMap<String, Object>();
         payload.put("number", "15625267429");
         payload.put("countryCode", "US");
         payload.put("billingIntervalMonths", 1);
-        
+
         when(messageBirdServiceMock.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class))
             .thenReturn(purchasedNumberMockData);
         final PurchasedNumberCreatedResponse response = messageBirdClientMock.purchaseNumber("15625267429", "US", 1);
@@ -865,13 +867,13 @@ public class MessageBirdClientTest {
         assertNotNull(response);
         assertEquals(response, purchasedNumberMockData);
     }
-    
+
     @Test
     public void testListPurchasedNumbers() throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
-    
+
         PurchasedNumbersResponse purchasedNumbersMockData = new PurchasedNumbersResponse();
-    
+
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
 
@@ -894,9 +896,9 @@ public class MessageBirdClientTest {
     @Test
     public void testViewPurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
         final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
-    
+
         PurchasedNumber purchasedNumberMockData = new PurchasedNumber();
-    
+
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
         when(messageBirdServiceMock.requestByID(url, "15625267429", PurchasedNumber.class))
@@ -912,15 +914,15 @@ public class MessageBirdClientTest {
     public void updatePurchasedNumber()  throws UnauthorizedException, GeneralException {
         final String phoneNumber = "15625267429";
         final String url = String.format("%s/phone-numbers/%s", NUMBERS_CALLS_BASE_URL, phoneNumber);
-    
+
         PurchasedNumber updatedNumberMock = new PurchasedNumber();
-    
+
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
-        
+
         final Map<String, List<String>> payload = new HashMap<String, List<String>>();
         payload.put("tags", Collections.singletonList("tag"));
-        
+
         when(messageBirdServiceMock.sendPayLoad("PATCH", url, payload, PurchasedNumber.class))
             .thenReturn(updatedNumberMock);
         final PurchasedNumber response = messageBirdClientMock.updateNumber(phoneNumber, "tag");
@@ -933,10 +935,10 @@ public class MessageBirdClientTest {
     public void deletePurchasedNumber()  throws UnauthorizedException, GeneralException, NotFoundException {
         final String phoneNumber = "15625267429";
         final String url = String.format("%s/phone-numbers", NUMBERS_CALLS_BASE_URL);
-    
+
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
-        
+
         messageBirdClientMock.cancelNumber(phoneNumber);
         verify(messageBirdServiceMock, times(1)).deleteByID(url, phoneNumber);
     }
@@ -1217,5 +1219,87 @@ public class MessageBirdClientTest {
         when(messageBirdServiceMock.delete(url, null)).thenReturn(null);
         messageBirdClientInjectMock.deleteTemplatesBy(templateName, language);
         verify(messageBirdServiceMock).delete(url, null);
+    }
+
+    @Test
+    public void testCreateChildAccounts() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountCreateResponse childAccountCreateResponse = createChildAccountCreateResponse();
+        ChildAccountRequest childAccountRequest = new ChildAccountRequest();
+        childAccountRequest.setName("name");
+        when(messageBirdServiceMock.sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , childAccountRequest, ChildAccountCreateResponse.class))
+            .thenReturn(childAccountCreateResponse);
+        final ChildAccountCreateResponse response = messageBirdClientInjectMock.createChildAccount(childAccountRequest);
+
+        verify(messageBirdServiceMock, times(1))
+               .sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , childAccountRequest, ChildAccountCreateResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountCreateResponse.getId());
+        assertEquals(response.getName(), childAccountCreateResponse.getName());
+        assertEquals(response.getInvoiceAggregation(), childAccountCreateResponse.getInvoiceAggregation());
+        assertEquals(response.getSigningKey(), childAccountCreateResponse.getSigningKey());
+        assertEquals(response.getAccessKeys().get(0).getId(), childAccountCreateResponse.getAccessKeys().get(0).getId());
+        assertEquals(response.getAccessKeys().get(0).getKey(), childAccountCreateResponse.getAccessKeys().get(0).getKey());
+        assertEquals(response.getAccessKeys().get(0).getMod(), childAccountCreateResponse.getAccessKeys().get(0).getMod());
+    }
+
+    @Test
+    public void testGetChildAccount() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountDetailedResponse childAccountDetailedResponse = createChildAccountDetailedResponse();
+        when(messageBirdServiceMock.requestByID(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", "ANY_ID", ChildAccountDetailedResponse.class))
+                .thenReturn(childAccountDetailedResponse);
+        ChildAccountDetailedResponse response = messageBirdClientInjectMock.getChildAccountById("ANY_ID");
+
+        verify(messageBirdServiceMock, times(1))
+                .requestByID(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", "ANY_ID", ChildAccountDetailedResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountDetailedResponse.getId());
+        assertEquals(response.getName(), childAccountDetailedResponse.getName());
+        assertEquals(response.getInvoiceAggregation(), childAccountDetailedResponse.getInvoiceAggregation());
+    }
+
+    @Test
+    public void testGetChildAccounts() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        List<ChildAccountResponse> childAccountResponses = Collections.singletonList(createChildAccountResponse());
+        when(messageBirdServiceMock.requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, List.class))
+                .thenReturn(childAccountResponses);
+
+        List<ChildAccountResponse> response = messageBirdClientInjectMock.getChildAccounts(1, 10);
+
+        verify(messageBirdServiceMock, times(1))
+                .requestList(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts", 1, 10, List.class);
+        assertNotNull(response);
+        assertEquals(response.get(0).getId(), childAccountResponses.get(0).getId());
+        assertEquals(response.get(0).getName(), childAccountResponses.get(0).getName());
+    }
+
+    @Test
+    public void testUpdateChildAccount() throws GeneralException, UnauthorizedException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        ChildAccountResponse childAccountResponse = createChildAccountResponse();
+        when(messageBirdServiceMock.sendPayLoad(any(), any(), any(), any()))
+                .thenReturn(childAccountResponse);
+        ChildAccountResponse response = messageBirdClientInjectMock.updateChildAccount("ANY_NAME", "ANY_ID");
+
+        verify(messageBirdServiceMock, times(1))
+                .sendPayLoad(any(), any(), any(), any());
+        assertNotNull(response);
+        assertEquals(response.getId(), childAccountResponse.getId());
+        assertEquals(response.getName(), childAccountResponse.getName());
+    }
+
+    @Test
+    public void testDeleteChildAccount() throws GeneralException, UnauthorizedException, NotFoundException {
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, "ANY_ID");
+        doNothing().when(messageBirdServiceMock).deleteByID(url, "ANY_ID");
+        messageBirdClientInjectMock.deleteChildAccount("id");
     }
 }
