@@ -22,25 +22,26 @@ import java.util.Map;
  * Created by hasselbach
  *
  * For exposing your application for external calls (webhooks from MessageBird)
- * you can use serveo.net: `ssh -R 80:localhost:3000 serveo.net`
+ * you can use localtunnel (requires NodeJS).
  *
- * Here is example of usage
+ * Here is example of usage:
+ *
+ * Install localtunnel globally:
+ *  npm install -g localtunnel
  *
  * Select a free port: 3000, for example
  *  export MBEXAMPLEPORT=3000
  *
  * Run:
- *   ssh -R 80:localhost:$MBEXAMPLEPORT serveo.net
+ *   lt --port $MBEXAMPLEPORT
  *
  * It will show you something like this:
- *   Hi there
- *   Forwarding HTTP traffic from https://blabla.serveo.net
- *   Press g to start a GUI session and ctrl-c to quit.
+ *   your url is: https://loud-yak-31.loca.lt
  *
  * * NOTE * you should not terminate this process, so next operations should be done in the other terminal session
  *
  * Remember the address from output:
- *  export FORWARDING_URL=https://blabla.serveo.net
+ *  export FORWARDING_URL=https://loud-yak-31.loca.lt
  *
  * Take your access and secret key from Dashboard:
  *   secret key from https://dashboard.messagebird.com/en/developers/settings
@@ -57,8 +58,8 @@ import java.util.Map;
  *  and then you will see in example app output:
  *      New request:
  * 	       GET /webhook?id=ee2d02749a6fb78a572bd7ce9118dff&mccmnc=20409&ported=0&recipient=XXXXXX&reference=example-server&status=delivered&statusDatetime=2019-01-10T09%3A23%3A03%2B00%3A00
- *      Request has valid signature
  *      Message for XXXXXX is delivered
+ *      Request has valid signature
  *
  * Description of webhook parameters can be found on
  *   https://developers.messagebird.com/docs/sms-messaging#handle-a-status-report
