@@ -1010,9 +1010,9 @@ public class MessageBirdClient {
     }
 
     /**
-     * Gets messages based on query param.
+     * Gets conversation messages based on query param.
      *
-     * @param queryParams
+     * @param queryParams only `ids` and `from` is available as an option
      * @return The retrieved messages.
      */
     public ConversationMessageList listConversationMessagesWithQueryParam(Map<String, Object> queryParams)
