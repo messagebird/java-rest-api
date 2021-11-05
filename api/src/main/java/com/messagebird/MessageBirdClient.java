@@ -117,6 +117,9 @@ public class MessageBirdClient {
     private static final String[] MESSAGE_LIST_FILTERS_VALS = {"originator", "recipient", "direction", "searchterm", "type", "contact_id", "status", "from", "until"};
     private static final Set<String> MESSAGE_LIST_FILTERS = new HashSet<>(Arrays.asList(MESSAGE_LIST_FILTERS_VALS));
 
+    private static final String[] CONVERSATION_MESSAGE_LIST_FILTERS_VALS = {"ids", "from"};
+    private static final Set<String> CONVERSATION_MESSAGE_LIST_FILTERS = new HashSet<>(Arrays.asList(CONVERSATION_MESSAGE_LIST_FILTERS_VALS));
+
     private final String DOWNLOADS = "Downloads";
 
     private MessageBirdService messageBirdService;
@@ -1004,6 +1007,23 @@ public class MessageBirdClient {
             throws NotFoundException, GeneralException, UnauthorizedException {
         String url = CONVERSATIONS_BASE_URL + CONVERSATION_MESSAGE_PATH;
         return messageBirdService.requestByID(url, messageId, ConversationMessage.class);
+    }
+
+    /**
+     * Gets messages based on query param.
+     *
+     * @param queryParams
+     * @return The retrieved messages.
+     */
+    public ConversationMessageList listConversationMessagesWithQueryParam(Map<String, Object> queryParams)
+        throws NotFoundException, GeneralException, UnauthorizedException {
+        for (String queryParam : queryParams.keySet()) {
+            if (!CONVERSATION_MESSAGE_LIST_FILTERS.contains(queryParam)) {
+                throw new IllegalArgumentException("Invalid filter name: " + queryParam);
+            }
+        }
+        String url = CONVERSATIONS_BASE_URL + CONVERSATION_MESSAGE_PATH;
+        return messageBirdService.requestByID(url, null, queryParams, ConversationMessageList.class);
     }
 
     /**
