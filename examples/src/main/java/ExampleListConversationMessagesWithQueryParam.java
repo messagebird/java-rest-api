@@ -31,7 +31,7 @@ public class ExampleListConversationMessagesWithQueryParam {
             }
           });
 
-      // Display balance
+      // Display conversation Message list
       System.out.println(conversationMessageList.toString());
     } catch (UnauthorizedException | GeneralException | NotFoundException exception) {
       if (exception.getErrors() != null) {
