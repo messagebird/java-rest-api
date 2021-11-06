@@ -67,7 +67,7 @@
         <profile>
             <id>disable-doclint</id>
             <activation>
-                <jdk>[8,11,)</jdk>
+                <jdk>[8,16,)</jdk>
             </activation>
             <properties>
                 <doclint>none</doclint>
