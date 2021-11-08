@@ -10,9 +10,12 @@ public class AccessKey {
     private String accessKey;
     private String mod;
     private String description;
-    private int core_user_id;
-    private int user_id;
-    private int external_id;
+    @JsonProperty("core_user_id")
+    private int coreUserId;
+    @JsonProperty("user_id")
+    private int userId;
+    @JsonProperty("external_id")
+    private int externalId;
     private List roles;
 
     public String getId() {
@@ -47,28 +50,28 @@ public class AccessKey {
         this.description = description;
     }
 
-    public int getCore_user_id() {
-        return core_user_id;
+    public int getCoreUserId() {
+        return coreUserId;
     }
 
-    public void setCore_user_id(int core_user_id) {
-        this.core_user_id = core_user_id;
+    public void setCoreUserId(int coreUserId) {
+        this.coreUserId = coreUserId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getExternal_id() {
-        return external_id;
+    public int getExternalId() {
+        return externalId;
     }
 
-    public void setExternal_id(int external_id) {
-        this.external_id = external_id;
+    public void setExternalId(int externalId) {
+        this.externalId = externalId;
     }
 
     public List getRoles() {
@@ -86,9 +89,9 @@ public class AccessKey {
                 ", access_key='" + accessKey + '\'' +
                 ", mod='" + mod + '\'' +
                 ", description='" + description + '\'' +
-                ", core_user_id=" + core_user_id +
-                ", user_id=" + user_id +
-                ", external_id=" + external_id +
+                ", core_user_id=" + coreUserId +
+                ", user_id=" + userId +
+                ", external_id=" + externalId +
                 ", roles=" + roles +
                 '}';
     }
