@@ -6,6 +6,7 @@ public class ChildAccountCreateResponse extends ChildAccountResponse{
     private List<AccessKey> accessKeys;
     private String signingKey;
     private String invoiceAggregation;
+    private String paymentMoment;
 
     public List<AccessKey> getAccessKeys() {
         return accessKeys;
@@ -31,14 +32,22 @@ public class ChildAccountCreateResponse extends ChildAccountResponse{
         this.invoiceAggregation = invoiceAggregation;
     }
 
+    public String getPaymentMoment() {
+        return paymentMoment;
+    }
+
+    public void setPaymentMoment(String paymentMoment) {
+        this.paymentMoment = paymentMoment;
+    }
+
     @Override
     public String toString() {
         return "ChildAccountCreateResponse{" +
                 "id='" + getId() + '\'' +
                 ", name='" + getName() + '\'' +
                 ", accessKeys=" + accessKeys + '\'' +
-                ", signingKey='" + signingKey + '\'' +
                 ", invoiceAggregation='" + invoiceAggregation + '\'' +
+                ", paymentMoment='" + paymentMoment + '\'' +
                 '}';
-    }
+       }
 }

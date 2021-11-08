@@ -353,7 +353,7 @@ class TestUtil {
     public static ChildAccountCreateResponse createChildAccountCreateResponse() {
         final AccessKey accessKey = new AccessKey();
         accessKey.setId("ANY_ID");
-        accessKey.setKey("ANY_KEY");
+        accessKey.setAccessKey("ANY_KEY");
         accessKey.setMod("ANY_MOD");
 
         final ChildAccountCreateResponse childAccountCreateResponse = new ChildAccountCreateResponse();

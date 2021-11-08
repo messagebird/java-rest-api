@@ -1240,7 +1240,7 @@ public class MessageBirdClientTest {
         assertEquals(response.getInvoiceAggregation(), childAccountCreateResponse.getInvoiceAggregation());
         assertEquals(response.getSigningKey(), childAccountCreateResponse.getSigningKey());
         assertEquals(response.getAccessKeys().get(0).getId(), childAccountCreateResponse.getAccessKeys().get(0).getId());
-        assertEquals(response.getAccessKeys().get(0).getKey(), childAccountCreateResponse.getAccessKeys().get(0).getKey());
+        assertEquals(response.getAccessKeys().get(0).getAccessKey(), childAccountCreateResponse.getAccessKeys().get(0).getAccessKey());
         assertEquals(response.getAccessKeys().get(0).getMod(), childAccountCreateResponse.getAccessKeys().get(0).getMod());
     }
 
