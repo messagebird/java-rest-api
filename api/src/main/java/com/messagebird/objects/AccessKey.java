@@ -1,10 +1,13 @@
 package com.messagebird.objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class AccessKey {
     private String id;
-    private String access_key;
+    @JsonProperty("access_key")
+    private String accessKey;
     private String mod;
     private String description;
     private int core_user_id;
@@ -20,12 +23,12 @@ public class AccessKey {
         this.id = id;
     }
 
-    public String getAccess_key() {
-        return access_key;
+    public String getAccessKey() {
+        return accessKey;
     }
 
-    public void setAccess_key(String access_key) {
-        this.access_key = access_key;
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
     }
 
     public String getMod() {
@@ -80,7 +83,7 @@ public class AccessKey {
     public String toString() {
         return "AccessKey{" +
                 "id='" + id + '\'' +
-                ", access_key='" + access_key + '\'' +
+                ", access_key='" + accessKey + '\'' +
                 ", mod='" + mod + '\'' +
                 ", description='" + description + '\'' +
                 ", core_user_id=" + core_user_id +
