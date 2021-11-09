@@ -8,7 +8,7 @@ public class AccessKey {
     private String id;
     @JsonProperty("access_key")
     private String accessKey;
-    private String mod;
+    private String mode;
     private String description;
     @JsonProperty("core_user_id")
     private int coreUserId;
@@ -34,12 +34,12 @@ public class AccessKey {
         this.accessKey = accessKey;
     }
 
-    public String getMod() {
-        return mod;
+    public String getMode() {
+        return mode;
     }
 
-    public void setMod(String mod) {
-        this.mod = mod;
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public String getDescription() {
@@ -87,7 +87,7 @@ public class AccessKey {
         return "AccessKey{" +
                 "id='" + id + '\'' +
                 ", access_key='" + accessKey + '\'' +
-                ", mod='" + mod + '\'' +
+                ", mod='" + mode + '\'' +
                 ", description='" + description + '\'' +
                 ", core_user_id=" + coreUserId +
                 ", user_id=" + userId +
