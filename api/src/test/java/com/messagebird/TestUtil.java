@@ -354,7 +354,7 @@ class TestUtil {
         final AccessKey accessKey = new AccessKey();
         accessKey.setId("ANY_ID");
         accessKey.setAccessKey("ANY_KEY");
-        accessKey.setMod("ANY_MOD");
+        accessKey.setMode("ANY_MOD");
 
         final ChildAccountCreateResponse childAccountCreateResponse = new ChildAccountCreateResponse();
         childAccountCreateResponse.setId("ANY_ID");
