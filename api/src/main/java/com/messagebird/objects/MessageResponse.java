@@ -196,7 +196,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
     static public class Recipients implements Serializable {
 
         private static final long serialVersionUID = 547164972757802213L;
-
+        private Integer totalCount;
         private Integer totalSentCount;
         private Integer totalDeliveredCount;
         private Integer totalDeliveryFailedCount;
@@ -208,11 +208,16 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         @Override
         public String toString() {
             return "Recipients{" +
-                    "totalSentCount=" + totalSentCount +
+                    "totalCount=" + totalCount +
+                    ", totalSentCount=" + totalSentCount +
                     ", totalDeliveredCount=" + totalDeliveredCount +
                     ", totalDeliveryFailedCount=" + totalDeliveryFailedCount +
                     ", items=" + items +
                     '}';
+        }
+
+        public Integer getTotalCount() {
+            return totalCount;
         }
 
         /**
@@ -260,10 +265,20 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         private static final long serialVersionUID = -4104837036540050532L;
 
         private BigInteger recipient;
+        private BigInteger originator;
         private String status;
         private Date statusDatetime;
+        private String recipientCountry;
+        private Integer recipientCountryPrefix;
+        private String recipientOperator;
+        private Integer messageLength;
+        private String statusReason;
         @Nullable
         private Price price;
+        private String mccmnc;
+        private String mcc;
+        private String mnc;
+        private int messagePartCount;
 
         public Items() {
         }
@@ -272,10 +287,20 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         public String toString() {
             return "Items{" +
                     "recipient=" + recipient +
+                    ", originator=" + originator +
                     ", status='" + status + '\'' +
                     ", statusDatetime=" + statusDatetime +
+                    ", recipientCountry='" + recipientCountry + '\'' +
+                    ", recipientCountryPrefix=" + recipientCountryPrefix +
+                    ", recipientOperator='" + recipientOperator + '\'' +
+                    ", messageLength=" + messageLength +
+                    ", statusReason='" + statusReason + '\'' +
                     ", price=" + price +
-                    "}";
+                    ", mccmnc='" + mccmnc + '\'' +
+                    ", mcc='" + mcc + '\'' +
+                    ", mnc='" + mnc + '\'' +
+                    ", messagePartCount=" + messagePartCount +
+                    '}';
         }
 
         /**
@@ -309,6 +334,45 @@ public class MessageResponse implements MessageResponseBase, Serializable {
             return price;
         }
 
+        public BigInteger getOriginator() {
+            return originator;
+        }
+
+        public String getRecipientCountry() {
+            return recipientCountry;
+        }
+
+        public Integer getRecipientCountryPrefix() {
+            return recipientCountryPrefix;
+        }
+
+        public String getRecipientOperator() {
+            return recipientOperator;
+        }
+
+        public Integer getMessageLength() {
+            return messageLength;
+        }
+
+        public String getStatusReason() {
+            return statusReason;
+        }
+
+        public String getMccmnc() {
+            return mccmnc;
+        }
+
+        public String getMcc() {
+            return mcc;
+        }
+
+        public String getMnc() {
+            return mnc;
+        }
+
+        public int getMessagePartCount() {
+            return messagePartCount;
+        }
     }
 
     /**
