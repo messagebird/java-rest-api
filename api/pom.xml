@@ -4,7 +4,7 @@
 
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>3.1.10</version> <!--
+    <version>3.1.11-SNAPSHOT</version> <!--
         are you going to bump a major number?
         then you are pleased to replace com.messagebird.Base64 with some library, for example net.iharder.base64
     -->
@@ -229,7 +229,7 @@
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                    <stagingProgressTimeoutMinutes>10</stagingProgressTimeoutMinutes>
+                    <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
                 </configuration>
             </plugin>
         </plugins>
