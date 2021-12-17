@@ -34,7 +34,7 @@ public class ExampleViewVoiceCallLegs {
                         messageBirdClient.viewCallLegsByCallId(voiceCall.getId(), null, null);
                 //Display voice call leg response object
                 for (VoiceCallLeg callLeg : voiceCallLegResponse.getData()) {
-                    System.out.printf("\t\t%s -> %s, %s [%s]\n", callLeg.source, callLeg.destination, callLeg.direction, callLeg.status);
+                    System.out.printf("\t\t%s -> %s, %s [status: %s sipResponseCode: %s] \n", callLeg.source, callLeg.destination, callLeg.direction, callLeg.status, callLeg.sipResponseCode);
                 }
             }
 

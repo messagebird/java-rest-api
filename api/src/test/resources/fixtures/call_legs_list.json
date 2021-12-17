@@ -14,6 +14,7 @@
       "updatedAt":"2019-01-10T16:13:54Z",
       "answeredAt":"2019-01-10T16:13:24Z",
       "endedAt":"2019-01-10T16:13:30Z",
+      "sipResponseCode": 200,
       "_links":{
         "self":"/calls/unforgiven-call/legs/first-leg-of-unforgiven-call"
       }
