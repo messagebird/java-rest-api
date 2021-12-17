@@ -3,6 +3,7 @@ package com.messagebird;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
+import com.messagebird.objects.voicecalls.SipResponseCode;
 import com.messagebird.objects.voicecalls.VoiceCall;
 import com.messagebird.objects.voicecalls.VoiceLegDirection;
 import com.messagebird.objects.voicecalls.VoiceLegStatus;
@@ -100,7 +101,7 @@ public class VoiceCallingTest {
             VoiceLegStatus.Hangup, VoiceLegDirection.Outgoing,
             new BigDecimal("0.001519"), "EUR", 7,
             parseDate("2019-01-10T16:12:54Z"), parseDate("2019-01-10T16:13:54Z"),
-            parseDate("2019-01-10T16:13:24Z"), parseDate("2019-01-10T16:13:30Z")
+            parseDate("2019-01-10T16:13:24Z"), parseDate("2019-01-10T16:13:30Z"), SipResponseCode.OK
         );
 
     private static Date parseDate(String input) {

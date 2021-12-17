@@ -28,6 +28,7 @@ public class VoiceCallLeg {
     public final Date updatedAt;
     public final Date answeredAt;
     public final Date endedAt;
+    public final SipResponseCode sipResponseCode;
 
 
     @JsonCreator
@@ -44,7 +45,8 @@ public class VoiceCallLeg {
         @JsonProperty("createdAt") Date createdAt,
         @JsonProperty("updatedAt") Date updatedAt,
         @JsonProperty("answeredAt") Date answeredAt,
-        @JsonProperty("endedAt") Date endedAt
+        @JsonProperty("endedAt") Date endedAt,
+        @JsonProperty("sipResponseCode") SipResponseCode sipResponseCode
     ) {
         this.id = id;
         this.callID = callID;
@@ -59,6 +61,7 @@ public class VoiceCallLeg {
         this.updatedAt = updatedAt;
         this.answeredAt = answeredAt;
         this.endedAt = endedAt;
+        this.sipResponseCode = sipResponseCode;
     }
 
     @Override
@@ -77,6 +80,7 @@ public class VoiceCallLeg {
                 ", updatedAt='" + updatedAt + '\'' +
                 ", answeredAt='" + answeredAt + '\'' +
                 ", endedAt='" + endedAt + '\'' +
+                ", sipResponseCode='" + sipResponseCode + '\'' +
                 '}';
     }
 
@@ -97,11 +101,12 @@ public class VoiceCallLeg {
                 Objects.equals(createdAt, that.createdAt) &&
                 Objects.equals(updatedAt, that.updatedAt) &&
                 Objects.equals(answeredAt, that.answeredAt) &&
-                Objects.equals(endedAt, that.endedAt);
+                Objects.equals(endedAt, that.endedAt) &&
+                Objects.equals(sipResponseCode, that.sipResponseCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, callID, source, destination, status, direction, cost, currency, duration, createdAt, updatedAt, answeredAt, endedAt);
+        return Objects.hash(id, callID, source, destination, status, direction, cost, currency, duration, createdAt, updatedAt, answeredAt, endedAt, sipResponseCode);
     }
 }
