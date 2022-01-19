@@ -17,7 +17,7 @@ public class TemplateResponse implements Serializable {
   private HSMCategory category;
   private List<HSMComponent> components;
   private HSMStatus status;
-  private HSMRejectedReason rejectedReason;
+  private String rejectedReason;
   private Date createdAt;
   private Date updatedAt;
 
@@ -65,11 +65,11 @@ public class TemplateResponse implements Serializable {
     this.status = status;
   }
 
-  public HSMRejectedReason getRejectedReason() {
+  public String getRejectedReason() {
     return rejectedReason;
   }
 
-  public void setRejectedReason(HSMRejectedReason rejectedReason) {
+  public void setRejectedReason(String rejectedReason) {
     this.rejectedReason = rejectedReason;
   }
 
