@@ -6,3 +6,13 @@ jdk:
   - oraclejdk11
   - openjdk11
   - openjdk8
+  import com.messagebird.MessageBirdClient;
+import com.messagebird.MessageBirdService;
+import com.messagebird.MessageBirdServiceImpl;
+import com.messagebird.objects.MessageResponse;
+import com.messagebird.exceptions.GeneralException;
+import com.messagebird.exceptions.UnauthorizedException;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
