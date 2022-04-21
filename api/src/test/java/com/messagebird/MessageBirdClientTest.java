@@ -10,6 +10,8 @@ import com.messagebird.objects.integrations.TemplateList;
 import com.messagebird.objects.integrations.TemplateResponse;
 import com.messagebird.objects.voicecalls.*;
 import java.util.ArrayList;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -1289,6 +1291,25 @@ public class MessageBirdClientTest {
 
     @Test
     public void testConversationMessage() throws Exception {
+        ConversationSendRequest request = createDummyConversationRequest();
+        ConversationSendResponse conversationSendResponse = new ConversationSendResponse();
+        conversationSendResponse.setStatus("ACCEPTED");
+        conversationSendResponse.setId("1234");
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        when(messageBirdServiceMock.sendPayLoad( CONVERSATIONS_BASE_URL + CONVERSATION_SEND_PATH, request, ConversationSendResponse.class))
+                .thenReturn(conversationSendResponse);
+        ConversationSendResponse response = messageBirdClientInjectMock.sendMessage(request);
+
+        verify(messageBirdServiceMock, times(1))
+                .sendPayLoad(CONVERSATIONS_BASE_URL + CONVERSATION_SEND_PATH, request, ConversationSendResponse.class);
+        assertNotNull(response.getId());
+        assertNotNull(response.getStatus());
+    }
+
+    private ConversationSendRequest createDummyConversationRequest() {
         ConversationContent conversationContent = new ConversationContent();
         conversationContent.setText("test");
         ConversationSendRequest request = new ConversationSendRequest();
@@ -1298,11 +1319,8 @@ public class MessageBirdClientTest {
         request.setType(ConversationContentType.TEXT);
         request.setContent(conversationContent);
         request.setTrackId("mycampaign");
-        ConversationSendResponse conversationSendResponse = messageBirdClient.sendMessage(request);
-        ConversationMessage conversationMessageResponse = messageBirdClient.viewConversationMessage(conversationSendResponse.getId());
-        assertEquals(request.getFrom(),conversationMessageResponse.getChannelId());
-        assertEquals(ConversationContentType.TEXT,conversationMessageResponse.getType());
-        assertEquals(request.getTrackId(),conversationMessageResponse.getTrackId());
-        assertNotNull(conversationMessageResponse.getStatus());
+        return request;
     }
+
+
 }

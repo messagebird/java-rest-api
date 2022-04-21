@@ -72,7 +72,7 @@ public class MessageBirdClient {
      * can, however, override this behaviour by providing absolute URLs
      * ourselves.
      */
-    private static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
+    static final String CONVERSATIONS_BASE_URL = "https://conversations.messagebird.com/v1";
     static final String VOICE_CALLS_BASE_URL = "https://voice.messagebird.com";
     static final String NUMBERS_CALLS_BASE_URL = "https://numbers.messagebird.com/v1";
     static final String MESSAGING_BASE_URL = "https://messaging.messagebird.com/v1";
@@ -91,10 +91,10 @@ public class MessageBirdClient {
     private static final String VERIFYPATH = "/verify";
     private static final String VERIFYEMAILPATH = "/verify/messages/email";
     private static final String VOICEMESSAGESPATH = "/voicemessages";
-    private static final String CONVERSATION_PATH = "/conversations";
-    private static final String CONVERSATION_SEND_PATH = "/send";
-    private static final String CONVERSATION_MESSAGE_PATH = "/messages";
-    private static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
+    static final String CONVERSATION_PATH = "/conversations";
+    static final String CONVERSATION_SEND_PATH = "/send";
+    static final String CONVERSATION_MESSAGE_PATH = "/messages";
+    static final String CONVERSATION_WEBHOOK_PATH = "/webhooks";
     static final String INTEGRATIONS_WHATSAPP_PATH = "/platforms/whatsapp";
     static final String VOICECALLSPATH = "/calls";
     static final String LEGSPATH = "/legs";
