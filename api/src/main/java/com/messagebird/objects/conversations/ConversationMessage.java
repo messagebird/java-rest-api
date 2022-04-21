@@ -13,6 +13,7 @@ public class ConversationMessage {
     private String id;
     private String conversationId;
     private String channelId;
+    private String trackId;
     private ConversationMessageDirection direction;
     private ConversationMessageStatus status;
     private ConversationContentType type;
@@ -122,6 +123,15 @@ public class ConversationMessage {
         this.platform = platform;
     }
 
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
+    }
+
+
     @Override
     public String toString() {
         return "ConversationMessage{" +
@@ -131,6 +141,7 @@ public class ConversationMessage {
                 ", direction=" + direction +
                 ", status=" + status +
                 ", type=" + type +
+                ", trackID=" + trackId +
                 ", content=" + content +
                 ", createdDatetime=" + createdDatetime +
                 ", updatedDatetime=" + updatedDatetime +

@@ -11,6 +11,8 @@ public class ConversationMessageRequest {
     private ConversationContent content;
     private String channelId;
     private String reportUrl;
+    private String trackId;
+    private String ttl;
     private Map<String, Object> source;
 
     public ConversationContentType getType() {
@@ -53,6 +55,20 @@ public class ConversationMessageRequest {
         this.source = source;
     }
 
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
+    }
+    public String getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(String ttl) {
+        this.ttl = ttl;
+    }
     @Override
     public String toString() {
         return "ConversationMessageRequest{" +
@@ -61,6 +77,8 @@ public class ConversationMessageRequest {
                 ", channelId='" + channelId + '\'' +
                 ", reportUrl='" + reportUrl + '\'' +
                 ", source=" + source +
+                ", trackID=" + trackId +
+                ", ttl=" + ttl +
                 '}';
     }
 }

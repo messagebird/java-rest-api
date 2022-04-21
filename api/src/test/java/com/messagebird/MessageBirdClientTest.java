@@ -4,6 +4,7 @@ import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.*;
+import com.messagebird.objects.conversations.*;
 import com.messagebird.objects.integrations.Template;
 import com.messagebird.objects.integrations.TemplateList;
 import com.messagebird.objects.integrations.TemplateResponse;
@@ -62,6 +63,27 @@ public class MessageBirdClientTest {
         assertNotNull(balance.getType());
         assertNotNull(balance.getPayment());
     }
+
+    @Test
+    public void testConversationMessage()throws Exception {
+
+        ConversationContent conversationContent = new ConversationContent();
+        conversationContent.setText("test");
+        ConversationSendRequest request = new ConversationSendRequest();
+        request.setFrom("channelid");
+        request.setTo("+34123123123");
+        request.setTtl("15s");
+        request.setType(ConversationContentType.TEXT);
+        request.setContent(conversationContent);
+        request.setTrackId("mycampaign");
+        ConversationSendResponse conversationSendResponse = messageBirdClient.sendMessage(request);
+        ConversationMessage conversationMessageResponse = messageBirdClient.viewConversationMessage(conversationSendResponse.getId());
+        assertEquals(request.getFrom(),conversationMessageResponse.getChannelId());
+        assertEquals(ConversationContentType.TEXT,conversationMessageResponse.getType());
+        assertEquals(request.getTrackId(),conversationMessageResponse.getTrackId());
+        assertNotNull(conversationMessageResponse.getStatus());
+    }
+
 
     @Test
     public void testGetHlr() throws Exception {
@@ -124,7 +146,7 @@ public class MessageBirdClientTest {
         filters.put("status", "scheduled");
 
         when(messageBirdServiceMock.requestList("/messages", filters, null, null, MessageList.class))
-        .thenReturn(mockedResponse);
+                .thenReturn(mockedResponse);
 
         final MessageList response = messageBirdClientMock.listMessagesFiltered(null, null, filters);
         assertNotNull(response);
@@ -813,7 +835,7 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
 
         when(messageBirdServiceMock.requestByID(url, "NL", PhoneNumbersResponse.class))
-            .thenReturn(mockedResponse);
+                .thenReturn(mockedResponse);
 
         final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("NL");
         verify(messageBirdServiceMock, times(1)).requestByID(url, "NL", PhoneNumbersResponse.class);
@@ -838,7 +860,7 @@ public class MessageBirdClientTest {
         options.setSearchPattern(PhoneNumberSearchPattern.START);
 
         when(messageBirdServiceMock.requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class))
-            .thenReturn(mockedResponse);
+                .thenReturn(mockedResponse);
 
         final PhoneNumbersResponse response = messageBirdClientMock.listNumbersForPurchase("US", options);
         verify(messageBirdServiceMock, times(1)).requestByID(url, "US", options.toHashMap(), PhoneNumbersResponse.class);
@@ -861,7 +883,7 @@ public class MessageBirdClientTest {
         payload.put("billingIntervalMonths", 1);
 
         when(messageBirdServiceMock.sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class))
-            .thenReturn(purchasedNumberMockData);
+                .thenReturn(purchasedNumberMockData);
         final PurchasedNumberCreatedResponse response = messageBirdClientMock.purchaseNumber("15625267429", "US", 1);
         verify(messageBirdServiceMock, times(1)).sendPayLoad(url, payload, PurchasedNumberCreatedResponse.class);
         assertNotNull(response);
@@ -884,7 +906,7 @@ public class MessageBirdClientTest {
         filter.addTag("tag");
 
         when(messageBirdServiceMock.requestByID(url, null, filter.toHashMap(), PurchasedNumbersResponse.class))
-            .thenReturn(purchasedNumbersMockData);
+                .thenReturn(purchasedNumbersMockData);
 
         final PurchasedNumbersResponse response = messageBirdClientMock.listPurchasedNumbers(filter);
 
@@ -902,7 +924,7 @@ public class MessageBirdClientTest {
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientMock = new MessageBirdClient(messageBirdServiceMock);
         when(messageBirdServiceMock.requestByID(url, "15625267429", PurchasedNumber.class))
-            .thenReturn(purchasedNumberMockData);
+                .thenReturn(purchasedNumberMockData);
         final PurchasedNumber response = messageBirdClientMock.viewPurchasedNumber("15625267429");
 
         verify(messageBirdServiceMock, times(1)).requestByID(url, "15625267429", PurchasedNumber.class);
@@ -924,7 +946,7 @@ public class MessageBirdClientTest {
         payload.put("tags", Collections.singletonList("tag"));
 
         when(messageBirdServiceMock.sendPayLoad("PATCH", url, payload, PurchasedNumber.class))
-            .thenReturn(updatedNumberMock);
+                .thenReturn(updatedNumberMock);
         final PurchasedNumber response = messageBirdClientMock.updateNumber(phoneNumber, "tag");
         verify(messageBirdServiceMock, times(1)).sendPayLoad("PATCH", url, payload, PurchasedNumber.class);
         assertNotNull(response);
@@ -1062,14 +1084,14 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
         );
 
         when(messageBirdServiceMock.sendPayLoad(url, template, TemplateResponse.class))
-            .thenReturn(templateResponse);
+                .thenReturn(templateResponse);
 
         final TemplateResponse response = messageBirdClientInjectMock.createWhatsAppTemplate(template);
 
@@ -1097,14 +1119,14 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s",
-            INTEGRATIONS_BASE_URL_V3,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V3,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
         );
 
         when(messageBirdServiceMock.requestList(url, 0, 0, TemplateList.class))
-            .thenReturn(templateList);
+                .thenReturn(templateList);
 
         final TemplateList response = messageBirdClientInjectMock.listWhatsAppTemplates(0, 0);
         verify(messageBirdServiceMock, times(1)).requestList(url, 0, 0, TemplateList.class);
@@ -1116,7 +1138,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testGetWhatsAppTemplatesBy()
-        throws GeneralException, UnauthorizedException, NotFoundException, ClassNotFoundException {
+            throws GeneralException, UnauthorizedException, NotFoundException, ClassNotFoundException {
         final String templateName = "sample_template_name";
         final TemplateResponse templateResponse1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
         final TemplateResponse templateResponse2 = TestUtil.createWhatsAppTemplateResponse("another_template", "en_US");
@@ -1128,14 +1150,14 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
         );
 
         when(messageBirdServiceMock.requestByIdAsList(url, templateName, TemplateResponse.class))
-            .thenReturn(templateList);
+                .thenReturn(templateList);
 
         final List<TemplateResponse> response = messageBirdClientInjectMock.getWhatsAppTemplatesBy(templateName);
         verify(messageBirdServiceMock, times(1)).requestByIdAsList(url, templateName, TemplateResponse.class);
@@ -1148,7 +1170,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testFetchWhatsAppTemplateBy()
-        throws UnauthorizedException, GeneralException, NotFoundException {
+            throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
         final String language = "ko";
         final TemplateResponse template = TestUtil.createWhatsAppTemplateResponse(templateName, language);
@@ -1157,16 +1179,16 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s/%s/%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH,
-            templateName,
-            language
+                "%s%s%s/%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                templateName,
+                language
         );
 
         when(messageBirdServiceMock.request(url, TemplateResponse.class))
-            .thenReturn(template);
+                .thenReturn(template);
 
         final TemplateResponse response = messageBirdClientInjectMock.fetchWhatsAppTemplateBy(templateName, language);
         verify(messageBirdServiceMock, times(1)).request(url, TemplateResponse.class);
@@ -1179,18 +1201,18 @@ public class MessageBirdClientTest {
 
     @Test
     public void testDeleteTemplatesByName()
-        throws UnauthorizedException, GeneralException, NotFoundException {
+            throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s/%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH,
-            templateName
+                "%s%s%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                templateName
         );
 
         when(messageBirdServiceMock.delete(url, null)).thenReturn(null);
@@ -1200,7 +1222,7 @@ public class MessageBirdClientTest {
 
     @Test
     public void testDeleteTemplatesByNameAndLanguage()
-        throws UnauthorizedException, GeneralException, NotFoundException {
+            throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
         final String language = "en_US";
 
@@ -1208,12 +1230,12 @@ public class MessageBirdClientTest {
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
 
         String url = String.format(
-            "%s%s%s/%s/%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH,
-            templateName,
-            language
+                "%s%s%s/%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                templateName,
+                language
         );
 
         when(messageBirdServiceMock.delete(url, null)).thenReturn(null);
@@ -1229,11 +1251,11 @@ public class MessageBirdClientTest {
         ChildAccountRequest childAccountRequest = new ChildAccountRequest();
         childAccountRequest.setName("name");
         when(messageBirdServiceMock.sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , childAccountRequest, ChildAccountCreateResponse.class))
-            .thenReturn(childAccountCreateResponse);
+                .thenReturn(childAccountCreateResponse);
         final ChildAccountCreateResponse response = messageBirdClientInjectMock.createChildAccount(childAccountRequest);
 
         verify(messageBirdServiceMock, times(1))
-               .sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , childAccountRequest, ChildAccountCreateResponse.class);
+                .sendPayLoad(PARTNER_ACCOUNTS_BASE_URL + "/child-accounts" , childAccountRequest, ChildAccountCreateResponse.class);
         assertNotNull(response);
         assertEquals(response.getId(), childAccountCreateResponse.getId());
         assertEquals(response.getName(), childAccountCreateResponse.getName());
