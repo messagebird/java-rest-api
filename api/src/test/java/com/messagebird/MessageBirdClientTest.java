@@ -15,7 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.*;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,27 +62,6 @@ public class MessageBirdClientTest {
         assertNotNull(balance.getType());
         assertNotNull(balance.getPayment());
     }
-
-    @Test
-    public void testConversationMessage()throws Exception {
-
-        ConversationContent conversationContent = new ConversationContent();
-        conversationContent.setText("test");
-        ConversationSendRequest request = new ConversationSendRequest();
-        request.setFrom("channelid");
-        request.setTo("+34123123123");
-        request.setTtl("15s");
-        request.setType(ConversationContentType.TEXT);
-        request.setContent(conversationContent);
-        request.setTrackId("mycampaign");
-        ConversationSendResponse conversationSendResponse = messageBirdClient.sendMessage(request);
-        ConversationMessage conversationMessageResponse = messageBirdClient.viewConversationMessage(conversationSendResponse.getId());
-        assertEquals(request.getFrom(),conversationMessageResponse.getChannelId());
-        assertEquals(ConversationContentType.TEXT,conversationMessageResponse.getType());
-        assertEquals(request.getTrackId(),conversationMessageResponse.getTrackId());
-        assertNotNull(conversationMessageResponse.getStatus());
-    }
-
 
     @Test
     public void testGetHlr() throws Exception {
@@ -175,7 +153,7 @@ public class MessageBirdClientTest {
         assertNotNull(mr.getId());
         assertEquals(mr.getReference(), reference);
         assertEquals(mr.getBody(), body);
-        assertEquals(mr.getDatacoding(), DataCodingType.plain);
+        assertEquals(DataCodingType.plain,mr.getDatacoding());
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -245,8 +223,8 @@ public class MessageBirdClientTest {
         final String body = "Body test message Über € " + messageBirdMSISDN;
         final MessageResponse mr = messageBirdClient.sendFlashMessage("originator", body, Collections.singletonList(messageBirdMSISDN));
         assertNotNull(mr.getId());
-        assertSame(mr.getType(), MsgType.flash);
-        assertSame(mr.getMclass(), MClassType.flash);
+        assertSame(MsgType.flash,mr.getType() );
+        assertSame(MClassType.flash, mr.getMclass());
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -317,8 +295,8 @@ public class MessageBirdClientTest {
         final VoiceMessageResponse mr = messageBirdClient.sendVoiceMessage(vm);
         assertNotNull(mr.getId());
         assertEquals(mr.getBody(), body);
-        assertSame(mr.getIfMachine(), IfMachineType.hangup);
-        assertSame(mr.getVoice(), VoiceType.male);
+        assertSame(IfMachineType.hangup, mr.getIfMachine() );
+        assertSame(VoiceType.male, mr.getVoice());
 
         // Deleting of a message is not yet supported in test mode
         // Thread.sleep(1000);
@@ -345,17 +323,6 @@ public class MessageBirdClientTest {
         assertNotNull(mr.getId());
         assertEquals(mr.getBody(), body);
         assertEquals(mr.getReference(), reference);
-
-        Thread.sleep(500);
-        // Viewing of a message is not yet supported in test mode
-        // final VoiceMessageResponse mr2 = messageBirdClient.viewVoiceMessage(mr.getId());
-        // assertTrue(mr2.getId() != null);
-        // assertTrue(mr2.getBody().equals(body));
-        // assertTrue(mr2.getReference().equals(reference));
-
-        // Deleting of a message is not yet supported in test mode
-        // Thread.sleep(1000);
-        // Gives 404 messageBirdClient.deleteVoiceMessage(mr.getId());
     }
 
     /**
@@ -390,7 +357,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testSendVerifyTokenAndGetVerifyObject() throws UnauthorizedException, GeneralException, NotFoundException {
+    public void testSendVerifyTokenAndGetVerifyObject() throws UnauthorizedException, GeneralException {
         Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
         assertFalse("id is empty", verify.getId().isEmpty());
@@ -404,7 +371,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testVerifyToken() throws UnauthorizedException, GeneralException, UnsupportedEncodingException {
+    public void testVerifyToken() throws UnauthorizedException, GeneralException {
         Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
 
@@ -420,7 +387,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testDeleteVerifyToken() throws UnauthorizedException, GeneralException, NotFoundException, UnsupportedEncodingException {
+    public void testDeleteVerifyToken() throws UnauthorizedException, GeneralException {
         Verify verify = messageBirdClient.sendVerifyToken(messageBirdMSISDN.toString());
         assertFalse("href is empty", verify.getHref().isEmpty());
         try {
@@ -474,8 +441,7 @@ public class MessageBirdClientTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenDestinationOfVoiceCallIsMissing() throws UnauthorizedException,
-            GeneralException {
+    public void shouldThrowIllegalArgumentExceptionWhenDestinationOfVoiceCallIsMissing() throws UnauthorizedException, GeneralException {
         final VoiceCall voiceCall = new VoiceCall();
         voiceCall.setSource("ANY_SOURCE");
 
@@ -527,8 +493,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testDeleteVoiceCall() throws UnauthorizedException,
-            GeneralException, NotFoundException {
+    public void testDeleteVoiceCall() throws UnauthorizedException, GeneralException, NotFoundException {
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
         MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
@@ -1137,8 +1102,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testGetWhatsAppTemplatesBy()
-            throws GeneralException, UnauthorizedException, NotFoundException, ClassNotFoundException {
+    public void testGetWhatsAppTemplatesBy() throws GeneralException, UnauthorizedException, NotFoundException {
         final String templateName = "sample_template_name";
         final TemplateResponse templateResponse1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");
         final TemplateResponse templateResponse2 = TestUtil.createWhatsAppTemplateResponse("another_template", "en_US");
@@ -1169,8 +1133,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testFetchWhatsAppTemplateBy()
-            throws UnauthorizedException, GeneralException, NotFoundException {
+    public void testFetchWhatsAppTemplateBy() throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
         final String language = "ko";
         final TemplateResponse template = TestUtil.createWhatsAppTemplateResponse(templateName, language);
@@ -1200,8 +1163,7 @@ public class MessageBirdClientTest {
     }
 
     @Test
-    public void testDeleteTemplatesByName()
-            throws UnauthorizedException, GeneralException, NotFoundException {
+    public void testDeleteTemplatesByName() throws UnauthorizedException, GeneralException, NotFoundException {
         final String templateName = "sample_template_name";
 
         MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
@@ -1323,5 +1285,24 @@ public class MessageBirdClientTest {
         String url = String.format("%s/child-accounts/%s", PARTNER_ACCOUNTS_BASE_URL, "ANY_ID");
         doNothing().when(messageBirdServiceMock).deleteByID(url, "ANY_ID");
         messageBirdClientInjectMock.deleteChildAccount("id");
+    }
+
+    @Test
+    public void testConversationMessage() throws Exception {
+        ConversationContent conversationContent = new ConversationContent();
+        conversationContent.setText("test");
+        ConversationSendRequest request = new ConversationSendRequest();
+        request.setFrom("channelid");
+        request.setTo("+34123123123");
+        request.setTtl("15s");
+        request.setType(ConversationContentType.TEXT);
+        request.setContent(conversationContent);
+        request.setTrackId("mycampaign");
+        ConversationSendResponse conversationSendResponse = messageBirdClient.sendMessage(request);
+        ConversationMessage conversationMessageResponse = messageBirdClient.viewConversationMessage(conversationSendResponse.getId());
+        assertEquals(request.getFrom(),conversationMessageResponse.getChannelId());
+        assertEquals(ConversationContentType.TEXT,conversationMessageResponse.getType());
+        assertEquals(request.getTrackId(),conversationMessageResponse.getTrackId());
+        assertNotNull(conversationMessageResponse.getStatus());
     }
 }

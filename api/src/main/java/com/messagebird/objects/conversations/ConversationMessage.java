@@ -131,7 +131,6 @@ public class ConversationMessage {
         this.trackId = trackId;
     }
 
-
     @Override
     public String toString() {
         return "ConversationMessage{" +
