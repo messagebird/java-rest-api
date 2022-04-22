@@ -8,6 +8,8 @@ public class ConversationSendRequest {
     private ConversationContent content;
     private String from;
     private String reportUrl;
+    private String trackId;
+    private String ttl;
     private ConversationFallbackOption fallback;
     private Map<String, Object> source;
     private ConversationMessageTag tag;
@@ -90,6 +92,21 @@ public class ConversationSendRequest {
         this.tag = tag;
     }
 
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
+    }
+
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public String getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(String ttl) {
+        this.ttl = ttl;
+    }
     @Override
     public String toString() {
         return "ConversationSendRequest{" +
@@ -98,11 +115,11 @@ public class ConversationSendRequest {
                 ", content=" + content +
                 ", from='" + from + '\'' +
                 ", reportUrl='" + reportUrl + '\'' +
+                ", trackId='" + trackId + '\'' +
+                ", ttl='" + ttl + '\'' +
                 ", fallback=" + fallback + '\'' +
                 ", tags=" + tag +
                 ", source='" + source + '\'' +
                 '}';
     }
 }
-
-

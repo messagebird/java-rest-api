@@ -14,6 +14,8 @@ public class ConversationStartRequest {
     private ConversationMessageTag tag;
     private String channelId;
     private String reportUrl;
+    private String trackId;
+    private String ttl;
 
     public ConversationStartRequest(
             final String to,
@@ -91,6 +93,14 @@ public class ConversationStartRequest {
         this.tag = tag;
     }
 
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public void setTrackId(String trackId) {
+        this.trackId = trackId;
+    }
+
     @Override
     public String toString() {
         return "ConversationStartRequest{" +
@@ -101,6 +111,8 @@ public class ConversationStartRequest {
                 ", tag=" + tag +
                 ", channelId='" + channelId + '\'' +
                 ", reportUrl='" + reportUrl + '\'' +
+                ", trackId='" + trackId + '\'' +
+                ", ttl='" + ttl + '\'' +
                 '}';
     }
 }
