@@ -24,7 +24,6 @@ public class ExampleCreateVoiceCallFlow {
 
         final VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest();
 
-        voiceCallFlowRequest.setTitle(args[1]);
         voiceCallFlowRequest.setRecord(true); // Can be false as well, see docs
         VoiceStep voiceStep = new VoiceStep();
         voiceCallFlowRequest.setSteps(Collections.singletonList(voiceStep)); // VoiceStep Object

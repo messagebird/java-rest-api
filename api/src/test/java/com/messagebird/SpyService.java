@@ -70,7 +70,7 @@ class SpyService<P> {
         service.method = method;
         service.url = url;
         service.payload = payload;
-
+    
         return service;
     }
 
