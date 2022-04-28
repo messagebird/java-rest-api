@@ -1,6 +1,7 @@
 {
   "data": [
     {
+      "title": "Call title",
       "id": "e781a76f-14ad-45b0-8490-409300244e20",
       "steps": [
         {
@@ -31,19 +32,10 @@
       "record": true,
       "default": false,
       "createdAt": "2019-08-06T14:13:06Z",
-      "updatedAt": "2019-08-06T14:13:06Z",
-      "_links": {
-        "self": "/call-flows/70fbdda2-4f1f-44ce-8792-75af32cf598c"
-      }
+      "updatedAt": "2019-08-06T14:13:06Z"
     }
   ],
   "_links": {
-    "self": "/call-flows?page=1"
-  },
-  "pagination": {
-    "totalCount": 10,
-    "pageCount": 3,
-    "currentPage": 2,
-    "perPage": 12
+    "self": "/call-flows/70fbdda2-4f1f-44ce-8792-75af32cf598c"
   }
 }

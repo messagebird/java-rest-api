@@ -363,7 +363,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     <P> APIResponse doRequest(final String method, final String url, final Map<String, String> headers, final P payload) throws GeneralException {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
-
+        
         if (METHOD_PATCH.equalsIgnoreCase(method)) {
             // It'd perhaps be cleaner to call this in the constructor, but
             // we'd then need to throw GeneralExceptions from there. This means

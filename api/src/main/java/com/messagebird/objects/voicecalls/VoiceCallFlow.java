@@ -37,10 +37,12 @@ public class VoiceCallFlow implements Serializable {
         this.id = id;
     }
 
+    @Deprecated
     public String getTitle() {
         return title;
     }
 
+    @Deprecated
     public void setTitle(String title) {
         this.title = title;
     }

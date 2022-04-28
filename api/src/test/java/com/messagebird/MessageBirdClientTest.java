@@ -427,7 +427,6 @@ public class MessageBirdClientTest {
         voiceCall.setDestination("ANY_DESTINATION");
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
-        voiceCallFlow.setTitle("Test title");
         VoiceStep voiceStep = new VoiceStep();
         voiceStep.setAction("say");
 
@@ -448,7 +447,6 @@ public class MessageBirdClientTest {
         voiceCall.setSource("ANY_SOURCE");
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
-        voiceCallFlow.setTitle("Test title");
         VoiceStep voiceStep = new VoiceStep();
         voiceStep.setAction("say");
 

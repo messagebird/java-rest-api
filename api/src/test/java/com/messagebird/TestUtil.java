@@ -28,7 +28,6 @@ class TestUtil {
         voiceCall.setDestination(destination);
 
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
-        voiceCallFlow.setTitle("Test title");
         VoiceStep voiceStep = new VoiceStep();
         voiceStep.setAction("say");
 
@@ -211,7 +210,6 @@ class TestUtil {
 
     public static VoiceCallFlowRequest createVoiceCallFlowRequest() {
         final VoiceCallFlowRequest voiceCallFlow = new VoiceCallFlowRequest();
-        voiceCallFlow.setTitle("ANY_TITLE");
         voiceCallFlow.setRecord(true);
         voiceCallFlow.setSteps(Collections.singletonList(createVoiceStep()));
         voiceCallFlow.setDefaultCall(true);

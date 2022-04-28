@@ -64,6 +64,21 @@ public class VoiceCallFlowTest {
         this.testVoiceCallFlowAgainstFixture(voiceCallFlow);
     }
 
+    @Test
+    public void testViewTitlePresent() throws GeneralException, UnauthorizedException, NotFoundException {
+        String responseFixture = Resources.readResourceText("/fixtures/call_flow_view_title.json");
+        MessageBirdService messageBirdService = SpyService
+            .expects("GET", "call-flows/e781a76f-14ad-45b0-8490-409300244e20")
+            .withVoiceCallAPIBaseURL()
+            .andReturns(new APIResponse(responseFixture));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+        VoiceCallFlow voiceCallFlow = messageBirdClient
+            .viewVoiceCallFlow("e781a76f-14ad-45b0-8490-409300244e20")
+            .getData()
+            .get(0);
+        this.testVoiceCallFlowAgainstFixture(voiceCallFlow, true);
+    }
+
     @Test (expected = IllegalArgumentException.class)
     public void testViewShouldThrowInvalidArgumentException() throws NotFoundException, GeneralException, UnauthorizedException {
         String responseFixture = Resources.readResourceText("/fixtures/call_flow_view.json");
@@ -81,7 +96,6 @@ public class VoiceCallFlowTest {
         String responseFixture = Resources.readResourceText("/fixtures/call_flow_update_response.json");
 
         VoiceCallFlowRequest voiceCallFlowRequest = new VoiceCallFlowRequest("e781a76f-14ad-45b0-8490-409300244e20");
-        voiceCallFlowRequest.setTitle("Forward call to 316123456782");
         voiceCallFlowRequest.setDefaultCall(true);
         voiceCallFlowRequest.setRecord(true);
         voiceCallFlowRequest.setSteps(
@@ -220,9 +234,15 @@ public class VoiceCallFlowTest {
      * In order to reuse this method for further tests you need to make sure that the fixtures
      * match the date in this test. See call_flows_post.json
      */
+
     private void testVoiceCallFlowAgainstFixture(VoiceCallFlow voiceCallFlow) {
+        testVoiceCallFlowAgainstFixture(voiceCallFlow, false);
+    }
+
+    private void testVoiceCallFlowAgainstFixture(VoiceCallFlow voiceCallFlow, boolean hasTitle) {
         assertEquals(voiceCallFlow.getId(), "e781a76f-14ad-45b0-8490-409300244e20");
-        assertEquals(voiceCallFlow.getTitle(), "Forward call to 31612345678");
+        if (!hasTitle) assertEquals(voiceCallFlow.getTitle(), null);
+        if (hasTitle) assertNotEquals(voiceCallFlow.getTitle(), null);
         assertEquals(voiceCallFlow.isRecord(), true);
         assertEquals(voiceCallFlow.isDefaultCall(), false);
         assertEquals(voiceCallFlow.getCreatedAt().toString(), "Tue Aug 06 16:13:06 CEST 2019");
