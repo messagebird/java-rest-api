@@ -15,7 +15,25 @@ public enum ConversationMessageStatus {
     READ("read"),
     RECEIVED("received"),
     SENT("sent"),
-    UNSUPPORTED("unsupported");
+    UNSUPPORTED("unsupported"),
+    ACCEPTED("accepted"),
+    REJECTED("rejected"),
+    UNKNOWN("unknown"),
+    //WA specific statuses
+    TRANSMITTED("transmitted"),
+    //SMS specific statuses
+    DELIVERY_FAILED("delivery_failed"),
+    BUFFERED("buffered"),
+    EXPIRED("expired"),
+    //Email specific statuses
+    CLICKED("clicked"),
+    OPENED("opened"),
+    BOUNCE("bounce"),
+    SPAM_COMPLAINT("spam_complaint"),
+    OUT_OF_BOUNDED("out_of_bounded"),
+    DELAYED("delayed"),
+    LIST_UNSUBSCRIBE("list_unsubscribe"),
+    DISPATCHED("dispatched");
 
     private final String status;
 
