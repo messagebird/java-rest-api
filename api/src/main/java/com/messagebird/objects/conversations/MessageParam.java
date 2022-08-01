@@ -9,6 +9,7 @@ public class MessageParam {
     private String dateTime;
     private Media document;
     private Media image;
+    private Media voice;
 
     public TemplateMediaType getType() {
         return type;
@@ -66,16 +67,21 @@ public class MessageParam {
         this.image = image;
     }
 
+    public Media getVoice() { return voice; }
+
+    public void setVoice(Media voice) { this.voice = voice; }
+
     @Override
     public String toString() {
         return "MessageParam{" +
-                "type=" + type +
+                "type=" + type + '\'' +
                 ", text='" + text + '\'' +
                 ", payload='" + payload + '\'' +
-                ", currency=" + currency +
+                ", currency=" + currency + '\'' +
                 ", dateTime='" + dateTime + '\'' +
-                ", document=" + document +
-                ", image=" + image +
+                ", document=" + document + '\'' +
+                ", image=" + image + '\'' +
+                ", voice=" + voice +
                 '}';
     }
 }
