@@ -7,6 +7,7 @@ public enum TemplateMediaType {
 
     IMAGE("image"),
     DOCUMENT("document"),
+    VIDEO("video"),
     TEXT("text"),
     CURRENCY("currency"),
     DATETIME("date_time"),
