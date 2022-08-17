@@ -18,6 +18,8 @@ public class TemplateResponse implements Serializable {
   private List<HSMComponent> components;
   private HSMStatus status;
   private String rejectedReason;
+  private String wabaID;
+  private String namespace;
   private Date createdAt;
   private Date updatedAt;
 
@@ -73,6 +75,22 @@ public class TemplateResponse implements Serializable {
     this.rejectedReason = rejectedReason;
   }
 
+  public String getWabaID() {
+    return wabaID;
+  }
+
+  public void setWabaID(String wabaID) {
+    this.wabaID = wabaID;
+  }
+
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
   public Date getCreatedAt() {
     return createdAt;
   }
@@ -98,6 +116,8 @@ public class TemplateResponse implements Serializable {
         ", components=" + components +
         ", status='" + status + '\'' +
         ", rejectedReason='" + rejectedReason + '\'' +
+        ", wabaID='" + wabaID + '\'' +
+        ", namespace='" + namespace + '\'' +
         ", createdAt=" + createdAt +
         ", updatedAt=" + updatedAt +
         '}';

@@ -316,6 +316,9 @@ class TestUtil {
         components.add(createHSMComponentButton());
         templateResponse.setComponents(components);
 
+        templateResponse.setWabaID("testWABAID");
+        templateResponse.setNamespace("testNamespace");
+
         return templateResponse;
     }
 
@@ -331,6 +334,8 @@ class TestUtil {
         components.add(createHSMComponentFooter());
         components.add(createHSMComponentButton());
         template.setComponents(components);
+
+        template.setWabaID("testWABAID");
 
         return template;
     }
