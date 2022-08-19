@@ -26,7 +26,7 @@ public class ExampleFetchTemplateByNameAndLanguage {
     // Add the service to the client
     final MessageBirdClient messageBirdClient = new MessageBirdClient(wsr);
 
-    // template name and langugae from input
+    // template name and language from input
     final String templateName = args[1];
     final String language = args[2];
 
@@ -34,7 +34,7 @@ public class ExampleFetchTemplateByNameAndLanguage {
       System.out.println("Fetching WhatsApp Template list by {name: " + templateName + ", language: " + language + "}");
       final TemplateResponse template = messageBirdClient.fetchWhatsAppTemplateBy(templateName, language);
       System.out.println(template.toString());
-    } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
+    } catch (GeneralException | UnauthorizedException | NotFoundException | IllegalArgumentException exception) {
       exception.printStackTrace();
     }
   }

@@ -12,16 +12,18 @@ public class Template {
 
   private String name;
   private String language;
+  private String wabaID;
   private List<HSMComponent> components;
   private HSMCategory category;
 
   public Template() {
   }
 
-  public Template(String name, String language,
-      List<HSMComponent> components, HSMCategory category) {
+  public Template(String name, String language, String wabaID,
+                  List<HSMComponent> components, HSMCategory category) {
     this.name = name;
     this.language = language;
+    this.wabaID = wabaID;
     this.components = components;
     this.category = category;
   }
@@ -40,6 +42,14 @@ public class Template {
 
   public void setLanguage(String language) {
     this.language = language;
+  }
+
+  public String getWABAID() {
+    return wabaID;
+  }
+
+  public void setWABAID(String wabaID) {
+    this.wabaID = wabaID;
   }
 
   public List<HSMComponent> getComponents() {
@@ -63,6 +73,7 @@ public class Template {
     return "WhatsAppTemplate{" +
         "name='" + name + '\'' +
         ", language='" + language + '\'' +
+        ", wabaID='" + wabaID + '\'' +
         ", components=" + components +
         ", category='" + category + '\'' +
         '}';
@@ -77,6 +88,7 @@ public class Template {
     this.validateComponents();
     this.validateName();
     this.validateLanguage();
+    this.validateWABAID();
     this.validateCategory();
   }
 
@@ -120,6 +132,19 @@ public class Template {
       throw new IllegalArgumentException("A \"language\" field is required.");
     } else if (this.language.length() == 0) {
       throw new IllegalArgumentException("A \"language\" field can not be an empty string.");
+    }
+  }
+
+  /**
+   * Check if wabaID field is valid.
+   *
+   * @throws IllegalArgumentException If wabaID field is null or empty string.
+   */
+  private void validateWABAID() {
+    if (this.wabaID == null) {
+      throw new IllegalArgumentException("A \"wabaID\" field is required.");
+    } else if (this.wabaID.length() == 0) {
+      throw new IllegalArgumentException("A \"wabaID\" field can not be an empty string.");
     }
   }
 

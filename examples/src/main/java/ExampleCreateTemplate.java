@@ -25,8 +25,8 @@ import java.util.List;
 public class ExampleCreateTemplate {
 
   public static void main(String[] args) {
-    if (args.length < 2) {
-      System.out.println("Please specify your access key and a template name example : java -jar <this jar file> test_accesskey \"My template name\"");
+    if (args.length < 3) {
+      System.out.println("Please specify your access key and a template name and WABA ID example : java -jar <this jar file> test_accesskey \"My template name\" \"WABA ID\"");
       return;
     }
 
@@ -84,13 +84,14 @@ public class ExampleCreateTemplate {
 
     template.setName(args[1]);
     template.setLanguage("en_US");
+    template.setWABAID(args[2]);
     template.setComponents(components);
     template.setCategory(HSMCategory.ACCOUNT_UPDATE);
 
     try {
       TemplateResponse response = messageBirdClient.createWhatsAppTemplate(template);
       System.out.println(response.toString());
-    } catch (GeneralException | UnauthorizedException exception) {
+    } catch (GeneralException | UnauthorizedException | IllegalArgumentException exception) {
       exception.printStackTrace();
     }
   }

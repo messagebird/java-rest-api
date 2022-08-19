@@ -1895,6 +1895,34 @@ public class MessageBirdClient {
     }
 
     /**
+     * Gets a WhatsAppTemplate listing with specified pagination options and a wabaID or channelID filter.
+     *
+     * @param offset    Number of objects to skip.
+     * @param limit     Number of objects to take.
+     * @param wabaID    The WABA ID to filter templates by.
+     * @param channelID A channel ID filter to return only templates that can be sent via that channel.
+     * @return List of templates.
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws IllegalArgumentException if the provided arguments are not valid
+     */
+    public TemplateList listWhatsAppTemplates(final int offset, final int limit, final String wabaID, final String channelID)
+            throws UnauthorizedException, GeneralException, IllegalArgumentException {
+        validateWABAIDAndChannelIDArguments(wabaID, channelID);
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (wabaID != null) map.put("wabaId", wabaID);
+        if (channelID != null) map.put("channelId", channelID);
+        String url = String.format(
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V3,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
+        );
+        return messageBirdService.requestList(url, map, offset, limit, TemplateList.class);
+    }
+
+    /**
      * Gets a template listing with default pagination options.
      *
      * @return List of whatsapp templates.
@@ -1913,12 +1941,13 @@ public class MessageBirdClient {
      *
      * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
      * @return {@code List<TemplateResponse>} template list
-     * @throws UnauthorizedException if client is unauthorized
-     * @throws GeneralException      general exception
-     * @throws NotFoundException     if template name is not found
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws NotFoundException        if template name is not found
+     * @throws IllegalArgumentException if the provided arguments are not valid
      */
     public List<TemplateResponse> getWhatsAppTemplatesBy(final String templateName)
-        throws GeneralException, UnauthorizedException, NotFoundException {
+        throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
         if (templateName == null) {
             throw new IllegalArgumentException("Template name must be specified.");
         }
@@ -1933,19 +1962,50 @@ public class MessageBirdClient {
         return messageBirdService.requestByIdAsList(url, templateName, TemplateResponse.class);
     }
 
+    /**
+     * Retrieves the template of an existing template name.
+     *
+     * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
+     * @param wabaID An optional WABA ID to look for the template ID under.
+     * @param channelID An optional channel ID to specify. If the template can be sent via the channel, it will return the template.
+     *
+     * @return {@code List<TemplateResponse>} template list
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws NotFoundException        if template name is not found under the given WABA or cannot be sent under the supplied channel ID
+     * @throws IllegalArgumentException if the provided arguments are not valid
+     */
+    public List<TemplateResponse> getWhatsAppTemplatesBy(final String templateName, final String wabaID, final String channelID)
+            throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        if (templateName == null) {
+            throw new IllegalArgumentException("Template name must be specified.");
+        }
+
+        String id = String.format("%s%s", templateName, getWabaIDOrChannelIDQuery(wabaID, channelID));
+        String url = String.format(
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
+        );
+
+        return messageBirdService.requestByIdAsList(url, id, TemplateResponse.class);
+    }
+
   /**
-     * Retrieves the template of an existing template name and language.
+     * Retrieves the template of an existing template name and language under the first waba connected to the requesting user.
      *
      * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
      * @param language A language code as returned by getWhatsAppTemplateBy in the language variable
      *
-     * @return {@code TemplateResponse} template list
+     * @return {@code TemplateResponse} template
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
-     * @throws NotFoundException     if template name and language are not found
+     * @throws NotFoundException     if template name and language are not found under the first waba connected to the requesting user.
+     * @throws IllegalArgumentException if the provided arguments are not valid
      */
     public TemplateResponse fetchWhatsAppTemplateBy(final String templateName, final String language)
-        throws GeneralException, UnauthorizedException, NotFoundException {
+        throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
         if (templateName == null || language == null) {
             throw new IllegalArgumentException("Template name and language must be specified.");
         }
@@ -1959,6 +2019,79 @@ public class MessageBirdClient {
             language
         );
         return messageBirdService.request(url, TemplateResponse.class);
+    }
+
+    /**
+     * Retrieves the template of an existing template name and language under a WABA or for a channel.
+     *
+     * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
+     * @param language A language code as returned by getWhatsAppTemplateBy in the language variable
+     * @param wabaID An optional WABA ID to look for the template ID under.
+     * @param channelID An optional channel ID to specify. If the template can be sent via the channel, it will return the template.
+     *
+     * @return {@code TemplateResponse} template
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws NotFoundException        if template name and language are not found under the given WABA or cannot be sent under the supplied channel ID.
+     * @throws IllegalArgumentException if the provided arguments are not valid
+     */
+    public TemplateResponse fetchWhatsAppTemplateBy(final String templateName, final String language, final String wabaID, final String channelID)
+            throws GeneralException, UnauthorizedException, NotFoundException, IllegalArgumentException {
+        if (templateName == null || language == null) {
+            throw new IllegalArgumentException("Template name and language must be specified.");
+        }
+
+        String url = String.format(
+                "%s%s%s/%s/%s%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                templateName,
+                language,
+                getWabaIDOrChannelIDQuery(wabaID, channelID)
+        );
+        return messageBirdService.request(url, TemplateResponse.class);
+    }
+
+    /**
+     * Validates the WABA ID and Channel ID argument pair.
+     *
+     * @param wabaID A WABA ID.
+     * @param channelID A channel ID.
+     * @throws IllegalArgumentException if the argument pair is invalid.
+     */
+    private void validateWABAIDAndChannelIDArguments(String wabaID, String channelID)
+            throws IllegalArgumentException {
+        if (wabaID == null && channelID == null) {
+            throw new IllegalArgumentException("wabaID or channelID must be specified");
+        }
+
+        if (wabaID != null && channelID != null) {
+            throw new IllegalArgumentException("only supply wabaID or channelID - not both");
+        }
+    }
+
+    /**
+     * Validates the WABA ID and Channel ID argument pair and returns a valid query parameter string.
+     *
+     * @param wabaID A WABA ID.
+     * @param channelID A channel ID.
+     * @throws IllegalArgumentException if the argument pair is invalid.
+     */
+    private String getWabaIDOrChannelIDQuery(String wabaID, String channelID)
+            throws IllegalArgumentException {
+        validateWABAIDAndChannelIDArguments(wabaID, channelID);
+
+        String query = "";
+
+        if (wabaID != null) {
+            query = String.format("?wabaId=%s", wabaID);
+        }
+        if (channelID != null) {
+            query = String.format("?channelId=%s", channelID);
+        }
+
+        return query;
     }
 
     /**
@@ -1981,32 +2114,6 @@ public class MessageBirdClient {
             INTEGRATIONS_WHATSAPP_PATH,
             TEMPLATES_PATH,
             templateName
-        );
-        messageBirdService.delete(url, null);
-    }
-
-    /**
-     * Delete template of an existing template name and language.
-     *
-     * @param templateName A template name which is created on the MessageBird platform
-     * @param language A language which is created on the MessageBird platform
-     * @throws UnauthorizedException if client is unauthorized
-     * @throws GeneralException      general exception
-     * @throws NotFoundException     if template name or language are not found
-     */
-    public void deleteTemplatesBy(final String templateName, final String language)
-        throws UnauthorizedException, GeneralException, NotFoundException {
-        if (templateName == null || language == null) {
-            throw new IllegalArgumentException("Template name and language must be specified.");
-        }
-
-        String url = String.format(
-            "%s%s%s/%s/%s",
-            INTEGRATIONS_BASE_URL_V2,
-            INTEGRATIONS_WHATSAPP_PATH,
-            TEMPLATES_PATH,
-            templateName,
-            language
         );
         messageBirdService.delete(url, null);
     }

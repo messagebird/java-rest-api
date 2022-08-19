@@ -34,7 +34,7 @@ public class ExampleListTemplatesByName {
       System.out.println("Retrieving WhatsApp Template list by name : " + templateName);
       final List<TemplateResponse> templateList = messageBirdClient.getWhatsAppTemplatesBy(templateName);
       System.out.println(templateList.toString());
-    } catch (GeneralException | UnauthorizedException | NotFoundException exception) {
+    } catch (GeneralException | UnauthorizedException | NotFoundException | IllegalArgumentException exception) {
       exception.printStackTrace();
     }
   }
