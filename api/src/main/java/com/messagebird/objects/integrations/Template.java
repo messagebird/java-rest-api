@@ -44,11 +44,11 @@ public class Template {
     this.language = language;
   }
 
-  public String getWabaID() {
+  public String getWABAID() {
     return wabaID;
   }
 
-  public void setWabaID(String wabaID) {
+  public void setWABAID(String wabaID) {
     this.wabaID = wabaID;
   }
 

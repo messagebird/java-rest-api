@@ -335,7 +335,7 @@ class TestUtil {
         components.add(createHSMComponentButton());
         template.setComponents(components);
 
-        template.setWabaID("testWABAID");
+        template.setWABAID("testWABAID");
 
         return template;
     }

@@ -84,7 +84,7 @@ public class ExampleCreateTemplate {
 
     template.setName(args[1]);
     template.setLanguage("en_US");
-    template.setWABAID(args[2])
+    template.setWABAID(args[2]);
     template.setComponents(components);
     template.setCategory(HSMCategory.ACCOUNT_UPDATE);
 
