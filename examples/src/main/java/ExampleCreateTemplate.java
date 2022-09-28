@@ -86,7 +86,7 @@ public class ExampleCreateTemplate {
     template.setLanguage("en_US");
     template.setWABAID(args[2]);
     template.setComponents(components);
-    template.setCategory(HSMCategory.ACCOUNT_UPDATE);
+    template.setCategory(HSMCategory.OTP);
 
     try {
       TemplateResponse response = messageBirdClient.createWhatsAppTemplate(template);
