@@ -11,7 +11,7 @@ public enum Language {
     EN_US("en-us"),
     ES_ES("es-es"),
     FR_FR("fr-fr"),
-    RU_RU("ru_ru"),
+    RU_RU("ru-ru"),
     ZH_CN("zh-cn"),
     EN_AU("en-au"),
     ES_MX("es-mx"),
