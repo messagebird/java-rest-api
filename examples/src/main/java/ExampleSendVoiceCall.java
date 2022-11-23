@@ -46,6 +46,7 @@ public class ExampleSendVoiceCall {
             voiceStep.setOptions(voiceStepOption);
 
             voiceCallFlow.setSteps(Collections.singletonList(voiceStep));
+            voiceCallFlow.setMaxDuration(28800);
             voiceCall.setCallFlow(voiceCallFlow);
             //Sending request to client
             final VoiceCallResponse response = messageBirdClient.sendVoiceCall(voiceCall);

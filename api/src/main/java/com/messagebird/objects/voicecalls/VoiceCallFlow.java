@@ -23,6 +23,9 @@ public class VoiceCallFlow implements Serializable {
     @JsonProperty("default")
     private boolean defaultCall;
 
+    @JsonProperty("maxDuration")
+    private Integer maxDuration;
+
     private Date createdAt;
     private Date updatedAt;
 
@@ -71,6 +74,10 @@ public class VoiceCallFlow implements Serializable {
         this.defaultCall = defaultCall;
     }
 
+    public Integer getMaxDuration() { return maxDuration; }
+
+    public void setMaxDuration(Integer maxDuration) { this.maxDuration = maxDuration; }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -103,6 +110,7 @@ public class VoiceCallFlow implements Serializable {
                 ", record=" + record +
                 ", steps=" + steps +
                 ", default=" + defaultCall +
+                ", maxDuration=" + maxDuration +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
