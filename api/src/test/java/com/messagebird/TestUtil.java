@@ -30,6 +30,7 @@ class TestUtil {
         final VoiceCallFlow voiceCallFlow = new VoiceCallFlow();
         VoiceStep voiceStep = new VoiceStep();
         voiceStep.setAction("say");
+        voiceCallFlow.setMaxDuration(28800);
 
         final VoiceStepOption voiceStepOption = new VoiceStepOption();
         voiceStepOption.setPayload("This is a journey into sound. Good bye!");
