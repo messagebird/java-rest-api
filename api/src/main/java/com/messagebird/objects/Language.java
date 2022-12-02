@@ -1,5 +1,7 @@
 package com.messagebird.objects;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Created by faizan on 09/12/15.
  */
@@ -25,13 +27,21 @@ public enum Language {
     PT_BR("pt-br"),
     RO_RO("ro-ro");
 
-    private String code;
+    final String code;
 
     Language(String code) {
        this.code = code;
     }
 
+    @JsonValue
+    public String getCode() {
+        return code;
+    }
+
+    @Override
     public String toString() {
-        return this.code;
+        return "Language{" +
+                "code='" + code + '\'' +
+                '}';
     }
 }

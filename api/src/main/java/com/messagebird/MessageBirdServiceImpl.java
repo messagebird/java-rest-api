@@ -590,7 +590,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             connection.setRequestProperty("Content-Type", "application/json");
             ObjectMapper mapper = new ObjectMapper();
             mapper.setSerializationInclusion(Include.NON_NULL);
-            mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
             // Specifically set the date format for POST requests so scheduled
             // messages and other things relying on specific date formats don't
             // fail when sending.
