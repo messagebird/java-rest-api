@@ -16,7 +16,9 @@ public enum HSMStatus {
   PENDING("PENDING"),
   REJECTED("REJECTED"),
   PENDING_DELETION("PENDING_DELETION"),
-  DELETED("DELETED");
+  DELETED("DELETED"),
+  DISABLED("DISABLED"),
+  PAUSED("PAUSED");
 
   private final String status;
 
