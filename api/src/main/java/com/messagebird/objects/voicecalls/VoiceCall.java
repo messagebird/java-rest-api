@@ -63,10 +63,12 @@ public class VoiceCall implements MessageBase, Serializable {
         return webhook;
     }
 
+    @JsonIgnore
     public void setWebhook(String url) {
         this.setWebhook(url, null);
     }
 
+    @JsonIgnore
     public void setWebhook(String url, String token) {
         this.webhook.setUrl(url);
         this.webhook.setToken(token);
