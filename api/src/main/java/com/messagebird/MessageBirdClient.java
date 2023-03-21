@@ -470,7 +470,7 @@ public class MessageBirdClient {
      * @throws UnauthorizedException if client is unauthorized
      * @throws GeneralException      general exception
      */
-    Verify getVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
+    public Verify getVerifyObject(String id) throws NotFoundException, GeneralException, UnauthorizedException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("ID cannot be empty for verify");
         }
