@@ -3,6 +3,7 @@ package com.messagebird.objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -382,7 +383,7 @@ public class MessageResponse implements MessageResponseBase, Serializable {
 
         private static final long serialVersionUID = -4104837036540050532L;
 
-        private float amount;
+        private BigDecimal amount;
         private String currency;
 
         public Price() {
@@ -397,6 +398,10 @@ public class MessageResponse implements MessageResponseBase, Serializable {
         }
 
         public float getAmount() {
+            return amount.floatValue();
+        }
+
+        public BigDecimal getAmountDecimal() {
             return amount;
         }
 
