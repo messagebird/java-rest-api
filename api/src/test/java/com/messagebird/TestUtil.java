@@ -305,7 +305,7 @@ class TestUtil {
         final TemplateResponse templateResponse = new TemplateResponse();
         templateResponse.setName(templateName);
         templateResponse.setLanguage(language);
-        templateResponse.setCategory(HSMCategory.OTP);
+        templateResponse.setCategory(HSMCategory.AUTHENTICATION);
         templateResponse.setStatus(HSMStatus.NEW);
         templateResponse.setCreatedAt(new Date());
         templateResponse.setUpdatedAt(new Date());
@@ -327,7 +327,7 @@ class TestUtil {
         final Template template = new Template();
         template.setName(templateName);
         template.setLanguage(language);
-        template.setCategory(HSMCategory.OTP);
+        template.setCategory(HSMCategory.AUTHENTICATION);
 
         final List<HSMComponent> components = new ArrayList<>();
         components.add(createHSMComponentHeader());
