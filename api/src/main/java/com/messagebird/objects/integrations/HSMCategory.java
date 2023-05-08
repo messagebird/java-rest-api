@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum HSMCategory {
 
-  OTP("OTP"),
-  TRANSACTIONAL("TRANSACTIONAL"),
+  AUTHENTICATION("AUTHENTICATION"),
+  UTILITY("UTILITY"),
   MARKETING("MARKETING");
 
   private final String category;
