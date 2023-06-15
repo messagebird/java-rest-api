@@ -1,5 +1,7 @@
 package com.messagebird.objects.integrations;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,11 @@ public class HSMComponent {
   private HSMComponentType type;
   private HSMComponentFormat format;
   private String text;
-  private List<HSMComponentButton> buttons;
+  @JsonProperty("add_security_recommendation")
+  private Boolean addSecurityRecommendation;
+  @JsonProperty("code_expiration_minutes")
+  private Integer codeExpirationMinutes;
+  private List<HSMComponentButton>  buttons;
   private HSMExample example;
 
   public HSMComponentType getType() {
@@ -56,6 +62,21 @@ public class HSMComponent {
     this.example = example;
   }
 
+  public Boolean getAddSecurityRecommendation() {
+    return addSecurityRecommendation;
+  }
+
+  public void setAddSecurityRecommendation(Boolean addSecurityRecommendation) {
+    this.addSecurityRecommendation = addSecurityRecommendation;
+  }
+
+  public Integer getCodeExpirationMinutes() {
+    return codeExpirationMinutes;
+  }
+
+  public void setCodeExpirationMinutes(Integer codeExpirationMinutes) {
+    this.codeExpirationMinutes = codeExpirationMinutes;
+  }
   @Override
   public String toString() {
     return "HSMComponent{" +
