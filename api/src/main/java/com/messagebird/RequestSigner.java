@@ -4,13 +4,13 @@ import com.messagebird.exceptions.RequestSigningException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * RequestSigner is used to verify HTTP requests and is an implementation of:
@@ -27,7 +27,7 @@ public class RequestSigner {
     private static final String ALGORITHM_HMAC_SHA256 = "HmacSHA256";
     private static final Charset CHARSET_UTF8 = StandardCharsets.UTF_8;
 
-    private SecretKeySpec secret;
+    private final SecretKeySpec secret;
 
     /**
      * Constructs a new RequestSigner instance.
@@ -55,8 +55,8 @@ public class RequestSigner {
     @Deprecated
     public boolean isMatch(String expectedSignature, Request request) {
         try {
-            return isMatch(Base64.decode(expectedSignature), request);
-        } catch (IOException e) {
+            return isMatch(Base64.getDecoder().decode(expectedSignature), request);
+        } catch (IllegalArgumentException e) {
             throw new RequestSigningException(e);
         }
     }
