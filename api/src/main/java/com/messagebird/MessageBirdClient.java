@@ -2234,6 +2234,10 @@ public class MessageBirdClient {
      * @see <a href="https://developers.messagebird.com/quickstarts/pricingapi/list-outbound-sms-prices/">Pricing API</a>
      */
     public OutboundSmsPriceResponse getOutboundSmsPrices(final String smppUsername) throws GeneralException, UnauthorizedException, NotFoundException {
+        if (smppUsername == null) {
+            throw new IllegalArgumentException("SMPP username must be specified.");
+        }
+
         final String url = String.format(OUTBOUND_SMS_PRICING_SMPP_PATH, smppUsername);
         return messageBirdService.request(url, OutboundSmsPriceResponse.class);
     }

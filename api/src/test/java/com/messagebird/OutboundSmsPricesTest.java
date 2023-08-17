@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 
 public class OutboundSmsPricesTest {
 
@@ -38,6 +39,11 @@ public class OutboundSmsPricesTest {
         MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
 
         assertReceivedExpectedResponse(messageBirdClient.getOutboundSmsPrices("test-smpp-user"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetOutboundSmsPricesSmppUsernameNull() throws GeneralException, UnauthorizedException, NotFoundException {
+        new MessageBirdClient(mock(MessageBirdService.class)).getOutboundSmsPrices(null);
     }
 
     private static void assertReceivedExpectedResponse(OutboundSmsPriceResponse outboundSmsPriceResponse) {
