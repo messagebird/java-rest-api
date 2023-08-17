@@ -1,0 +1,37 @@
+{
+  "gateway": 10,
+  "currencyCode": "EUR",
+  "totalCount": 3,
+  "prices": [
+    {
+      "price": "0.060000",
+      "currencyCode": "EUR",
+      "mccmnc": "0",
+      "mcc": "0",
+      "mnc": null,
+      "countryName": "Default Rate",
+      "countryIsoCode": "XX",
+      "operatorName": "Default Rate"
+    },
+    {
+      "price": "0.047000",
+      "currencyCode": "EUR",
+      "mccmnc": "202",
+      "mcc": "202",
+      "mnc": null,
+      "countryName": "Greece",
+      "countryIsoCode": "GR",
+      "operatorName": null
+    },
+    {
+      "price": "0.045000",
+      "currencyCode": "EUR",
+      "mccmnc": "20205",
+      "mcc": "202",
+      "mnc": "05",
+      "countryName": "Greece",
+      "countryIsoCode": "GR",
+      "operatorName": "Vodafone"
+    }
+  ]
+}

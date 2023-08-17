@@ -105,6 +105,8 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String FILES_PATH = "/files";
     static final String TEMPLATES_PATH = "/templates";
+    static final String OUTBOUND_SMS_PRICING_PATH = "/pricing/sms/outbound";
+    static final String OUTBOUND_SMS_PRICING_SMPP_PATH = "/pricing/sms/outbound/smpp/%s";
 
     static final String RECORDING_DOWNLOAD_FORMAT = ".wav";
 
@@ -2201,5 +2203,42 @@ public class MessageBirdClient {
         String url = String.format("%s/child-accounts", PARTNER_ACCOUNTS_BASE_URL);
         System.out.println("url: " + url);
         messageBirdService.deleteByID(url, id);
+    }
+
+    /**
+     * Returns outbound pricing for the default SMS configuration for the authenticated account.
+     *
+     * @return outbound pricing for the default SMS configuration for the authenticated account
+     *
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if pricing information could not be found
+     *
+     * @see <a href="https://developers.messagebird.com/quickstarts/pricingapi/list-outbound-sms-prices/">Pricing API</a>
+     */
+    public OutboundSmsPriceResponse getOutboundSmsPrices() throws GeneralException, UnauthorizedException, NotFoundException {
+        return messageBirdService.request(OUTBOUND_SMS_PRICING_PATH, OutboundSmsPriceResponse.class);
+    }
+
+    /**
+     * Returns outbound SMS pricing for a specific SMPP username.
+     *
+     * @param smppUsername the SMPP SystemID provided by MessageBird
+     *
+     * @return outbound SMS pricing for the given SMPP username
+     *
+     * @throws UnauthorizedException if client is unauthorized
+     * @throws GeneralException      general exception
+     * @throws NotFoundException     if pricing information could not be found for the given SMPP username
+     *
+     * @see <a href="https://developers.messagebird.com/quickstarts/pricingapi/list-outbound-sms-prices/">Pricing API</a>
+     */
+    public OutboundSmsPriceResponse getOutboundSmsPrices(final String smppUsername) throws GeneralException, UnauthorizedException, NotFoundException {
+        if (smppUsername == null) {
+            throw new IllegalArgumentException("SMPP username must be specified.");
+        }
+
+        final String url = String.format(OUTBOUND_SMS_PRICING_SMPP_PATH, smppUsername);
+        return messageBirdService.request(url, OutboundSmsPriceResponse.class);
     }
 } 
