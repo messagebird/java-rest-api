@@ -1877,6 +1877,31 @@ public class MessageBirdClient {
     }
 
     /**
+     * Update a WhatsApp message template through MessageBird.
+     *
+     * @param template {@link Template} object to be created
+     * @param templateName A name as returned by getWhatsAppTemplateBy in the name variable
+     * @param language A language code as returned by getWhatsAppTemplateBy in the language variable
+     * @return {@link TemplateResponse} response object
+     * @throws UnauthorizedException    if client is unauthorized
+     * @throws GeneralException         general exception
+     * @throws IllegalArgumentException invalid template format
+     */
+    public TemplateResponse updateWhatsAppTemplate(final Template template, final String templateName, final String language)
+            throws UnauthorizedException, GeneralException, IllegalArgumentException {
+        template.validate();
+
+        String url = String.format(
+                "%s%s%s/%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                templateName,
+                language);
+
+        return messageBirdService.sendPayLoad("PUT",url, template, TemplateResponse.class);
+    }
+    /**
      * Gets a WhatsAppTemplate listing with specified pagination options.
      *
      * @param offset Number of objects to skip.
