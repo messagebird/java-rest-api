@@ -117,7 +117,9 @@ public class HSMComponentButton {
     public void validateButtonExample() throws IllegalArgumentException {
         final boolean isExampleEmpty = this.example == null || this.example.isEmpty();
         final boolean isNotProperType = !(this.type.equals(HSMComponentButtonType.URL)
-                || this.type.equals(HSMComponentButtonType.QUICK_REPLY));
+                || this.type.equals(HSMComponentButtonType.QUICK_REPLY)
+                || this.type.equals(HSMComponentButtonType.COPY_CODE)
+        );
 
         if (isExampleEmpty) {
             return;

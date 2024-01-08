@@ -12,7 +12,8 @@ public enum HSMComponentType {
   BODY("BODY"),
   HEADER("HEADER"),
   FOOTER("FOOTER"),
-  BUTTONS("BUTTONS");
+  BUTTONS("BUTTONS"),
+  CAROUSEL("CAROUSEL");
 
   private final String type;
 

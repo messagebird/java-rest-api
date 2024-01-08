@@ -6,6 +6,7 @@ import com.messagebird.objects.integrations.HSMCategory;
 import com.messagebird.objects.integrations.HSMComponent;
 import com.messagebird.objects.integrations.HSMComponentButton;
 import com.messagebird.objects.integrations.HSMComponentButtonType;
+import com.messagebird.objects.integrations.HSMComponentCard;
 import com.messagebird.objects.integrations.HSMComponentFormat;
 import com.messagebird.objects.integrations.HSMComponentType;
 import com.messagebird.objects.integrations.HSMExample;
@@ -301,6 +302,24 @@ class TestUtil {
         return buttonComponent;
     }
 
+    private static HSMComponent createHSMComponentCarousel() {
+        final HSMComponent carouselComponent = new HSMComponent();
+        carouselComponent.setType(HSMComponentType.CAROUSEL);
+
+        final List<HSMComponentCard> cards = new ArrayList<>();
+        final HSMComponentCard card = new HSMComponentCard();
+        final List<HSMComponent> cardComponents = new ArrayList<>();
+        cardComponents.add(createHSMComponentHeader());
+        cardComponents.add(createHSMComponentBody());
+        cardComponents.add(createHSMComponentButton());
+        card.setComponents(cardComponents);
+        cards.add(card);
+
+        carouselComponent.setCards(cards);
+
+        return carouselComponent;
+    }
+
     public static TemplateResponse createWhatsAppTemplateResponse(final String templateName, final String language) {
         final TemplateResponse templateResponse = new TemplateResponse();
         templateResponse.setName(templateName);
@@ -340,6 +359,43 @@ class TestUtil {
 
         return template;
     }
+
+    public static TemplateResponse createWhatsAppCarouselTemplateResponse(final String templateName, final String language) {
+        final TemplateResponse templateResponse = new TemplateResponse();
+        templateResponse.setName(templateName);
+        templateResponse.setLanguage(language);
+        templateResponse.setCategory(HSMCategory.MARKETING);
+        templateResponse.setStatus(HSMStatus.NEW);
+        templateResponse.setCreatedAt(new Date());
+        templateResponse.setUpdatedAt(new Date());
+
+        final List<HSMComponent> components = new ArrayList<>();
+        components.add(createHSMComponentBody());
+        components.add(createHSMComponentCarousel());
+        templateResponse.setComponents(components);
+
+        templateResponse.setWabaID("testWABAID");
+        templateResponse.setNamespace("testNamespace");
+
+        return templateResponse;
+    }
+
+    public static Template createWhatsAppCarouselTemplate(final String templateName, final String language) {
+        final Template template = new Template();
+        template.setName(templateName);
+        template.setLanguage(language);
+        template.setCategory(HSMCategory.MARKETING);
+
+        final List<HSMComponent> components = new ArrayList<>();
+        components.add(createHSMComponentBody());
+        components.add(createHSMComponentCarousel());
+        template.setComponents(components);
+
+        template.setWABAID("testWABAID");
+
+        return template;
+    }
+
 
     public static TemplateList createWhatsAppTemplateList(final String templateName) {
         final TemplateResponse template1 = TestUtil.createWhatsAppTemplateResponse(templateName, "en_US");

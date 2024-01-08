@@ -20,6 +20,9 @@ public class HSMComponent {
   @JsonProperty("code_expiration_minutes")
   private Integer codeExpirationMinutes;
   private List<HSMComponentButton>  buttons;
+
+  private List<HSMComponentCard> cards;
+
   private HSMExample example;
 
   public HSMComponentType getType() {
@@ -52,6 +55,14 @@ public class HSMComponent {
 
   public void setButtons(List<HSMComponentButton> buttons) {
     this.buttons = buttons;
+  }
+
+  public List<HSMComponentCard> getCards() {
+    return cards;
+  }
+
+  public void setCards(List<HSMComponentCard> cards) {
+    this.cards = cards;
   }
 
   public HSMExample getExample() {
