@@ -1078,6 +1078,44 @@ public class MessageBirdClientTest {
         }
     }
     @Test
+    public void testCreateWhatsAppCarouselTemplate() throws UnauthorizedException, GeneralException {
+        final TemplateResponse templateResponse = TestUtil.createWhatsAppCarouselTemplateResponse("sample_template_name", "ko");
+        final Template template = TestUtil.createWhatsAppCarouselTemplate("sample_template_name", "ko");
+
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+
+        String url = String.format(
+                "%s%s%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH
+        );
+
+        when(messageBirdServiceMock.sendPayLoad(url, template, TemplateResponse.class))
+                .thenReturn(templateResponse);
+
+        final TemplateResponse response = messageBirdClientInjectMock.createWhatsAppTemplate(template);
+
+        verify(messageBirdServiceMock, times(1)).sendPayLoad(url, template, TemplateResponse.class);
+        assertNotNull(response);
+        assertEquals(response.getName(), templateResponse.getName());
+        assertEquals(response.getLanguage(), templateResponse.getLanguage());
+        assertEquals(response.getCategory(), templateResponse.getCategory());
+        assertEquals(response.getStatus(), templateResponse.getStatus());
+        assertEquals(response.getWabaID(), templateResponse.getWabaID());
+        assertEquals(response.getCreatedAt(), templateResponse.getCreatedAt());
+        assertEquals(response.getUpdatedAt(), templateResponse.getUpdatedAt());
+
+        /* verify components */
+        for (int i = 0; i < response.getComponents().size(); i++) {
+            assertEquals(response.getComponents().get(i).getType(), templateResponse.getComponents().get(i).getType());
+            assertEquals(response.getComponents().get(i).getFormat(), templateResponse.getComponents().get(i).getFormat());
+            assertEquals(response.getComponents().get(i).getText(), templateResponse.getComponents().get(i).getText());
+        }
+    }
+
+    @Test
     public void testUpdateWhatsAppTemplate() throws UnauthorizedException, GeneralException {
         final TemplateResponse templateResponse = TestUtil.createWhatsAppTemplateResponse("sample_template_name", "ko");
         final Template template = TestUtil.createWhatsAppTemplate("sample_template_name", "ko");

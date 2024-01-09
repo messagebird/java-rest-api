@@ -14,7 +14,8 @@ public enum HSMComponentButtonType {
   PHONE_NUMBER("PHONE_NUMBER"),
   URL("URL"),
   QUICK_REPLY("QUICK_REPLY"),
-  OTP("OTP");
+  OTP("OTP"),
+  COPY_CODE("COPY_CODE");
 
   private final String type;
 
