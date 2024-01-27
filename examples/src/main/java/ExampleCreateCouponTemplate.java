@@ -69,6 +69,7 @@ public class ExampleCreateCouponTemplate {
     template.setWABAID(args[2]);
     template.setComponents(components);
     template.setCategory(HSMCategory.MARKETING);
+    template.setCtaURLLinkTrackingOptedOut(true);
 
     try {
       TemplateResponse response = messageBirdClient.createWhatsAppTemplate(template);
