@@ -20,6 +20,11 @@ public class TemplateResponse implements Serializable {
   private String rejectedReason;
   private String wabaID;
   private String namespace;
+
+  private boolean ctaURLLinkTrackingOptedOut;
+
+  private HSMQualityScore qualityScore;
+
   private Date createdAt;
   private Date updatedAt;
 
@@ -107,6 +112,22 @@ public class TemplateResponse implements Serializable {
     this.updatedAt = updatedAt;
   }
 
+  public boolean isCtaURLLinkTrackingOptedOut() {
+    return ctaURLLinkTrackingOptedOut;
+  }
+
+  public void setCtaURLLinkTrackingOptedOut(boolean ctaURLLinkTrackingOptedOut) {
+    this.ctaURLLinkTrackingOptedOut = ctaURLLinkTrackingOptedOut;
+  }
+
+  public HSMQualityScore getQualityScore() {
+    return qualityScore;
+  }
+
+  public void setQualityScore(HSMQualityScore qualityScore) {
+    this.qualityScore = qualityScore;
+  }
+
   @Override
   public String toString() {
     return "WhatsAppTemplateResponse{" +
@@ -118,8 +139,11 @@ public class TemplateResponse implements Serializable {
         ", rejectedReason='" + rejectedReason + '\'' +
         ", wabaID='" + wabaID + '\'' +
         ", namespace='" + namespace + '\'' +
+        ", ctaURLLinkTrackingOptedOut='" + ctaURLLinkTrackingOptedOut + '\'' +
+        ", qualityScore='" + qualityScore + '\'' +
         ", createdAt=" + createdAt +
         ", updatedAt=" + updatedAt +
         '}';
   }
+
 }

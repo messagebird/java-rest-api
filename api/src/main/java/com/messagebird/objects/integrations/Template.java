@@ -15,17 +15,20 @@ public class Template {
   private String wabaID;
   private List<HSMComponent> components;
   private HSMCategory category;
+  private boolean ctaURLLinkTrackingOptedOut;
 
   public Template() {
   }
 
+
   public Template(String name, String language, String wabaID,
-                  List<HSMComponent> components, HSMCategory category) {
+                  List<HSMComponent> components, HSMCategory category, boolean ctaURLLinkTrackingOptedOut) {
     this.name = name;
     this.language = language;
     this.wabaID = wabaID;
     this.components = components;
     this.category = category;
+    this.ctaURLLinkTrackingOptedOut = ctaURLLinkTrackingOptedOut;
   }
 
   public String getName() {
@@ -68,6 +71,14 @@ public class Template {
     this.category = category;
   }
 
+  public void setCtaURLLinkTrackingOptedOut (boolean ctaURLLinkTrackingOptedOut) {
+    this.ctaURLLinkTrackingOptedOut = ctaURLLinkTrackingOptedOut;
+  }
+
+  public boolean getCtaURLLinkTrackingOptedOut () {
+    return ctaURLLinkTrackingOptedOut;
+  }
+
   @Override
   public String toString() {
     return "WhatsAppTemplate{" +
@@ -76,6 +87,7 @@ public class Template {
         ", wabaID='" + wabaID + '\'' +
         ", components=" + components +
         ", category='" + category + '\'' +
+        ", ctaURLLinkTrackingOptedOut='" + ctaURLLinkTrackingOptedOut + '\'' +
         '}';
   }
 

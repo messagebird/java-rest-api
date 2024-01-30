@@ -326,6 +326,7 @@ class TestUtil {
         templateResponse.setLanguage(language);
         templateResponse.setCategory(HSMCategory.AUTHENTICATION);
         templateResponse.setStatus(HSMStatus.NEW);
+        templateResponse.setCtaURLLinkTrackingOptedOut(true);
         templateResponse.setCreatedAt(new Date());
         templateResponse.setUpdatedAt(new Date());
 
