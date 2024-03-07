@@ -4,7 +4,7 @@
 
     <groupId>com.messagebird</groupId>
     <artifactId>messagebird-api</artifactId>
-    <version>6.1.4</version>
+    <version>6.1.5</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
