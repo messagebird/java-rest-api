@@ -8,7 +8,9 @@ public enum  MessageComponentType {
   HEADER("header"),
   BODY("body"),
   FOOTER("footer"),
-  BUTTON("button");
+  BUTTON("button"),
+  CARD("card"),
+  CAROUSEL("carousel");
 
 
   private final String type;
