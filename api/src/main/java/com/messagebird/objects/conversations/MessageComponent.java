@@ -10,7 +10,6 @@ public class MessageComponent {
     private List<MessageParam> parameters;
     private int card_index;
     private List<MessageComponent> cards;
-    private MessageComponent card;
     private List<MessageComponent> components;
 
     public void setType(MessageComponentType type) {
@@ -61,14 +60,6 @@ public class MessageComponent {
         this.card_index = card_index;
     }
 
-    public MessageComponent getCard() {
-        return card;
-    }
-
-    public void setCard(MessageComponent card) {
-        this.card = card;
-    }
-
     public List<MessageComponent> getComponents() {
         return components;
     }
@@ -82,8 +73,9 @@ public class MessageComponent {
         return "MessageComponent{" +
                 "type='" + type + '\'' +
                 ", sub_type='" + sub_type + '\'' +
-                ", index=" + index +
+                ", index=" + index + '\'' +
                 ", parameters=" + parameters + '\'' +
+                ", components=" + components + '\'' +
                 ", cards=" + cards +
                 '}';
     }
