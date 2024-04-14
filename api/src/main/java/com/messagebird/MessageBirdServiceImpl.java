@@ -8,6 +8,8 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.ErrorReport;
 import com.messagebird.objects.PagedPaging;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,8 +62,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String[] PROTOCOL_LISTS = new String[]{"http://", "https://"};
     private static final List<String> PROTOCOLS = Arrays.asList(PROTOCOL_LISTS);
 
-    // Used when the actual version can not be parsed.
-    private static final double DEFAULT_JAVA_VERSION = 0.0;
+    private static final ComparableVersion JAVA_VERSION = getJavaVersion();
 
     // Indicates whether we've overridden HttpURLConnection's behaviour to
     // allow PATCH requests yet. Also see docs on allowPatchRequestsIfNeeded().
@@ -88,15 +89,17 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     }
 
-    private String determineUserAgentString() {
-        double javaVersion = DEFAULT_JAVA_VERSION;
+    private static ComparableVersion getJavaVersion() {
         try {
-            javaVersion = getVersion();
-        } catch (GeneralException e) {
-            // Do nothing: leave the version at its default.
+            String version = System.getProperty("java.version");
+            return new ComparableVersion(version);
+        } catch (IllegalArgumentException e) {
+            return new ComparableVersion("0.0");
         }
+    }
 
-        return String.format("MessageBird Java/%s ApiClient/%s", javaVersion, clientVersion);
+    private String determineUserAgentString() {
+        return String.format("MessageBird Java/%s ApiClient/%s", JAVA_VERSION, clientVersion);
     }
 
     /**
@@ -360,7 +363,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     <P> APIResponse doRequest(final String method, final String url, final Map<String, String> headers, final P payload) throws GeneralException {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
-        
+
         if (METHOD_PATCH.equalsIgnoreCase(method)) {
             // It'd perhaps be cleaner to call this in the constructor, but
             // we'd then need to throw GeneralExceptions from there. This means
@@ -473,13 +476,13 @@ public class MessageBirdServiceImpl implements MessageBirdService {
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
-            
+
             Object noInstanceBecauseStaticField = null;
-            
+
             // Determine what methods should be allowed.
             String[] existingMethods = (String[]) methodsField.get(noInstanceBecauseStaticField);
             String[] allowedMethods = getAllowedMethods(existingMethods);
-            
+
             // Override the actual field to allow PATCH.
             methodsField.set(noInstanceBecauseStaticField, allowedMethods);
 
@@ -631,32 +634,11 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     private DateFormat getDateFormat() {
-        double javaVersion = DEFAULT_JAVA_VERSION;
-        try {
-            javaVersion = getVersion();
-        } catch (GeneralException e) {
-            // Do nothing: leave the version at its default.
-        }
-
-        if (javaVersion > 1.6) {
+        ComparableVersion java6 = new ComparableVersion("1.6");
+        if (JAVA_VERSION.compareTo(java6) > 0) {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         }
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
-    }
-
-    private double getVersion() throws GeneralException {
-        String version = System.getProperty("java.version");
-
-        try {
-            int pos = version.indexOf('.');
-            pos = version.indexOf('.', pos + 1);
-
-            return Double.parseDouble(version.substring(0, pos));
-        } catch (RuntimeException e) {
-            // Thrown if the index is out of bounds, or when we can't parse a
-            // double for some reason.
-            throw new GeneralException(e);
-        }
     }
 
     /**
@@ -802,7 +784,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                         // the value is returned from the next() call
                         bpath.append(encodeKeyValuePair(param.getKey(), iterator.next()));
                         count++;
-                    }   
+                    }
                 } else {
                     // If the value is not a collection, create the querystring value directly.
                     bpath.append(encodeKeyValuePair(param.getKey(), param.getValue()));
