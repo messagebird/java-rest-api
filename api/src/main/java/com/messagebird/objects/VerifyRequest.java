@@ -15,6 +15,7 @@ public class VerifyRequest implements Serializable {
     private String template;
     private Integer timeout;
     private Integer tokenLength;
+    private Integer maxAttempts;
     private Gender voice;
     private Language language;
     private String subject;
@@ -123,5 +124,13 @@ public class VerifyRequest implements Serializable {
 
     public String getSubject() {
         return subject;
+    }
+
+    public Integer getMaxAttempts() {
+        return maxAttempts;
+    }
+
+    public void setMaxAttempts(Integer maxAttempts) {
+        this.maxAttempts = maxAttempts;
     }
 }
