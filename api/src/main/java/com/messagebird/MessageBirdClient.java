@@ -2146,7 +2146,7 @@ public class MessageBirdClient {
         messageBirdService.delete(url, null);
     }
 
-    public void unpauseTemplatesBy(final String templateName)
+    public void unpauseTemplatesByTemplateName(final String templateName)
         throws UnauthorizedException, GeneralException {
         if (templateName == null) {
             throw new IllegalArgumentException("Template name must be specified.");
