@@ -382,9 +382,6 @@ public class MessageBirdServiceImpl implements MessageBirdService {
                 inputStream = connection.getInputStream();
             } else {
                 inputStream = connection.getErrorStream();
-                if (inputStream == null) {
-                    throw new IOException("Server returned HTTP error code " + status + " with no body.");
-                }
             }
 
             return new APIResponse(readToEnd(inputStream), status);
