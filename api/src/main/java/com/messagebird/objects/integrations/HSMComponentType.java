@@ -2,6 +2,9 @@ package com.messagebird.objects.integrations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 /**
  * An enum for HSMComponentType
@@ -13,7 +16,18 @@ public enum HSMComponentType {
   HEADER("HEADER"),
   FOOTER("FOOTER"),
   BUTTONS("BUTTONS"),
-  CAROUSEL("CAROUSEL");
+  CAROUSEL("CAROUSEL"),
+  LIMITED_TIME_OFFER("LIMITED_TIME_OFFER");
+
+  private static final Map<String, HSMComponentType> TYPE_MAP;
+
+  static {
+    Map<String, HSMComponentType> map = new HashMap<>();
+    for (HSMComponentType hsmComponentType : HSMComponentType.values()) {
+      map.put(hsmComponentType.getType().toLowerCase(), hsmComponentType);
+    }
+    TYPE_MAP = Collections.unmodifiableMap(map);
+  }
 
   private final String type;
 
@@ -23,13 +37,10 @@ public enum HSMComponentType {
 
   @JsonCreator
   public static HSMComponentType forValue(String value) {
-    for (HSMComponentType hsmComponentType : HSMComponentType.values()) {
-      if (hsmComponentType.getType().equals(value)) {
-        return hsmComponentType;
-      }
+    if (value == null) {
+      throw new IllegalArgumentException("Value cannot be null");
     }
-
-    return null;
+    return TYPE_MAP.get(value.toLowerCase());
   }
 
   @JsonValue

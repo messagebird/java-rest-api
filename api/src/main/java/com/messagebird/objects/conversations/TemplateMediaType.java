@@ -2,6 +2,9 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 public enum TemplateMediaType {
 
@@ -11,7 +14,19 @@ public enum TemplateMediaType {
     TEXT("text"),
     CURRENCY("currency"),
     DATETIME("date_time"),
-    PAYLOAD("payload");
+    PAYLOAD("payload"),
+    EXPIRATION_TIME("expiration_time");
+
+    private static final Map<String, TemplateMediaType> TYPE_MAP;
+
+    static {
+        Map<String, TemplateMediaType> map = new HashMap<>();
+        for (TemplateMediaType templateMediaType : TemplateMediaType.values()) {
+            map.put(templateMediaType.getType().toLowerCase(), templateMediaType);
+        }
+        TYPE_MAP = Collections.unmodifiableMap(map);
+    }
+
 
     private final String type;
 
@@ -21,13 +36,10 @@ public enum TemplateMediaType {
 
     @JsonCreator
     public static TemplateMediaType forValue(String value) {
-        for (TemplateMediaType  templateMediaType: TemplateMediaType.values()) {
-            if (templateMediaType.getType().equals(value)) {
-                return templateMediaType;
-            }
+        if (value == null) {
+            throw new IllegalArgumentException("Value cannot be null");
         }
-
-        return null;
+        return TYPE_MAP.get(value.toLowerCase());
     }
 
     @JsonValue

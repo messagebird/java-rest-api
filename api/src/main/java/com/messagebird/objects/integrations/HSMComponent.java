@@ -20,6 +20,8 @@ public class HSMComponent {
   @JsonProperty("code_expiration_minutes")
   private Integer codeExpirationMinutes;
   private List<HSMComponentButton>  buttons;
+  @JsonProperty("has_expiration")
+  private Boolean hasExpiration;
 
   private List<HSMComponentCard> cards;
 
@@ -46,6 +48,9 @@ public class HSMComponent {
   }
 
   public void setText(String text) {
+    if (text == null || text.isEmpty()) {
+      throw new IllegalArgumentException("Text cannot be null or empty");
+    }
     this.text = text;
   }
 
@@ -88,15 +93,29 @@ public class HSMComponent {
   public void setCodeExpirationMinutes(Integer codeExpirationMinutes) {
     this.codeExpirationMinutes = codeExpirationMinutes;
   }
+
+  public Boolean getHasExpiration() {
+    return hasExpiration;
+  }
+
+  public void setHasExpiration(Boolean hasExpiration) {
+    this.hasExpiration = hasExpiration;
+  }
+
   @Override
   public String toString() {
-    return "HSMComponent{" +
-        "type='" + type + '\'' +
-        ", format='" + format + '\'' +
-        ", text='" + text + '\'' +
-        ", buttons=" + buttons +
-        ", example=" + example +
-        '}';
+    StringBuilder sb = new StringBuilder("HSMComponent{");
+    sb.append("type=").append(type)
+            .append(", format=").append(format)
+            .append(", text='").append(text).append('\'')
+            .append(", addSecurityRecommendation=").append(addSecurityRecommendation)
+            .append(", codeExpirationMinutes=").append(codeExpirationMinutes)
+            .append(", buttons=").append(buttons)
+            .append(", hasExpiration=").append(hasExpiration)
+            .append(", cards=").append(cards)
+            .append(", example=").append(example)
+            .append('}');
+    return sb.toString();
   }
 
   /**
@@ -105,8 +124,12 @@ public class HSMComponent {
    * @throws IllegalArgumentException Occurs when validation is not passed.
    */
   public void validateComponent() throws IllegalArgumentException {
-    this.validateButtons();
-    this.validateComponentExample();
+    try {
+      this.validateButtons();
+      this.validateComponentExample();
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Component validation failed: " + e.getMessage(), e);
+    }
   }
 
   /**
@@ -153,9 +176,7 @@ public class HSMComponent {
    * @throws IllegalArgumentException Occurs when type is not {@code HEADER} and format is not {@code TEXT}.
    */
   private void checkHeaderText() throws IllegalArgumentException {
-    if (!(type.equals(HSMComponentType.HEADER)
-        && format.equals(HSMComponentFormat.TEXT))
-    ) {
+    if (!(HSMComponentType.HEADER.equals(type) && HSMComponentFormat.TEXT.equals(format))) {
       throw new IllegalArgumentException("\"header_text\" is available for only HEADER type and TEXT format.");
     }
   }
@@ -166,9 +187,9 @@ public class HSMComponent {
    * @throws IllegalArgumentException Occurs when type is not {@code HEADER} and format is not {@code IMAGE}.
    */
   private void checkHeaderUrl() throws IllegalArgumentException {
-    if (!(type.equals(HSMComponentType.HEADER) &&
-            (format.equals(HSMComponentFormat.IMAGE)  || format.equals(HSMComponentFormat.VIDEO) || format.equals(HSMComponentFormat.DOCUMENT)))) {
-      throw new IllegalArgumentException("\"header_url\" is available for only HEADER type and IMAGE, VIDEO and DOCUMENT format.");
+    if (!(HSMComponentType.HEADER.equals(type) &&
+            (HSMComponentFormat.IMAGE.equals(format) || HSMComponentFormat.VIDEO.equals(format) || HSMComponentFormat.DOCUMENT.equals(format)))) {
+      throw new IllegalArgumentException("\"header_url\" is available for only HEADER type and IMAGE, VIDEO, or DOCUMENT formats.");
     }
   }
 }

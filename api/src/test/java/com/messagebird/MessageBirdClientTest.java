@@ -1613,4 +1613,6 @@ public class MessageBirdClientTest {
     public void testUnpauseTemplatesBy_NotFound() throws UnauthorizedException, GeneralException {
         messageBirdClient.unpauseTemplatesBy("foo");
     }
+
+    // @todo
 }
