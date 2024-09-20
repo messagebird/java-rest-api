@@ -1,6 +1,7 @@
 package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.StringUtils;
 
 public class MessageParam {
 
@@ -28,7 +29,7 @@ public class MessageParam {
     }
 
     public void setText(String text) {
-        if (text == null || text.isEmpty()) {
+        if (StringUtils.isBlank(text)) {
             throw new IllegalArgumentException("Text cannot be null or empty");
         }
         this.text = text;
@@ -55,7 +56,7 @@ public class MessageParam {
     }
 
     public void setDateTime(String dateTime) {
-        if (dateTime == null || dateTime.isEmpty()) {
+        if (StringUtils.isBlank(dateTime)) {
             throw new IllegalArgumentException("dateTime cannot be null or empty");
         }
         this.dateTime = dateTime;
@@ -86,7 +87,7 @@ public class MessageParam {
     }
 
     public void setExpirationTime(String expirationTime) {
-        if (expirationTime == null || expirationTime.isEmpty()) {
+        if (StringUtils.isBlank(expirationTime)) {
             throw new IllegalArgumentException("expirationTime cannot be null or empty");
         }
         this.expirationTime = expirationTime;

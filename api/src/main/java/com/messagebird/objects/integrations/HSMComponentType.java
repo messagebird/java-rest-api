@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * An enum for HSMComponentType
@@ -37,10 +39,8 @@ public enum HSMComponentType {
 
   @JsonCreator
   public static HSMComponentType forValue(String value) {
-    if (value == null) {
-      throw new IllegalArgumentException("Value cannot be null");
-    }
-    return TYPE_MAP.get(value.toLowerCase());
+    Objects.requireNonNull(value, "Value cannot be null");
+    return TYPE_MAP.get(value.toLowerCase(Locale.ROOT));
   }
 
   @JsonValue

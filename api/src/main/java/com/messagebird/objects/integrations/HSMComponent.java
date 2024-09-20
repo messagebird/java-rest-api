@@ -1,6 +1,7 @@
 package com.messagebird.objects.integrations;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class HSMComponent {
   }
 
   public void setText(String text) {
-    if (text == null || text.isEmpty()) {
+    if (StringUtils.isBlank(text)) {
       throw new IllegalArgumentException("Text cannot be null or empty");
     }
     this.text = text;

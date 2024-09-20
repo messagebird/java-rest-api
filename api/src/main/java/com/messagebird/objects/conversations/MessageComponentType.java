@@ -2,9 +2,8 @@ package com.messagebird.objects.conversations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+
+import java.util.*;
 
 public enum  MessageComponentType {
 
@@ -34,10 +33,8 @@ public enum  MessageComponentType {
 
   @JsonCreator
   public static MessageComponentType forValue(String value) {
-    if (value == null) {
-      throw new IllegalArgumentException("Value cannot be null");
-    }
-    return TYPE_MAP.get(value.toLowerCase());
+    Objects.requireNonNull(value, "Value cannot be null");
+    return TYPE_MAP.get(value.toLowerCase(Locale.ROOT));
   }
 
   @JsonValue

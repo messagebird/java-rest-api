@@ -11,7 +11,7 @@ public class MessageComponentTypeTest {
         assertEquals(MessageComponentType.BUTTON, MessageComponentType.forValue("button"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testMessageComponentTypeForValueNull() {
         MessageComponentType.forValue(null);
     }

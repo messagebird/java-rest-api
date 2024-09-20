@@ -11,7 +11,7 @@ public class HSMComponentTypeTest {
         assertEquals(HSMComponentType.BODY, HSMComponentType.forValue("body"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testForValueNull() {
         HSMComponentType.forValue(null);
     }
