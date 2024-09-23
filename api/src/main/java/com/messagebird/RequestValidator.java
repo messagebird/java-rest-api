@@ -5,13 +5,14 @@ import com.auth0.jwt.JWTVerifier.BaseVerification;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.interfaces.Clock;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.messagebird.exceptions.RequestValidationException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Clock;
 
 /**
  * RequestValidator validates request signature signed by MessageBird services.
@@ -128,7 +129,8 @@ public class RequestValidator {
         if (!skipURLValidation)
             builder.withClaim("url_hash", calculateSha256(url.getBytes()));
 
-        boolean payloadHashClaimExist = !jwt.getClaim("payload_hash").isNull();
+        Claim payloadHashClaim = jwt.getClaim("payload_hash");
+        boolean payloadHashClaimExist = !(payloadHashClaim.isNull() || payloadHashClaim.isMissing());
         if (requestBody != null && requestBody.length > 0) {
             if (!payloadHashClaimExist) {
                 throw new RequestValidationException("The Claim 'payload_hash' is not set but payload is present.");

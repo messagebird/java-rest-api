@@ -1,6 +1,5 @@
 package com.messagebird;
 
-import com.auth0.jwt.interfaces.Clock;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.RequestValidationException;
@@ -13,7 +12,10 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,10 +66,7 @@ public class RequestValidatorTest {
     public void testWebhookSignature() throws Throwable {
         RequestValidator validator = new RequestValidator(testCase.secret != null ? testCase.secret : "");
 
-        Clock clock = mock(Clock.class);
-        Date clockDate = spy(Date.from(OffsetDateTime.parse(testCase.timestamp).toInstant()));
-        when(clock.getToday()).thenReturn(clockDate);
-
+        Clock clock = Clock.fixed(OffsetDateTime.parse(testCase.timestamp).toInstant(), ZoneId.systemDefault());
         ThrowingRunnable runnable = () -> validator.validateSignature(clock, testCase.token, testCase.url,
                 (testCase.payload == null) ? null : testCase.payload.getBytes(StandardCharsets.UTF_8));
 
