@@ -1,5 +1,8 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.StringUtils;
+
 public class MessageParam {
 
     private TemplateMediaType type;
@@ -10,6 +13,8 @@ public class MessageParam {
     private Media document;
     private Media image;
     private Media video;
+    @JsonProperty("expiration_time")
+    private String expirationTime;
 
     public TemplateMediaType getType() {
         return type;
@@ -24,6 +29,9 @@ public class MessageParam {
     }
 
     public void setText(String text) {
+        if (StringUtils.isBlank(text)) {
+            throw new IllegalArgumentException("Text cannot be null or empty");
+        }
         this.text = text;
     }
 
@@ -48,6 +56,9 @@ public class MessageParam {
     }
 
     public void setDateTime(String dateTime) {
+        if (StringUtils.isBlank(dateTime)) {
+            throw new IllegalArgumentException("dateTime cannot be null or empty");
+        }
         this.dateTime = dateTime;
     }
 
@@ -71,17 +82,30 @@ public class MessageParam {
 
     public void setVideo(Media video) { this.video = video; }
 
+    public String getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(String expirationTime) {
+        if (StringUtils.isBlank(expirationTime)) {
+            throw new IllegalArgumentException("expirationTime cannot be null or empty");
+        }
+        this.expirationTime = expirationTime;
+    }
+
     @Override
     public String toString() {
-        return "MessageParam{" +
-                "type=" + type + '\'' +
-                ", text='" + text + '\'' +
-                ", payload='" + payload + '\'' +
-                ", currency=" + currency + '\'' +
-                ", dateTime='" + dateTime + '\'' +
-                ", document=" + document + '\'' +
-                ", image=" + image + '\'' +
-                ", video=" + video +
-                '}';
+        StringBuilder sb = new StringBuilder("MessageParam{");
+        sb.append("type=").append(type)
+                .append(", text='").append(text).append('\'')
+                .append(", payload='").append(payload).append('\'')
+                .append(", currency=").append(currency)
+                .append(", dateTime='").append(dateTime).append('\'')
+                .append(", document=").append(document)
+                .append(", image=").append(image)
+                .append(", video=").append(video)
+                .append(", expirationTime='").append(expirationTime).append('\'')
+                .append('}');
+        return sb.toString();
     }
 }

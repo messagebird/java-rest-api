@@ -3,6 +3,8 @@ package com.messagebird.objects.conversations;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.*;
+
 public enum  MessageComponentType {
 
   HEADER("header"),
@@ -10,8 +12,18 @@ public enum  MessageComponentType {
   FOOTER("footer"),
   BUTTON("button"),
   CARD("card"),
-  CAROUSEL("carousel");
+  CAROUSEL("carousel"),
+  LIMITED_TIME_OFFER("limited_time_offer");
 
+  private static final Map<String, MessageComponentType> TYPE_MAP;
+
+  static {
+    Map<String, MessageComponentType> map = new HashMap<>();
+    for (MessageComponentType componentType : MessageComponentType.values()) {
+      map.put(componentType.getType().toLowerCase(), componentType);
+    }
+    TYPE_MAP = Collections.unmodifiableMap(map);
+  }
 
   private final String type;
 
@@ -21,13 +33,8 @@ public enum  MessageComponentType {
 
   @JsonCreator
   public static MessageComponentType forValue(String value) {
-    for (MessageComponentType  componentType: MessageComponentType.values()) {
-      if (componentType.getType().equals(value)) {
-        return componentType;
-      }
-    }
-
-    return null;
+    Objects.requireNonNull(value, "Value cannot be null");
+    return TYPE_MAP.get(value.toLowerCase(Locale.ROOT));
   }
 
   @JsonValue
