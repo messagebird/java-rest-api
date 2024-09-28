@@ -105,6 +105,7 @@ public class MessageBirdClient {
     private static final String VOICELEGS_SUFFIX_PATH = "/legs";
     static final String FILES_PATH = "/files";
     static final String TEMPLATES_PATH = "/templates";
+    static final String UNPAUSE_TEMAPLATE_PATH = "/unpause";
     static final String OUTBOUND_SMS_PRICING_PATH = "/pricing/sms/outbound";
     static final String OUTBOUND_SMS_PRICING_SMPP_PATH = "/pricing/sms/outbound/smpp/%s";
 
@@ -2143,6 +2144,23 @@ public class MessageBirdClient {
             templateName
         );
         messageBirdService.delete(url, null);
+    }
+
+    public void unpauseTemplatesByTemplateName(final String templateName)
+        throws UnauthorizedException, GeneralException {
+        if (templateName == null) {
+            throw new IllegalArgumentException("Template name must be specified.");
+        }
+
+        String url = String.format(
+                "%s%s%s%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                UNPAUSE_TEMAPLATE_PATH,
+                templateName
+        );
+        messageBirdService.sendPayLoad("POST", url, "", null);
     }
 
     /**

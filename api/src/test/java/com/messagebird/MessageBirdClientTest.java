@@ -1592,5 +1592,25 @@ public class MessageBirdClientTest {
         return request;
     }
 
+    @Test
+    public void testUnpauseTemplatesByTemplateName_Success() throws UnauthorizedException, GeneralException {
+        final Template template = TestUtil.createWhatsAppTemplate("sample_template_name", "ko");
+        MessageBirdService messageBirdServiceMock = mock(MessageBirdService.class);
+        MessageBirdClient messageBirdClientInjectMock = new MessageBirdClient(messageBirdServiceMock);
+        String url = String.format(
+                "%s%s%s%s/%s",
+                INTEGRATIONS_BASE_URL_V2,
+                INTEGRATIONS_WHATSAPP_PATH,
+                TEMPLATES_PATH,
+                UNPAUSE_TEMAPLATE_PATH,
+                "sample_template_name"
+        );
+        messageBirdClientInjectMock.unpauseTemplatesByTemplateName("sample_template_name");
+        verify(messageBirdServiceMock).sendPayLoad("POST", url, "", null);
+    }
 
+    @Test(expected = GeneralException.class)
+    public void testUnpauseTemplatesByTemplateName_NotFound() throws UnauthorizedException, GeneralException {
+        messageBirdClient.unpauseTemplatesByTemplateName("foo");
+    }
 }
