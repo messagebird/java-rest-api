@@ -193,12 +193,15 @@ public class RequestValidator {
     }
 
     private static String encodeHex(final byte[] data) {
-        final int l = data.length;
-        final char[] out = new char[l << 1];
-        for (int i = 0, j = 0; i < l; i++) {
-            out[j++] = HEX_DIGITS[(0xF0 & data[i]) >>> 4];
-            out[j++] = HEX_DIGITS[0x0F & data[i]];
+        final int length = data.length;
+        final char[] output = new char[length << 1];
+
+        for (int byteIndex = 0, charIndex = 0; byteIndex < length; byteIndex++) {
+            int highNibble = (data[byteIndex] & 0xF0) >>> 4;
+            int lowNibble = data[byteIndex] & 0x0F;
+            output[charIndex++] = HEX_DIGITS[highNibble];
+            output[charIndex++] = HEX_DIGITS[lowNibble];
         }
-        return new String(out);
+        return new String(output);
     }
 }
