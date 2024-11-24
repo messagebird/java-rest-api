@@ -24,7 +24,7 @@ public class ExampleListConversationMessagesWithQueryParam {
     try {
       // Get list of conversation messages with query param
       System.out.println("Retrieving message list");
-      final ConversationMessageList conversationMessageList = messageBirdClient.listConversationMessagesWithQueryParam(
+      final ConversationMessageList conversationMessageList = messageBirdClient.getFilteredConversationMessages(
           new HashMap<String, Object>() {
             {
               put("ids", "9f0b413e79e24d76b01b895381b12a6d,d46054ee0f7245bcbc7ba586878d0ab4");
