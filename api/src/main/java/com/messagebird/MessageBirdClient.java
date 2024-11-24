@@ -1018,7 +1018,7 @@ public class MessageBirdClient {
      * @param queryParams only `ids` and `from` is available as an option
      * @return The retrieved messages.
      */
-    public ConversationMessageList getFilteredConversationMessages(Map<String, Object> queryParams)
+    public ConversationMessageList listConversationMessagesWithQueryParam(Map<String, Object> queryParams)
         throws NotFoundException, GeneralException, UnauthorizedException {
         for (String queryParam : queryParams.keySet()) {
             if (!CONVERSATION_MESSAGE_LIST_FILTERS.contains(queryParam)) {
