@@ -13,15 +13,18 @@ public class LookupHlr extends Hlr {
         this.countryCode = countryCode;
     }
 
+    @Override
     public BigInteger getPhoneNumber() {
-        return msisdn;
+        return super.getPhoneNumber();
     }
 
+    @Override
     public void setPhoneNumber(BigInteger phoneNumber) {
-        this.msisdn = phoneNumber;
+        super.setPhoneNumber(phoneNumber);
     }
 
+    @Override
     public void setReference(String reference) {
-        this.reference = reference;
+        super.setReference(reference);
     }
 }

@@ -1,7 +1,7 @@
 package com.messagebird.objects.voicecalls;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * More details, including additional descriptions and common caused can be found here: https://developers.messagebird.com/api/voice-calling/#sip-status-codes
@@ -10,64 +10,55 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum SipResponseCode {
 	//Successful
-	OK,
+	OK(200),
 	//The server understood the request, but is refusing to fulfill it.
-	FORBIDDEN,
+	FORBIDDEN(403),
 	//The server has definitive information that the user does not exist at the domain specified in the Request-URI.
-	NOT_FOUND,
+	NOT_FOUND(404),
 	//Couldn't find the user in time.
-	REQUEST_TIMEOUT,
+	REQUEST_TIMEOUT(408),
 	//The user existed once, but is not available here any more.
-	GONE,
+	GONE(410),
 	//Callee currently unavailable.
-	TEMPORARILY_UNAVAILABLE,
+	TEMPORARILY_UNAVAILABLE(480),
 	//Request-URI incomplete.
-	ADDRESS_INCOMPLETE,
+	ADDRESS_INCOMPLETE(484),
 	//Callee is busy.
-	BUSY_HERE,
+	BUSY_HERE(486),
 	//Some aspect of the session description or the Request-URI is not acceptable.
-	NOT_ACCEPTABLE_HERE,
+	NOT_ACCEPTABLE_HERE(488),
 	//The server could not fulfill the request due to some unexpected condition.
-	INTERNAL_SERVER_ERROR,
+	INTERNAL_SERVER_ERROR(500),
 	//The server does not have the ability to fulfill the request, such as because it does not recognize the request method.
-	NOT_IMPLEMENTED,
+	NOT_IMPLEMENTED(501),
 	//The server is acting as a gateway or proxy, and received an invalid response from a downstream server while attempting to fulfill the request.
-	BAD_GATEWAY,
+	BAD_GATEWAY(502),
 	//The server is undergoing maintenance or is temporarily overloaded and so cannot process the request.
-	SERVICE_UNAVAILABLE;
+	SERVICE_UNAVAILABLE(503);
 
-	@JsonCreator
-	public static SipResponseCode forValue(Integer value) {
-		switch (value) {
-		case 200:
-			return OK;
-		case 403:
-			return FORBIDDEN;
-		case 404:
-			return NOT_FOUND;
-		case 408:
-			return REQUEST_TIMEOUT;
-		case 410:
-			return GONE;
-		case 480:
-			return TEMPORARILY_UNAVAILABLE;
-		case 484:
-			return ADDRESS_INCOMPLETE;
-		case 486:
-			return BUSY_HERE;
-		case 488:
-			return NOT_ACCEPTABLE_HERE;
-		case 500:
-			return INTERNAL_SERVER_ERROR;
-		case 501:
-			return NOT_IMPLEMENTED;
-		case 502:
-			return BAD_GATEWAY;
-		case 503:
-			return SERVICE_UNAVAILABLE;
+	private static final Map<Integer, SipResponseCode> codeToResponse = new HashMap<>();
 
-		default:
+	static {
+		for (SipResponseCode responseCode : values()) {
+			codeToResponse.put(responseCode.value, responseCode);
+		}
+	}
+
+	private final int value;
+
+	SipResponseCode(int value) {
+		this.value = value;
+	}
+
+	public static SipResponseCode forValue(int value) {
+		SipResponseCode responseCode = codeToResponse.get(value);
+		if (responseCode == null) {
 			throw new IllegalArgumentException("Unknown sip response code: " + value);
 		}
+		return responseCode;
+	}
+
+	public int getValue() {
+		return value;
 	}
 }
