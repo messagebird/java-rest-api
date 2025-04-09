@@ -15,6 +15,8 @@ public class MessageParam {
     private Media video;
     @JsonProperty("expiration_time")
     private String expirationTime;
+    @JsonProperty("coupon_code")
+    private String couponCode;
 
     public TemplateMediaType getType() {
         return type;
@@ -91,6 +93,13 @@ public class MessageParam {
             throw new IllegalArgumentException("expirationTime cannot be null or empty");
         }
         this.expirationTime = expirationTime;
+    }
+
+    public void setCouponCode(String couponCode) {
+        if (StringUtils.isBlank(couponCode)) {
+            throw new IllegalArgumentException("couponCode cannot be null or empty");
+        }
+        this.couponCode = couponCode;
     }
 
     @Override

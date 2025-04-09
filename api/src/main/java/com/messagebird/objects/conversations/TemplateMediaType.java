@@ -15,7 +15,8 @@ public enum TemplateMediaType {
     CURRENCY("currency"),
     DATETIME("date_time"),
     PAYLOAD("payload"),
-    EXPIRATION_TIME("expiration_time");
+    EXPIRATION_TIME("expiration_time"),
+    COUPON_CODE("coupon_code");
 
     private static final Map<String, TemplateMediaType> TYPE_MAP;
 
