@@ -13,7 +13,8 @@ public enum  MessageComponentType {
   BUTTON("button"),
   CARD("card"),
   CAROUSEL("carousel"),
-  LIMITED_TIME_OFFER("limited_time_offer");
+  LIMITED_TIME_OFFER("limited_time_offer"),
+  COPY_CODE("copy_code");
 
   private static final Map<String, MessageComponentType> TYPE_MAP;
 
