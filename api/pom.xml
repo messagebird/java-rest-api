@@ -28,6 +28,12 @@
             <organizationUrl>https://www.messagebird.com</organizationUrl>
         </developer>
         <developer>
+            <name>Venkateswaran S</name>
+            <email>venkat.sankaran@bird.com</email>
+            <organization>MessageBird</organization>
+            <organizationUrl>https://www.messagebird.com</organizationUrl>
+        </developer>
+        <developer>
             <name>Sam Wierema</name>
             <email>sam@messagebird.com</email>
             <organization>MessageBird</organization>
