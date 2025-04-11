@@ -11,7 +11,7 @@ public class MessageParamTest {
         param.setText("Sample text");
         param.setPayload("Sample payload");
 
-        String expected = "MessageParam{type=image, text='Sample text', payload='Sample payload', currency=null, dateTime='null', document=null, image=null, video=null, expirationTime='null'}";
+        String expected = "MessageParam{type=image, text='Sample text', payload='Sample payload', currency=null, dateTime='null', document=null, image=null, video=null, expirationTime='null', couponCode='null'}";
         assertEquals(expected, param.toString());
     }
 
