@@ -13,7 +13,7 @@ public class ExampleConversationSendHSMCopyCodeTemplate {
     public static void main(String[] args) {
         if (args.length < 6) {
             System.out.println("Please at least specify your access key, the channel id and destination address.\n" +
-                    "Usage : java -jar <this jar file> test_accesskey(Required) channel_id(Required) from(Required) destination(Required) templateName(Required) namespace(Required) expirationTimeInput(Required)");
+                    "Usage : java -jar <this jar file> test_accesskey(Required) channel_id(Required) from(Required) destination(Required) templateName(Required) namespace(Required) couponCodeInput(Required)");
             return;
         }
 

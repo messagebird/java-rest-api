@@ -95,6 +95,10 @@ public class MessageParam {
         this.expirationTime = expirationTime;
     }
 
+    public String getCouponCode() {
+        return couponCode;
+    }
+
     public void setCouponCode(String couponCode) {
         if (StringUtils.isBlank(couponCode)) {
             throw new IllegalArgumentException("couponCode cannot be null or empty");
@@ -114,6 +118,7 @@ public class MessageParam {
                 .append(", image=").append(image)
                 .append(", video=").append(video)
                 .append(", expirationTime='").append(expirationTime).append('\'')
+                .append(", couponCode='").append(couponCode).append('\'')
                 .append('}');
         return sb.toString();
     }
