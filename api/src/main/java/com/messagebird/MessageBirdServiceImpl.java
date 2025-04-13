@@ -8,7 +8,6 @@ import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
 import com.messagebird.objects.ErrorReport;
 import com.messagebird.objects.PagedPaging;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +61,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     private static final String[] PROTOCOL_LISTS = new String[]{"http://", "https://"};
     private static final List<String> PROTOCOLS = Arrays.asList(PROTOCOL_LISTS);
 
-    private static final ComparableVersion JAVA_VERSION = getJavaVersion();
+    private static final String JAVA_VERSION = getJavaVersion();
 
     // Indicates whether we've overridden HttpURLConnection's behaviour to
     // allow PATCH requests yet. Also see docs on allowPatchRequestsIfNeeded().
@@ -89,13 +88,9 @@ public class MessageBirdServiceImpl implements MessageBirdService {
 
     }
 
-    private static ComparableVersion getJavaVersion() {
-        try {
-            String version = System.getProperty("java.version");
-            return new ComparableVersion(version);
-        } catch (IllegalArgumentException e) {
-            return new ComparableVersion("0.0");
-        }
+    private static String getJavaVersion() {
+        String version = System.getProperty("java.version");
+        return version != null ? version : "0.0";
     }
 
     private String determineUserAgentString() {
@@ -637,11 +632,7 @@ public class MessageBirdServiceImpl implements MessageBirdService {
     }
 
     private DateFormat getDateFormat() {
-        ComparableVersion java6 = new ComparableVersion("1.6");
-        if (JAVA_VERSION.compareTo(java6) > 0) {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        }
-        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
     }
 
     /**
