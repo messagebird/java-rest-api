@@ -14,9 +14,9 @@ import java.util.Date;
 public class Hlr {
     private String id;
     private String href;
-    protected BigInteger msisdn;
+    private BigInteger msisdn;
     private String network;
-    protected String reference;
+    private String reference;
     private String status;
     private Date createdDatetime;
     private Date statusDatetime;
@@ -60,8 +60,12 @@ public class Hlr {
      * The telephone number.
      * @return
      */
-    public BigInteger getMsisdn() {
+    public BigInteger getPhoneNumber() {
         return msisdn;
+    }
+
+    public void setPhoneNumber(BigInteger msisdn) {
+        this.msisdn = msisdn;
     }
 
     /**
@@ -78,6 +82,10 @@ public class Hlr {
      */
     public String getReference() {
         return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     /**
@@ -106,6 +114,10 @@ public class Hlr {
 
     public HlrDetails getDetails() {
         return details;
+    }
+
+    public void setDetails(HlrDetails details) {
+        this.details = details;
     }
 }
 
