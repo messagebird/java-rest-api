@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import static org.junit.Assume.assumeNotNull;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -44,7 +45,10 @@ public class MessageBirdClientTest {
     @BeforeClass
     public static void setUpClass() {
         messageBirdAccessKey = System.getProperty("messageBirdAccessKey");
-        messageBirdMSISDN = new BigInteger(System.getProperty("messageBirdMSISDN"));
+        String msisdn = System.getProperty("messageBirdMSISDN");
+        assumeNotNull("Integration test skipped: set -DmessageBirdAccessKey and -DmessageBirdMSISDN to run",
+                messageBirdAccessKey, msisdn);
+        messageBirdMSISDN = new BigInteger(msisdn);
     }
 
     @Before

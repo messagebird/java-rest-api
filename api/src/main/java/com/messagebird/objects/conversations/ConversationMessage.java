@@ -22,6 +22,7 @@ public class ConversationMessage {
     private Date updatedDatetime;
     private Map<String, Object> source;
     private ConversationMessageTag tag;
+    private ConversationMessageMetadata metadata;
     /**
      * See: {@link ConversationPlatformConstants}
      */
@@ -115,6 +116,14 @@ public class ConversationMessage {
         this.tag = tag;
     }
 
+    public ConversationMessageMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(ConversationMessageMetadata metadata) {
+        this.metadata = metadata;
+    }
+
     public String getPlatform() {
         return platform;
     }
@@ -146,6 +155,7 @@ public class ConversationMessage {
                 ", updatedDatetime=" + updatedDatetime +
                 ", source=" + source +
                 ", tag=" + tag +
+                ", metadata=" + metadata +
                 ", platform='" + platform + '\'' +
                 '}';
     }
