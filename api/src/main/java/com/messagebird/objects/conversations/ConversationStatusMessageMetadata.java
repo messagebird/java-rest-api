@@ -1,8 +1,13 @@
 package com.messagebird.objects.conversations;
 
 /**
- * The {@code messageMetadata} block delivered in status webhook events (e.g.
- * {@code statusSent}). Reflects the original message that triggered the status.
+ * The {@code messageMetadata} block delivered inside status webhook payloads
+ * (e.g. {@code statusSent}, {@code statusDelivered}). Reflects the original
+ * message that triggered the status update.
+ *
+ * <p>This class is not produced by any SDK request — it is a standalone POJO
+ * intended for consumers who deserialize incoming webhook payloads in their
+ * own HTTP handlers. Use it via {@code ObjectMapper.readValue(body, ...)}.
  *
  * <p>Both {@code from} and {@code to} accept either a phone number or a
  * WhatsApp Business-Scoped User ID (BSUID, e.g. "US.13491208655302741918").
