@@ -8,6 +8,7 @@ import org.junit.*;
 import org.mockito.Mockito;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.junit.Assume.assumeNotNull;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -30,6 +31,7 @@ public class ContactTest {
     @BeforeClass
     public static void setUpClass() throws UnauthorizedException, GeneralException {
         String accessKey = System.getProperty("messageBirdAccessKey");
+        assumeNotNull("Integration test skipped: set -DmessageBirdAccessKey to run", accessKey);
 
         msisdn = generateMsisdn();
 

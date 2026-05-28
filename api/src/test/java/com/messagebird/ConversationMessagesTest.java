@@ -1,5 +1,7 @@
 package com.messagebird;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
 import com.messagebird.exceptions.UnauthorizedException;
@@ -23,6 +25,8 @@ public class ConversationMessagesTest {
     private static final String JSON_CONVERSATION_MESSAGE_TEXT = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_MESSAGE_VIDEO = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"video\",\"direction\": \"received\",\"content\": {\"video\": { \"url\": \"https://example.com/video.mp4\" } },\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_SEND_MESSAGE_RESPONSE = "{\"id\":\"mesid\",\"status\":\"accepted\",\"fallback\":{\"id\":\"mesid\"}}";
+    private static final String JSON_CONVERSATION_MESSAGE_BSUID = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"metadata\": {\"sender\": {\"displayName\": \"Alice\",\"username\": \"alice_shop\",\"userId\": \"US.13491208655302741918\"},\"receivedAt\": \"2025-04-15T16:00:00Z\"},\"createdDatetime\": \"2025-04-15T16:00:00Z\",\"updatedDatetime\": \"2025-04-15T16:00:00Z\"}";
+    private static final String JSON_STATUS_MESSAGE_METADATA = "{\"id\": \"e5f6a7b8-c9d0-1234-ef01-23456789abcd\",\"from\": \"15551234567\",\"to\": \"US.13491208655302741918\",\"type\": \"text\",\"content\": {\"text\": \"Hello! Your order has been shipped.\"},\"metadata\": {\"sender\": {\"userId\": \"US.13491208655302741918\"},\"receivedAt\": \"0001-01-01T00:00:00Z\"}}";
 
     /**
      * Epsilon to use when checking two latitudes or longitudes for equality.
@@ -181,6 +185,41 @@ public class ConversationMessagesTest {
         assertEquals(ConversationContentType.LOCATION, conversationMessage.getType());
         assertEquals(52.344263, location.getLatitude(), EPSILON_LOCATION_EQUALITY);
         assertEquals(4.911627, location.getLongitude(), EPSILON_LOCATION_EQUALITY);
+    }
+
+    @Test
+    public void testViewConversationMessageWithBsuidMetadata() throws GeneralException, NotFoundException, UnauthorizedException {
+        MessageBirdService messageBirdService = SpyService
+                .expects("GET", "messages/mesid")
+                .withConversationsAPIBaseURL()
+                .andReturns(new APIResponse(JSON_CONVERSATION_MESSAGE_BSUID));
+        MessageBirdClient messageBirdClient = new MessageBirdClient(messageBirdService);
+
+        ConversationMessage message = messageBirdClient.viewConversationMessage("mesid");
+
+        ConversationMessageMetadata metadata = message.getMetadata();
+        assertNotNull(metadata);
+        assertNotNull(metadata.getReceivedAt());
+        ConversationSenderMetadata sender = metadata.getSender();
+        assertEquals("Alice", sender.getDisplayName());
+        assertEquals("alice_shop", sender.getUsername());
+        assertEquals("US.13491208655302741918", sender.getUserId());
+    }
+
+    @Test
+    public void testStatusMessageMetadataDeserializes() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        ConversationStatusMessageMetadata md = mapper.readValue(
+                JSON_STATUS_MESSAGE_METADATA, ConversationStatusMessageMetadata.class);
+
+        assertEquals("e5f6a7b8-c9d0-1234-ef01-23456789abcd", md.getId());
+        assertEquals("15551234567", md.getFrom());
+        assertEquals("US.13491208655302741918", md.getTo());
+        assertEquals("text", md.getType());
+        assertEquals("Hello! Your order has been shipped.", md.getContent().getText());
+        assertEquals("US.13491208655302741918", md.getMetadata().getSender().getUserId());
     }
 
     @Test
