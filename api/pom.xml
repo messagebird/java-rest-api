@@ -114,6 +114,17 @@
         </profile>
     </profiles>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Pin patched plexus-utils (transitive via maven-artifact); fixes CVE-2025-67030. -->
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>3.6.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
