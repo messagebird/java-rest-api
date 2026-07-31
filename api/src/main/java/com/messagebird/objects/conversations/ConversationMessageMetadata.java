@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 
 /**
@@ -8,6 +10,7 @@ import java.util.Date;
  * the BSUID when Meta provides one. When both identifiers exist, the phone
  * number appears in the parent {@code from} field, not in this object.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationMessageMetadata {
 
     private ConversationSenderMetadata sender;

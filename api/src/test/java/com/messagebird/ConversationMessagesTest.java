@@ -1,6 +1,5 @@
 package com.messagebird;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messagebird.exceptions.GeneralException;
 import com.messagebird.exceptions.NotFoundException;
@@ -31,6 +30,13 @@ public class ConversationMessagesTest {
     private static final String JSON_STATUS_METADATA_WITH_RECIPIENT = "{\"pricing\": {\"billable\": true,\"pricing_model\": \"CBP\",\"category\": \"utility\"},\"conversation\": {\"id\": \"a1b2c3d4\",\"origin\": {\"type\": \"utility\"}},\"biz_opaque_callback_data\": \"order-1234\",\"recipient\": {\"userId\": \"US.13491208655302741918\",\"parentUserId\": \"US.ENT.11815799212886844830\"}}";
     private static final String JSON_STATUS_METADATA_WITHOUT_RECIPIENT = "{\"pricing\": {\"billable\": true,\"pricing_model\": \"CBP\",\"category\": \"utility\"},\"conversation\": {\"id\": \"a1b2c3d4\",\"origin\": {\"type\": \"utility\"}}}";
     private static final String JSON_STATUS_METADATA_PARENT_ONLY = "{\"recipient\": {\"parentUserId\": \"US.ENT.11815799212886844830\"}}";
+
+    /**
+     * The same payload as JSON_STATUS_MESSAGE_METADATA with an unrecognised key
+     * added at every nesting level, standing in for fields the platform adds
+     * after this SDK version ships.
+     */
+    private static final String JSON_STATUS_MESSAGE_METADATA_UNKNOWN_FIELDS = "{\"id\": \"e5f6a7b8-c9d0-1234-ef01-23456789abcd\",\"from\": \"15551234567\",\"to\": \"US.13491208655302741918\",\"type\": \"text\",\"futureTopLevelField\": \"ignored\",\"content\": {\"text\": \"Hello! Your order has been shipped.\",\"futureContentField\": \"ignored\"},\"metadata\": {\"sender\": {\"userId\": \"US.13491208655302741918\",\"futureSenderField\": \"ignored\"},\"receivedAt\": \"0001-01-01T00:00:00Z\",\"futureMetadataField\": \"ignored\"}}";
 
     /**
      * Epsilon to use when checking two latitudes or longitudes for equality.
@@ -212,6 +218,20 @@ public class ConversationMessagesTest {
     }
 
     @Test
+    public void testStatusMessageMetadataToleratesUnknownFields() throws Exception {
+        // A plain mapper, and unknown keys at every level: webhook payload POJOs
+        // must not force consumers to disable FAIL_ON_UNKNOWN_PROPERTIES, and
+        // must survive fields the platform adds after this version ships.
+        ConversationStatusMessageMetadata md = new ObjectMapper().readValue(
+                JSON_STATUS_MESSAGE_METADATA_UNKNOWN_FIELDS, ConversationStatusMessageMetadata.class);
+
+        assertEquals("e5f6a7b8-c9d0-1234-ef01-23456789abcd", md.getId());
+        assertEquals("Hello! Your order has been shipped.", md.getContent().getText());
+        assertEquals("US.13491208655302741918", md.getMetadata().getSender().getUserId());
+        assertNotNull(md.getMetadata().getReceivedAt());
+    }
+
+    @Test
     public void testStatusMetadataDeserializesRecipient() throws Exception {
         // A plain mapper: these payload POJOs must not require the caller to
         // disable FAIL_ON_UNKNOWN_PROPERTIES.
@@ -256,10 +276,7 @@ public class ConversationMessagesTest {
 
     @Test
     public void testStatusMessageMetadataDeserializes() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        ConversationStatusMessageMetadata md = mapper.readValue(
+        ConversationStatusMessageMetadata md = new ObjectMapper().readValue(
                 JSON_STATUS_MESSAGE_METADATA, ConversationStatusMessageMetadata.class);
 
         assertEquals("e5f6a7b8-c9d0-1234-ef01-23456789abcd", md.getId());

@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Metadata about the sender of a WhatsApp message. {@code userId} always
  * contains the BSUID (e.g. "US.13491208655302741918") when Meta supplies one.
@@ -12,6 +14,7 @@ package com.messagebird.objects.conversations;
  * present for accounts enrolled in Meta's parent-BSUID rollout; for everyone
  * else it stays {@code null}.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationSenderMetadata {
 
     private String userId;

@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The {@code messageMetadata} block delivered inside status webhook payloads
  * (e.g. {@code statusSent}, {@code statusDelivered}). Reflects the original
@@ -18,6 +20,7 @@ package com.messagebird.objects.conversations;
  * lives alongside this block, under {@code status.metadata.recipient} — see
  * {@link ConversationStatusMetadata}.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationStatusMessageMetadata {
 
     private String id;

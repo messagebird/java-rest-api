@@ -1,9 +1,16 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * ConversationContent wraps actual content. The field that should be set here
  * is indicated by ConversationContentType.
+ *
+ * <p>Unknown keys are ignored on deserialization so that consumers parsing
+ * webhook payloads in their own handlers are not broken by content fields added
+ * after their SDK version. Serialization is unaffected.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationContent {
 
     private ConversationContentMedia audio;
