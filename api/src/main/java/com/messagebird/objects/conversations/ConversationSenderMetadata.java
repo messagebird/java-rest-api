@@ -5,10 +5,17 @@ package com.messagebird.objects.conversations;
  * contains the BSUID (e.g. "US.13491208655302741918") when Meta supplies one.
  * When both a phone number and a BSUID are available, the phone number appears
  * in the parent message's {@code from} field — not here.
+ *
+ * <p>{@code parentUserId} carries the sender's parent business-scoped user ID
+ * (e.g. "US.ENT.11815799212886844830"), which identifies the enterprise that
+ * owns the business portfolio the {@code userId} was scoped against. It is only
+ * present for accounts enrolled in Meta's parent-BSUID rollout; for everyone
+ * else it stays {@code null}.
  */
 public class ConversationSenderMetadata {
 
     private String userId;
+    private String parentUserId;
     private String username;
     private String displayName;
 
@@ -18,6 +25,14 @@ public class ConversationSenderMetadata {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getParentUserId() {
+        return parentUserId;
+    }
+
+    public void setParentUserId(String parentUserId) {
+        this.parentUserId = parentUserId;
     }
 
     public String getUsername() {
@@ -40,6 +55,7 @@ public class ConversationSenderMetadata {
     public String toString() {
         return "ConversationSenderMetadata{" +
                 "userId='" + userId + '\'' +
+                ", parentUserId='" + parentUserId + '\'' +
                 ", username='" + username + '\'' +
                 ", displayName='" + displayName + '\'' +
                 '}';

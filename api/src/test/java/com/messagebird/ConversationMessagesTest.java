@@ -25,8 +25,12 @@ public class ConversationMessagesTest {
     private static final String JSON_CONVERSATION_MESSAGE_TEXT = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_MESSAGE_VIDEO = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"video\",\"direction\": \"received\",\"content\": {\"video\": { \"url\": \"https://example.com/video.mp4\" } },\"createdDatetime\": \"2018-08-29T11:49:16Z\",\"updatedDatetime\": \"2018-08-29T11:49:16Z\"}";
     private static final String JSON_CONVERSATION_SEND_MESSAGE_RESPONSE = "{\"id\":\"mesid\",\"status\":\"accepted\",\"fallback\":{\"id\":\"mesid\"}}";
-    private static final String JSON_CONVERSATION_MESSAGE_BSUID = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"metadata\": {\"sender\": {\"displayName\": \"Alice\",\"username\": \"alice_shop\",\"userId\": \"US.13491208655302741918\"},\"receivedAt\": \"2025-04-15T16:00:00Z\"},\"createdDatetime\": \"2025-04-15T16:00:00Z\",\"updatedDatetime\": \"2025-04-15T16:00:00Z\"}";
+    private static final String JSON_CONVERSATION_MESSAGE_BSUID = "{\"id\": \"mesid\",\"conversationId\": \"convid\",\"channelId\": \"chanid\",\"status\": \"received\",\"type\": \"text\",\"direction\": \"received\",\"content\": {\"text\": \"Hello\"},\"metadata\": {\"sender\": {\"displayName\": \"Alice\",\"username\": \"alice_shop\",\"userId\": \"US.13491208655302741918\",\"parentUserId\": \"US.ENT.11815799212886844830\"},\"receivedAt\": \"2025-04-15T16:00:00Z\"},\"createdDatetime\": \"2025-04-15T16:00:00Z\",\"updatedDatetime\": \"2025-04-15T16:00:00Z\"}";
     private static final String JSON_STATUS_MESSAGE_METADATA = "{\"id\": \"e5f6a7b8-c9d0-1234-ef01-23456789abcd\",\"from\": \"15551234567\",\"to\": \"US.13491208655302741918\",\"type\": \"text\",\"content\": {\"text\": \"Hello! Your order has been shipped.\"},\"metadata\": {\"sender\": {\"userId\": \"US.13491208655302741918\"},\"receivedAt\": \"0001-01-01T00:00:00Z\"}}";
+
+    private static final String JSON_STATUS_METADATA_WITH_RECIPIENT = "{\"pricing\": {\"billable\": true,\"pricing_model\": \"CBP\",\"category\": \"utility\"},\"conversation\": {\"id\": \"a1b2c3d4\",\"origin\": {\"type\": \"utility\"}},\"biz_opaque_callback_data\": \"order-1234\",\"recipient\": {\"userId\": \"US.13491208655302741918\",\"parentUserId\": \"US.ENT.11815799212886844830\"}}";
+    private static final String JSON_STATUS_METADATA_WITHOUT_RECIPIENT = "{\"pricing\": {\"billable\": true,\"pricing_model\": \"CBP\",\"category\": \"utility\"},\"conversation\": {\"id\": \"a1b2c3d4\",\"origin\": {\"type\": \"utility\"}}}";
+    private static final String JSON_STATUS_METADATA_PARENT_ONLY = "{\"recipient\": {\"parentUserId\": \"US.ENT.11815799212886844830\"}}";
 
     /**
      * Epsilon to use when checking two latitudes or longitudes for equality.
@@ -204,6 +208,50 @@ public class ConversationMessagesTest {
         assertEquals("Alice", sender.getDisplayName());
         assertEquals("alice_shop", sender.getUsername());
         assertEquals("US.13491208655302741918", sender.getUserId());
+        assertEquals("US.ENT.11815799212886844830", sender.getParentUserId());
+    }
+
+    @Test
+    public void testStatusMetadataDeserializesRecipient() throws Exception {
+        // A plain mapper: these payload POJOs must not require the caller to
+        // disable FAIL_ON_UNKNOWN_PROPERTIES.
+        ConversationStatusMetadata metadata = new ObjectMapper().readValue(
+                JSON_STATUS_METADATA_WITH_RECIPIENT, ConversationStatusMetadata.class);
+
+        ConversationRecipientMetadata recipient = metadata.getRecipient();
+        assertNotNull(recipient);
+        assertEquals("US.13491208655302741918", recipient.getUserId());
+        assertEquals("US.ENT.11815799212886844830", recipient.getParentUserId());
+
+        // Meta's own objects pass through untouched, snake_case keys and all.
+        assertEquals("CBP", metadata.getPricing().get("pricing_model"));
+        assertEquals("a1b2c3d4", metadata.getConversation().get("id"));
+
+        // Anything else on the payload is kept rather than dropped.
+        assertEquals("order-1234", metadata.getAdditionalProperties().get("biz_opaque_callback_data"));
+    }
+
+    @Test
+    public void testStatusMetadataWithoutRecipientIsNull() throws Exception {
+        ConversationStatusMetadata metadata = new ObjectMapper().readValue(
+                JSON_STATUS_METADATA_WITHOUT_RECIPIENT, ConversationStatusMetadata.class);
+
+        // Accounts that never receive BSUIDs get payloads with no recipient key
+        // at all — the rest of the metadata must still parse.
+        assertNull(metadata.getRecipient());
+        assertEquals("CBP", metadata.getPricing().get("pricing_model"));
+        assertTrue(metadata.getAdditionalProperties().isEmpty());
+    }
+
+    @Test
+    public void testStatusMetadataRecipientWithParentOnly() throws Exception {
+        ConversationStatusMetadata metadata = new ObjectMapper().readValue(
+                JSON_STATUS_METADATA_PARENT_ONLY, ConversationStatusMetadata.class);
+
+        ConversationRecipientMetadata recipient = metadata.getRecipient();
+        assertNotNull(recipient);
+        assertNull(recipient.getUserId());
+        assertEquals("US.ENT.11815799212886844830", recipient.getParentUserId());
     }
 
     @Test
