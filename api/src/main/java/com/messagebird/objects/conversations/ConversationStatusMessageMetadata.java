@@ -1,5 +1,7 @@
 package com.messagebird.objects.conversations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The {@code messageMetadata} block delivered inside status webhook payloads
  * (e.g. {@code statusSent}, {@code statusDelivered}). Reflects the original
@@ -12,7 +14,13 @@ package com.messagebird.objects.conversations;
  * <p>Both {@code from} and {@code to} accept either a phone number or a
  * WhatsApp Business-Scoped User ID (BSUID, e.g. "US.13491208655302741918").
  * The BSUID is also available via {@code metadata.sender.userId}.
+ *
+ * <p>{@code to} echoes back the address the message was originally addressed
+ * to, so it is not a reliable source of the recipient's BSUID. That identity
+ * lives alongside this block, under {@code status.metadata.recipient} — see
+ * {@link ConversationStatusMetadata}.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationStatusMessageMetadata {
 
     private String id;
