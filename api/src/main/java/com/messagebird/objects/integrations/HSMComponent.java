@@ -1,7 +1,7 @@
 package com.messagebird.objects.integrations;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.StringUtils;
+import com.messagebird.common.StringUtils;
 
 import java.util.List;
 
