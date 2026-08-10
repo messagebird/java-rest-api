@@ -129,6 +129,9 @@ public class ConversationMessage {
     }
 
     public void setPlatform(String platform) {
+        if (!ConversationPlatformConstants.isValidPlatform(platform)) {
+            throw new IllegalArgumentException("Invalid platform: " + platform);
+        }
         this.platform = platform;
     }
 

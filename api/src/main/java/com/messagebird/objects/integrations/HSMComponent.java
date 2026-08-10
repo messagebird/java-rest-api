@@ -188,9 +188,19 @@ public class HSMComponent {
    * @throws IllegalArgumentException Occurs when type is not {@code HEADER} and format is not {@code IMAGE}.
    */
   private void checkHeaderUrl() throws IllegalArgumentException {
-    if (!(HSMComponentType.HEADER.equals(type) &&
-            (HSMComponentFormat.IMAGE.equals(format) || HSMComponentFormat.VIDEO.equals(format) || HSMComponentFormat.DOCUMENT.equals(format)))) {
+    if (!isHeaderType() || !isValidFormat()) {
       throw new IllegalArgumentException("\"header_url\" is available for only HEADER type and IMAGE, VIDEO, or DOCUMENT formats.");
     }
   }
+
+  private boolean isHeaderType() {
+    return HSMComponentType.HEADER.equals(type);
+  }
+
+  private boolean isValidFormat() {
+    return HSMComponentFormat.IMAGE.equals(format) ||
+            HSMComponentFormat.VIDEO.equals(format) ||
+            HSMComponentFormat.DOCUMENT.equals(format);
+  }
+
 }

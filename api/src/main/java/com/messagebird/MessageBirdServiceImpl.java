@@ -251,79 +251,77 @@ public class MessageBirdServiceImpl implements MessageBirdService {
         return getJsonDataAsList(request, payload, requestType, new HashMap<>(), elementClass);
     }
 
-    public <T, P> T getJsonData(final String request, final P payload, final String requestType, final Map<String, String> headers, final Class<T> clazz) throws UnauthorizedException, GeneralException, NotFoundException {
+    public <P> APIResponse executeRequest(final String request, final P payload, final String requestType, final Map<String, String> headers)
+            throws UnauthorizedException, GeneralException, NotFoundException {
         if (request == null) {
             throw new IllegalArgumentException(REQUEST_VALUE_MUST_BE_SPECIFIED);
         }
 
-        String url = request;
-        if (!isURLAbsolute(url)) {
-            url = serviceUrl + url;
-        }
-        final APIResponse apiResponse = doRequest(requestType, url, headers, payload);
-
-        final String body = apiResponse.getBody();
-        final int status = apiResponse.getStatus();
-
-        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED || status == HttpURLConnection.HTTP_ACCEPTED) {
-            try {
-                final ObjectMapper mapper = new ObjectMapper();
-                // If we as new properties, we don't want the system to fail, we rather want to ignore them
-                mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-                // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-
-                // Prevents mismatched exception when clazz is null
-                return clazz == null
-                    ? null
-                    : this.readValue(mapper, body, clazz);
-            } catch (IOException ioe) {
-                throw new GeneralException(ioe);
-            }
-        } else if (status == HttpURLConnection.HTTP_NO_CONTENT) {
-            return null; // no content doesn't mean an error
-        }
-        handleHttpFailStatuses(status, body);
-        return null;
+        String url = isURLAbsolute(request) ? request : serviceUrl + request;
+        return doRequest(requestType, url, headers, payload);
     }
 
-    // todo: need to refactor for duplicated code.
-    public <P, E> List<E> getJsonDataAsList(final String request,
-        final P payload, final String requestType, final Map<String, String> headers, final Class<E> elementClass)
-        throws UnauthorizedException, GeneralException, NotFoundException {
-        if (request == null) {
-            throw new IllegalArgumentException(REQUEST_VALUE_MUST_BE_SPECIFIED);
+    private ObjectMapper configureObjectMapper() {
+        final ObjectMapper mapper = new ObjectMapper();
+        // If we as new properties, we don't want the system to fail, we rather want to ignore them
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        return mapper;
+    }
+
+    private void handleResponseStatus(final int status, final String body) throws UnauthorizedException, GeneralException, NotFoundException {
+        if (status == HttpURLConnection.HTTP_OK ||
+                status == HttpURLConnection.HTTP_CREATED ||
+                status == HttpURLConnection.HTTP_ACCEPTED) {
+            return;
         }
 
-        String url = request;
-        if (!isURLAbsolute(url)) {
-            url = serviceUrl + url;
+        if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+            return; // no content doesn't mean an error
         }
-        final APIResponse apiResponse = doRequest(requestType, url, headers, payload);
 
-        final String body = apiResponse.getBody();
-        final int status = apiResponse.getStatus();
-
-        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED || status == HttpURLConnection.HTTP_ACCEPTED) {
-            try {
-                final ObjectMapper mapper = new ObjectMapper();
-                // If we as new properties, we don't want the system to fail, we rather want to ignore them
-                mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-                // Enable case insensitivity to avoid parsing errors if parameters' case in api response doesn't match sdk's
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-
-                // Prevents mismatched exception when clazz is null
-                return this.readValueAsList(mapper, body, elementClass);
-            } catch (IOException ioe) {
-                throw new GeneralException(ioe);
-            }
-        } else if (status == HttpURLConnection.HTTP_NO_CONTENT) {
-            return Collections.emptyList(); // no content doesn't mean an error
-        }
         handleHttpFailStatuses(status, body);
-        return Collections.emptyList();
+    }
+
+    public <T, P> T getJsonData(final String request, final P payload, final String requestType, final Map<String, String> headers, final Class<T> clazz)
+            throws UnauthorizedException, GeneralException, NotFoundException {
+        final APIResponse apiResponse = executeRequest(request, payload, requestType, headers);
+        final int status = apiResponse.getStatus();
+        final String body = apiResponse.getBody();
+
+        handleResponseStatus(status, body);
+
+        // Prevents mismatched exception when clazz is null
+        if (clazz == null || status == HttpURLConnection.HTTP_NO_CONTENT) {
+            return null;
+        }
+
+        try {
+            return readValue(configureObjectMapper(), body, clazz);
+        } catch (IOException ioe) {
+            throw new GeneralException(ioe);
+        }
+    }
+
+    public <P, E> List<E> getJsonDataAsList(final String request, final P payload, final String requestType, final Map<String, String> headers, final Class<E> elementClass)
+            throws UnauthorizedException, GeneralException, NotFoundException {
+        final APIResponse apiResponse = executeRequest(request, payload, requestType, headers);
+        final int status = apiResponse.getStatus();
+        final String body = apiResponse.getBody();
+
+        handleResponseStatus(status, body);
+
+        if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+            return Collections.emptyList();
+        }
+
+        try {
+            return readValueAsList(configureObjectMapper(), body, elementClass);
+        } catch (IOException ioe) {
+            throw new GeneralException(ioe);
+        }
     }
 
     private <T> T readValue(ObjectMapper mapper, String content, Class<T> clazz)
